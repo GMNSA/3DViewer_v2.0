@@ -298,7 +298,6 @@ void MyWidgetOPenGL::setRotateBuffX(int newRotateBuffX) {
 void MyWidgetOPenGL::rotateY(int const value_) {
   setRotateBuffY(value_);
   moveRotation(MOVE_ROTATE_Y, value_);
-  // changeRotate();
 }
 
 // -------------------------------------------------------
@@ -306,7 +305,6 @@ void MyWidgetOPenGL::rotateY(int const value_) {
 void MyWidgetOPenGL::rotateX(int const value_) {
   setRotateBuffX(value_);
   moveRotation(MOVE_ROTATE_X, value_);
-  // changeRotate();
 }
 
 // -------------------------------------------------------
@@ -314,7 +312,6 @@ void MyWidgetOPenGL::rotateX(int const value_) {
 void MyWidgetOPenGL::rotateZ(int const value_) {
   setRotateBuffZ(value_);
   moveRotation(MOVE_ROTATE_Z, value_);
-  // changeRotate();
 }
 
 // -------------------------------------------------------
@@ -357,31 +354,13 @@ int MyWidgetOPenGL::updateData() {
   m_isValid = 0;
 
   model_->poligons_.clear();
-  // free_matrix_int(&m_polygons);
-  // if (m_points.points) {
-  //   free(m_points.points);
-  //   m_points.points = NULL;
-  // }
 
   if (checkFile.exists() && checkFile.isFile() && !m_fileNameObject.isEmpty()) {
     model_->Parse(m_fileNameObject.toStdString().c_str());
-    if (model_->error_ == ERROR_TYPE::ERROR_OK)
-      qDebug() << "Error OK: ";
-    else
-      qDebug() << "Error FAIL: ";
-    qDebug() << "max_size: " << model_->max_size_;
-
-    // is_res = pars_file(m_fileNameObject.toStdString().c_str(), &m_points,
-    // &m_polygons);
-    // is_res = pars_file(m_fileNameObject.toStdString().c_str(), &m_points,
-    // &m_polygons);
 
     if (model_->error_ == ERROR_TYPE::ERROR_OK && !m_fileNameObject.isEmpty()) {
       defaultConfigSimple();
       m_isValid = true;
-      qDebug() << "HERE 1";
-
-      // m_points.max_size
       m_sizePerspective = pow(10, countNumber(model_->max_size_));
 
       updateInfoObject();
@@ -656,10 +635,6 @@ void MyWidgetOPenGL::drawObjects(e_typeDraw type_) {
       y = model_->points_array_[model_->poligons_[i][j]].y;
       z = model_->points_array_[model_->poligons_[i][j]].z;
 
-      // for (int j = 0; j < m_polygons.poligons[i].columns; j++) {
-      //   x = m_points.points[m_polygons.poligons[i].points[j]].x;
-      //   y = m_points.points[m_polygons.poligons[i].points[j]].y;
-      //   z = m_points.points[m_polygons.poligons[i].points[j]].z;
       glVertex3f(x, y, z);
     }
     glEnd();
@@ -853,7 +828,6 @@ void MyWidgetOPenGL::drawSquare() {
   glColor3f(m_pointColor.redF(), m_pointColor.greenF(), m_pointColor.blueF());
   double x, y, z, del = m_perspective == 4 ? 9 : 23;
 
-  // del = m_points.max_size / del * m_pointSize / 20;
   del = model_->max_size_ / del * m_pointSize / 20;
 
   for (size_t i = 1; i < model_->poligons_.size(); i++) {
@@ -869,19 +843,5 @@ void MyWidgetOPenGL::drawSquare() {
       glEnd();
     }
   }
-
-  // for (int i = 1; i < m_polygons.rows; i++) {
-  //   for (int j = 0; j < m_polygons.poligons[i].columns; j++) {
-  //     glBegin(GL_POLYGON);
-  //     x = m_points.points[m_polygons.poligons[i].points[j]].x;
-  //     y = m_points.points[m_polygons.poligons[i].points[j]].y;
-  //     z = m_points.points[m_polygons.poligons[i].points[j]].z;
-  //     glVertex3f(x - del, y - del, z);
-  //     glVertex3f(x + del, y - del, z);
-  //     glVertex3f(x + del, y + del, z);
-  //     glVertex3f(x - del, y + del, z);
-  //     glEnd();
-  //   }
-  // }
 }
 }  // namespace s21
