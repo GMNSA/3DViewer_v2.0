@@ -48,6 +48,7 @@ MyWidgetOPenGL::MyWidgetOPenGL(QWidget *parent)
   defaultConfigSimple();
   // m_points.points = NULL;
   // m_polygons.poligons = NULL;
+  // TODO(_who): for test
 
   this->installEventFilter(this);
   resize(800, 600);
