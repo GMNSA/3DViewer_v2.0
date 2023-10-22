@@ -13,11 +13,7 @@
 #define RGB_MAX 255
 
 #include "../Model/model.hpp"
-
-// extern "C" {
-// #include "functional.h"
-// #include "logging_manager.h"
-// }
+#include "../Model/modelviewer.hpp"
 
 namespace s21 {
 
@@ -29,16 +25,16 @@ typedef enum e_typeDraw {
 
 // -------------------------------------------------------
 
-typedef enum e_moveType { MOVE_X = 0, MOVE_Y, MOVE_Z, MOVE_END } e_moveType;
+// typedef enum e_moveType { MOVE_X = 0, MOVE_Y, MOVE_Z, MOVE_END } e_moveType;
 
 // -------------------------------------------------------
 
-typedef enum e_moveRotationType {
-  MOVE_ROTATE_Y = 1,
-  MOVE_ROTATE_X,
-  MOVE_ROTATE_Z,
-  MOVE_ROTATE_END
-} e_moveRotatinoType;
+// typedef enum e_moveRotationType {
+//   MOVE_ROTATE_Y = 1,
+//   MOVE_ROTATE_X,
+//   MOVE_ROTATE_Z,
+//   MOVE_ROTATE_END
+// } e_moveRotatinoType;
 
 // -------------------------------------------------
 
@@ -98,8 +94,8 @@ class MyWidgetOPenGL : public QOpenGLWidget, protected QOpenGLFunctions {
   void moveX(float value_);
   void moveY(float value_);
   void moveZ(float value_);
-  void moveDirection(e_moveType direction_, float value_);
-  void moveRotation(e_moveRotatinoType direction_, float value_);
+  // void moveDirection(e_moveType direction_, float value_);
+  // void moveRotation(e_moveRotatinoType direction_, float value_);
   int countNumber(int number);
 
  signals:
@@ -110,18 +106,18 @@ class MyWidgetOPenGL : public QOpenGLWidget, protected QOpenGLFunctions {
   void on_changePerperpertiveRdb(int value);
 
  protected:
-  virtual void initializeGL() override;
-  virtual void resizeGL(int w, int h) override;
-  virtual void paintGL() override;
+  void initializeGL() override;
+  void resizeGL(int w, int h) override;
+  void paintGL() override;
 
   // QWidget interface
-  virtual void wheelEvent(QWheelEvent *event) override;
-  virtual void mouseMoveEvent(QMouseEvent *event) override;
-  virtual void mousePressEvent(QMouseEvent *event) override;
-  virtual void mouseReleaseEvent(QMouseEvent *event) override;
+  void wheelEvent(QWheelEvent *event) override;
+  void mouseMoveEvent(QMouseEvent *event) override;
+  void mousePressEvent(QMouseEvent *event) override;
+  void mouseReleaseEvent(QMouseEvent *event) override;
 
   // QObject interface
-  virtual bool eventFilter(QObject *watched, QEvent *event) override;
+  bool eventFilter(QObject *watched, QEvent *event) override;
 
  private:
   bool m_isValid;
@@ -169,6 +165,7 @@ class MyWidgetOPenGL : public QOpenGLWidget, protected QOpenGLFunctions {
   QColor m_tmpColor;
 
   Model *model_;
+  ModelViewer *modelviewer_;
   // Point m_points;
   // matrix_poligon m_polygons;
 

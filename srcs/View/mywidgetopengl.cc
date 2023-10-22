@@ -44,7 +44,8 @@ MyWidgetOPenGL::MyWidgetOPenGL(QWidget *parent)
       m_layoutH(new QHBoxLayout(this)),
       m_isMouse(false),
       m_tmpColor({152, 84, 93}) {
-  model_ = new Model("");
+  model_ = new Model;
+  modelviewer_ = new ModelViewer;
   defaultConfigSimple();
   // m_points.points = NULL;
   // m_polygons.poligons = NULL;
@@ -65,6 +66,10 @@ MyWidgetOPenGL::~MyWidgetOPenGL() {
   // if (m_points.points)
   //   free(m_points.points);
   writeToFileConfig("./config.json");
+
+  if (model_) delete model_;
+
+  if (modelviewer_) delete modelviewer_;
 }
 
 // --------------------------------------------------
@@ -77,7 +82,7 @@ void MyWidgetOPenGL::initializeGL() {
   glEnable(GL_DEPTH_TEST);  // dissabling the buffer deep
   glShadeModel(GL_FLAT);
 
-  m_initialized = 1;
+  m_initialized = true;
 }
 
 // --------------------------------------------------
@@ -297,22 +302,28 @@ void MyWidgetOPenGL::setRotateBuffX(int newRotateBuffX) {
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::rotateY(int const value_) {
-  setRotateBuffY(value_);
-  moveRotation(MOVE_ROTATE_Y, value_);
+  // setRotateBuffY(value_);
+  // moveRotation(MOVE_ROTATE_Y, value_);
+  modelviewer_->set_rotate_buff_y(value_);
+  modelviewer_->MoveRotation(MOVE_ROTATE_Y, value_);
 }
 
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::rotateX(int const value_) {
-  setRotateBuffX(value_);
-  moveRotation(MOVE_ROTATE_X, value_);
+  // setRotateBuffX(value_);
+  //  moveRotation(MOVE_ROTATE_X, value_);
+  modelviewer_->set_rotate_buff_x(value_);
+  modelviewer_->MoveRotation(MOVE_ROTATE_X, value_);
 }
 
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::rotateZ(int const value_) {
-  setRotateBuffZ(value_);
-  moveRotation(MOVE_ROTATE_Z, value_);
+  // setRotateBuffZ(value_);
+  // moveRotation(MOVE_ROTATE_Z, value_);
+  modelviewer_->set_rotate_buff_z(value_);
+  modelviewer_->MoveRotation(MOVE_ROTATE_Z, value_);
 }
 
 // -------------------------------------------------------
@@ -455,6 +466,7 @@ void MyWidgetOPenGL::defaultConfigSimple() {
 
 // -------------------------------------------------------
 
+// TODO(_who): write and laod file
 bool MyWidgetOPenGL::loadConfig(QString path_) {
   bool is_res = 1;
   QString val;
@@ -543,6 +555,7 @@ bool MyWidgetOPenGL::loadConfig(QString path_) {
 
 // -------------------------------------------------------
 
+// TODO(_who): write to file
 bool MyWidgetOPenGL::writeToFileConfig(QString path_) {
   bool isRes = 1;
 
@@ -606,15 +619,24 @@ bool MyWidgetOPenGL::writeToFileConfig(QString path_) {
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::moveX(float value_) { moveDirection(MOVE_X, value_); }
+void MyWidgetOPenGL::moveX(float value_) {
+  modelviewer_->MoveDirection(MOVE_X, value_);
+  // moveDirection(MOVE_X, value_);
+}
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::moveY(float value_) { moveDirection(MOVE_Y, value_); }
+void MyWidgetOPenGL::moveY(float value_) {
+  modelviewer_->MoveDirection(MOVE_Y, value_);
+  // moveDirection(MOVE_Y, value_);
+}
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::moveZ(float value_) { moveDirection(MOVE_Z, value_); }
+void MyWidgetOPenGL::moveZ(float value_) {
+  modelviewer_->MoveDirection(MOVE_Z, value_);
+  // moveDirection(MOVE_Z, value_);
+}
 
 // -------------------------------------------------------
 
@@ -708,79 +730,80 @@ void MyWidgetOPenGL::lineScaleChange(int value_) {
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::moveDirection(e_moveType direction_, float value_) {
-  Q_UNUSED(direction_);
-  Q_UNUSED(value_);
-  if (m_isValid) {
-    value_ = value_ * model_->max_size_ / 99;
-
-    Point t;
-    float tmp = 0;
-    int isError = 0;
-
-    switch (direction_) {
-      case MOVE_X:
-        tmp = m_moveBeforeX - value_;
-        t = {tmp, 0, 0};
-        m_moveBeforeX = value_;
-        break;
-      case MOVE_Y:
-        tmp = m_moveBeforeY - value_;
-        t = {0, tmp, 0};
-        m_moveBeforeY = value_;
-        break;
-      case MOVE_Z:
-        tmp = m_moveBeforeZ - value_;
-        t = {0, 0, tmp};
-        m_moveBeforeZ = value_;
-        break;
-      default:
-        isError = 1;
-        break;
-    }
-
-    if (!isError) {
-      model_->MoveObj(t);
-      // move_obj(&t, &m_points);
-    }
-    update();
-  }
-}
+// void MyWidgetOPenGL::moveDirection(e_moveType direction_, float value_) {
+//   Q_UNUSED(direction_);
+//   Q_UNUSED(value_);
+//   if (m_isValid) {
+//     value_ = value_ * model_->max_size_ / 99;
+//
+//     Point t;
+//     float tmp = 0;
+//     int isError = 0;
+//
+//     switch (direction_) {
+//       case MOVE_X:
+//         tmp = m_moveBeforeX - value_;
+//         t = {tmp, 0, 0};
+//         m_moveBeforeX = value_;
+//         break;
+//       case MOVE_Y:
+//         tmp = m_moveBeforeY - value_;
+//         t = {0, tmp, 0};
+//         m_moveBeforeY = value_;
+//         break;
+//       case MOVE_Z:
+//         tmp = m_moveBeforeZ - value_;
+//         t = {0, 0, tmp};
+//         m_moveBeforeZ = value_;
+//         break;
+//       default:
+//         isError = 1;
+//         break;
+//     }
+//
+//     if (!isError) {
+//       model_->MoveObj(t);
+//       // move_obj(&t, &m_points);
+//     }
+//     update();
+//   }
+// }
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::moveRotation(e_moveRotatinoType direction_, float value_) {
-  Q_UNUSED(direction_);
-  Q_UNUSED(value_);
-  float tmp = 0;
-  int isError = 0;
-
-  if (m_isValid) {
-    switch (direction_) {
-      case MOVE_ROTATE_X:
-        tmp = m_rotateBeforeX - value_;
-        m_rotateBeforeX = value_;
-        break;
-      case MOVE_ROTATE_Y:
-        tmp = m_rotateBeforeY - value_;
-        m_rotateBeforeY = value_;
-        break;
-      case MOVE_ROTATE_Z:
-        tmp = m_rotateBeforeZ - value_;
-        m_rotateBeforeZ = value_;
-        break;
-      default:
-        isError = 1;
-        break;
-    }
-
-    if (!isError) {
-      model_->TurnObj(tmp, direction_);
-      // turn_obj(tmp, &m_points, direction_);
-    }
-    update();
-  }
-}
+// void MyWidgetOPenGL::moveRotation(e_moveRotatinoType direction_, float
+// value_) {
+//   Q_UNUSED(direction_);
+//   Q_UNUSED(value_);
+//   float tmp = 0;
+//   int isError = 0;
+//
+//   if (m_isValid) {
+//     switch (direction_) {
+//       case MOVE_ROTATE_X:
+//         tmp = m_rotateBeforeX - value_;
+//         m_rotateBeforeX = value_;
+//         break;
+//       case MOVE_ROTATE_Y:
+//         tmp = m_rotateBeforeY - value_;
+//         m_rotateBeforeY = value_;
+//         break;
+//       case MOVE_ROTATE_Z:
+//         tmp = m_rotateBeforeZ - value_;
+//         m_rotateBeforeZ = value_;
+//         break;
+//       default:
+//         isError = 1;
+//         break;
+//     }
+//
+//     if (!isError) {
+//       model_->TurnObj(tmp, direction_);
+//       // turn_obj(tmp, &m_points, direction_);
+//     }
+//     update();
+//   }
+// }
 
 // -------------------------------------------------------
 

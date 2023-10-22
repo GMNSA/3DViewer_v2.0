@@ -28,6 +28,7 @@ set(PROJECT_SOURCES
         srcs/View/mywidgetopengl.cc
 
         srcs/Model/model.cpp
+        srcs/Model/modelviewer.cc
         ${QTPROPERTY_BROWSER_SOURCES}
 )
 
@@ -36,6 +37,7 @@ set(PROJECT_HEADERS
         includes/View/mywidgetopengl.hpp
 
         includes/Model/model.hpp
+        includes/Model/modelviewer.hpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

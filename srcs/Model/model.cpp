@@ -15,7 +15,9 @@ void PrintMatrix(S21Matrix matrix) {
   }
 }
 
-Model::Model(std::string const& file) : file_(file) { Parse(); }
+Model::Model(std::string const& file) : file_(file) {
+  if (!file.empty()) Parse();
+}
 
 void Model::Parse(std::string const& filename) {
   error_ = ERROR_TYPE::ERROR_OK;

@@ -26,7 +26,7 @@ struct Point {
 
 class Model {
  public:
-  Model(std::string const& file);
+  Model(std::string const& file = "");
   void ScaleObj(double const& scale);
   void TurnObj(double const& rotation, int const& axis);
   void MoveObj(Point& move_point);
