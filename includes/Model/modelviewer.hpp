@@ -26,24 +26,39 @@ class ModelViewer : public IModelViewer {
 
   // -- -- -- --
 
-  void MoveRotation(e_moveRotatinoType direction, float value) override;
-  void MoveDirection(e_moveType direction, float value) override;
+  void MoveRotation(MoveRotationType direction, float value) override;
+  void MoveDirection(MoveType direction, float value) override;
+
+  void PolygonsClear() override;
+  void Parse(QString const &str) override;
+  ErrorType Error() override;
+  double MaxSizePerpective() override;
+
+  std::vector<Point> const &PointsArray() override;
+  std::vector<std::vector<int>> const &Polygons() override;
+
+  // -- -- -- --
+
+  void TurnObjectX(double const &rotate) override;
+  void TurnObjectY(double const &rotate) override;
+  void TurnObjectZ(double const &rotate) override;
 
  private:
   Model *model_;
 
-  bool m_isValid;
+  bool is_valid_;
 
-  int m_rotateX;
-  int m_rotateY;
-  int m_rotateZ;
+  int rotate_x_;
+  int rotate_y_;
+  int rotate_z_;
 
-  qint64 m_rotateBeforeX;
-  qint64 m_rotateBeforeY;
-  qint64 m_rotateBeforeZ;
-  long double m_moveBeforeX;
-  long double m_moveBeforeY;
-  long double m_moveBeforeZ;
+  qint64 rotate_before_x_;
+  qint64 rotate_before_y_;
+  qint64 rotate_before_z_;
+
+  long double move_before_x_;
+  long double move_before_y_;
+  long double move_before_z_;
 
   QString m_fileNameObject;
 
@@ -66,4 +81,5 @@ class ModelViewer : public IModelViewer {
 };
 
 }  // namespace s21
+
 #endif  // INCLUDES_MODEL_MODELVIEWER_HPP_

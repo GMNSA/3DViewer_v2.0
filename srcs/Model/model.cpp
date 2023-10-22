@@ -15,16 +15,20 @@ void PrintMatrix(S21Matrix matrix) {
   }
 }
 
+// ----------------------------------------------------------------------------
+
 Model::Model(std::string const& file) : file_(file) {
   if (!file.empty()) Parse();
 }
 
+// ----------------------------------------------------------------------------
+
 void Model::Parse(std::string const& filename) {
-  error_ = ERROR_TYPE::ERROR_OK;
+  error_ = ErrorType::ERROR_OK;
   if (!filename.empty()) file_ = filename;
   // TODO(_who): clear data
   max_size_ = 0;
-  poligons_.clear();
+  polygons_.clear();
   points_array_.clear();
   std::string line;
   std::ifstream in(file_);
@@ -40,9 +44,11 @@ void Model::Parse(std::string const& filename) {
     }
     in.close();
   } else {
-    error_ = ERROR_TYPE::ERROR_PARSE;
+    error_ = ErrorType::ERROR_PARSE;
   }
 }
+
+// ----------------------------------------------------------------------------
 
 void Model::AddPoligon(char* line) {
   vector<int> poligon;
@@ -54,8 +60,10 @@ void Model::AddPoligon(char* line) {
       }
     }
   }
-  poligons_.push_back(poligon);
+  polygons_.push_back(poligon);
 }
+
+// ----------------------------------------------------------------------------
 
 void Model::AddPoint(char* line) {
   Point point;
@@ -72,6 +80,8 @@ void Model::AddPoint(char* line) {
   points_array_.push_back(point);
 }
 
+// ----------------------------------------------------------------------------
+
 void Model::ScaleObj(double const& scale) {
   S21Matrix matrix_scale(4, 4);
   for (int i = 0; i < 4; i++) {
@@ -86,6 +96,8 @@ void Model::ScaleObj(double const& scale) {
   AffineTransformation(matrix_scale);
 }
 
+// ----------------------------------------------------------------------------
+
 void Model::TurnObj(double const& rotation, int const& axis) {
   S21Matrix matrix_turn(4, 4);
   for (int i = 0; i < 4; i++) {
@@ -99,6 +111,8 @@ void Model::TurnObj(double const& rotation, int const& axis) {
   MatrixRotation(matrix_turn, rotation, axis);
   AffineTransformation(matrix_turn);
 }
+
+// ----------------------------------------------------------------------------
 
 void Model::MatrixRotation(S21Matrix& matrix_turn, double const& rotation,
                            int const& axis) {
@@ -121,6 +135,8 @@ void Model::MatrixRotation(S21Matrix& matrix_turn, double const& rotation,
   }
 }
 
+// ----------------------------------------------------------------------------
+
 void Model::MoveObj(Point& move_point) {
   S21Matrix matrix_move(4, 4);
   for (int i = 0; i < 4; i++) {
@@ -136,6 +152,8 @@ void Model::MoveObj(Point& move_point) {
   matrix_move(2, 3) = move_point.z;
   AffineTransformation(matrix_move);
 }
+
+// ----------------------------------------------------------------------------
 
 void Model::AffineTransformation(S21Matrix& matrix_affin) {
   S21Matrix matrix_point(4, 1), matrix_result;
@@ -154,6 +172,8 @@ void Model::AffineTransformation(S21Matrix& matrix_affin) {
   }
 }
 
+// ----------------------------------------------------------------------------
+
 void Model::PrintPoints() {
   for (unsigned i = 0; i < points_array_.size(); i++) {
     cout << points_array_[i].x << " ";
@@ -162,6 +182,8 @@ void Model::PrintPoints() {
   }
 }
 
+// ----------------------------------------------------------------------------
+
 // int main() {
 //   Model s("/home/usup/Desktop/cow.obj");
 //   s.TurnObj(180, 1);
@@ -169,10 +191,40 @@ void Model::PrintPoints() {
 //   return 0;
 // }
 
+// ----------------------------------------------------------------------------
+
 void Model::add_max_size(Point const& point) {
   if (fabs(point.x) > max_size_) max_size_ = fabs(point.x);
   if (fabs(point.y) > max_size_) max_size_ = fabs(point.y);
   if (fabs(point.z) > max_size_) max_size_ = fabs(point.z);
 }
+
+// ----------------------------------------------------------------------------
+
+void Model::set_max_size(double const& size) { max_size_ = size; }
+
+// ----------------------------------------------------------------------------
+
+double Model::get_max_size() { return max_size_; }
+
+// ----------------------------------------------------------------------------
+
+ErrorType Model::get_error() { return error_; }
+
+// ----------------------------------------------------------------------------
+
+void Model::set_error(ErrorType const& error) { error_ = error; }
+
+// ----------------------------------------------------------------------------
+
+std::vector<Point> const& Model::get_points_array() { return points_array_; }
+
+// ----------------------------------------------------------------------------
+
+std::vector<std::vector<int>> const& Model::get_polygons() { return polygons_; }
+
+// ----------------------------------------------------------------------------
+
+void Model::PolygonsClear() { polygons_.clear(); }
 
 }  // namespace s21

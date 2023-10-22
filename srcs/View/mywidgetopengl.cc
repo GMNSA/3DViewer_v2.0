@@ -365,15 +365,17 @@ int MyWidgetOPenGL::updateData() {
   int is_res = 0;
   m_isValid = 0;
 
-  model_->poligons_.clear();
+  modelviewer_->PolygonsClear();
 
   if (checkFile.exists() && checkFile.isFile() && !m_fileNameObject.isEmpty()) {
-    model_->Parse(m_fileNameObject.toStdString().c_str());
+    modelviewer_->Parse(m_fileNameObject.toStdString().c_str());
 
-    if (model_->error_ == ERROR_TYPE::ERROR_OK && !m_fileNameObject.isEmpty()) {
+    if (modelviewer_->Error() == ErrorType::ERROR_OK &&
+        !m_fileNameObject.isEmpty()) {
       defaultConfigSimple();
       m_isValid = true;
-      m_sizePerspective = pow(10, countNumber(model_->max_size_));
+      m_sizePerspective =
+          pow(10, countNumber(modelviewer_->MaxSizePerpective()));
 
       updateInfoObject();
       emit on_changePerperpertiveRdb(m_perspective);
@@ -400,10 +402,10 @@ void MyWidgetOPenGL::updateInfoObject() {
 
     m_labelName->setText("Name: " + info.baseName());
     m_labelVertes->setText("    Vertes: " +
-                           QString::number(model_->points_array_.size()));
-    m_labelPolygons->setText("    Polygons: " +
-                             QString::number(model_->poligons_.size() *
-                                             model_->points_array_.size()));
+                           QString::number(model_->get_points_array().size()));
+    m_labelPolygons->setText(
+        "    Polygons: " + QString::number(modelviewer_->Polygons().size() *
+                                           modelviewer_->PointsArray().size()));
 
     // m_labelVertes->setText("    Vertes: " +
     //                        QString::number(m_points.count_points));
@@ -418,10 +420,12 @@ void MyWidgetOPenGL::updateInfoObject() {
 void MyWidgetOPenGL::changeRotate() {
   if (m_isValid) {
     if (m_rotateX) {
-      model_->TurnObj(m_rotateX, 2);
+      modelviewer_->TurnObjectX(m_rotateX);
+      // model_->TurnObj(m_rotateX, 2);
     }
     if (m_rotateY) {
-      model_->TurnObj(m_rotateY, 1);
+      modelviewer_->TurnObjectY(m_rotateY);
+      // model_->TurnObj(m_rotateY, 1);
     }
     update();
   }
@@ -645,7 +649,7 @@ void MyWidgetOPenGL::drawObjects(e_typeDraw type_) {
   auto type = type_ == 0 ? GL_LINE_LOOP : GL_POINTS;
   double x, y, z;
 
-  size_t n_polygons = model_->poligons_.size();
+  size_t n_polygons = modelviewer_->Polygons().size();
   for (size_t i = 1; i < n_polygons; i++) {
     glBegin(type);
     if (type_ == TYPE_LINES)
@@ -653,10 +657,10 @@ void MyWidgetOPenGL::drawObjects(e_typeDraw type_) {
     else
       glColor3f(m_pointColor.redF(), m_pointColor.greenF(),
                 m_pointColor.blueF());
-    for (size_t j = 0; j < model_->poligons_[i].size(); j++) {
-      x = model_->points_array_[model_->poligons_[i][j]].x;
-      y = model_->points_array_[model_->poligons_[i][j]].y;
-      z = model_->points_array_[model_->poligons_[i][j]].z;
+    for (size_t j = 0; j < modelviewer_->Polygons()[i].size(); j++) {
+      x = modelviewer_->PointsArray()[modelviewer_->Polygons()[i][j]].x;
+      y = modelviewer_->PointsArray()[modelviewer_->Polygons()[i][j]].y;
+      z = modelviewer_->PointsArray()[modelviewer_->Polygons()[i][j]].z;
 
       glVertex3f(x, y, z);
     }
@@ -852,14 +856,14 @@ void MyWidgetOPenGL::drawSquare() {
   glColor3f(m_pointColor.redF(), m_pointColor.greenF(), m_pointColor.blueF());
   double x, y, z, del = m_perspective == 4 ? 9 : 23;
 
-  del = model_->max_size_ / del * m_pointSize / 20;
+  del = model_->get_max_size() / del * m_pointSize / 20;
 
-  for (size_t i = 1; i < model_->poligons_.size(); i++) {
-    for (size_t j = 0; j < model_->poligons_[i].size(); j++) {
+  for (size_t i = 1; i < model_->get_polygons().size(); i++) {
+    for (size_t j = 0; j < model_->get_polygons()[i].size(); j++) {
       glBegin(GL_POLYGON);
-      x = model_->points_array_[model_->poligons_[i][j]].x;
-      y = model_->points_array_[model_->poligons_[i][j]].y;
-      z = model_->points_array_[model_->poligons_[i][j]].z;
+      x = model_->get_points_array()[model_->get_polygons()[i][j]].x;
+      y = model_->get_points_array()[model_->get_polygons()[i][j]].y;
+      z = model_->get_points_array()[model_->get_polygons()[i][j]].z;
       glVertex3f(x - del, y - del, z);
       glVertex3f(x + del, y - del, z);
       glVertex3f(x + del, y + del, z);

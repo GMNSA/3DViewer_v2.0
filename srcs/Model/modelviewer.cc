@@ -17,31 +17,31 @@ void ModelViewer::set_rotate_buff_x(int const &rotate_x) { (void)rotate_x; }
 void ModelViewer::set_rotate_buff_y(int const &rotate_y) { (void)rotate_y; }
 void ModelViewer::set_rotate_buff_z(int const &rotate_z) { (void)rotate_z; }
 
-int ModelViewer::get_rotate_buff_x() const { return m_rotateX; }
-int ModelViewer::get_rotate_buff_y() const { return m_rotateY; }
-int ModelViewer::get_rotate_buff_z() const { return m_rotateZ; }
+int ModelViewer::get_rotate_buff_x() const { return rotate_x_; }
+int ModelViewer::get_rotate_buff_y() const { return rotate_y_; }
+int ModelViewer::get_rotate_buff_z() const { return rotate_z_; }
 
 // ----------------------------------------------------------------------------
 
-void ModelViewer::MoveRotation(e_moveRotatinoType direction, float value) {
+void ModelViewer::MoveRotation(MoveRotationType direction, float value) {
   Q_UNUSED(direction);
   Q_UNUSED(value);
   float tmp = 0;
   int isError = 0;
 
-  if (m_isValid) {
+  if (is_valid_) {
     switch (direction) {
       case MOVE_ROTATE_X:
-        tmp = m_rotateBeforeX - value;
-        m_rotateBeforeX = value;
+        tmp = rotate_before_x_ - value;
+        rotate_before_x_ = value;
         break;
       case MOVE_ROTATE_Y:
-        tmp = m_rotateBeforeY - value;
-        m_rotateBeforeY = value;
+        tmp = rotate_before_y_ - value;
+        rotate_before_y_ = value;
         break;
       case MOVE_ROTATE_Z:
-        tmp = m_rotateBeforeZ - value;
-        m_rotateBeforeZ = value;
+        tmp = rotate_before_z_ - value;
+        rotate_before_z_ = value;
         break;
       default:
         isError = 1;
@@ -57,8 +57,8 @@ void ModelViewer::MoveRotation(e_moveRotatinoType direction, float value) {
 
 // ----------------------------------------------------------------------------
 
-void ModelViewer::MoveDirection(e_moveType direction, float value) {
-  value = value * model_->max_size_ / 99;
+void ModelViewer::MoveDirection(MoveType direction, float value) {
+  value = value * model_->get_max_size() / 99;
 
   Point t;
   float tmp = 0;
@@ -66,19 +66,19 @@ void ModelViewer::MoveDirection(e_moveType direction, float value) {
 
   switch (direction) {
     case MOVE_X:
-      tmp = m_moveBeforeX - value;
+      tmp = move_before_x_ - value;
       t = {tmp, 0, 0};
-      m_moveBeforeX = value;
+      move_before_x_ = value;
       break;
     case MOVE_Y:
-      tmp = m_moveBeforeY - value;
+      tmp = move_before_y_ - value;
       t = {0, tmp, 0};
-      m_moveBeforeY = value;
+      move_before_y_ = value;
       break;
     case MOVE_Z:
-      tmp = m_moveBeforeZ - value;
+      tmp = move_before_z_ - value;
       t = {0, 0, tmp};
-      m_moveBeforeZ = value;
+      move_before_z_ = value;
       break;
     default:
       isError = 1;
@@ -90,5 +90,61 @@ void ModelViewer::MoveDirection(e_moveType direction, float value) {
   }
   // update();
 }
+
+// ----------------------------------------------------------------------------
+
+void ModelViewer::PolygonsClear() { model_->PolygonsClear(); }
+
+// ----------------------------------------------------------------------------
+
+void ModelViewer::Parse(QString const &str) {
+  model_->Parse(str.toStdString());
+}
+
+// ----------------------------------------------------------------------------
+
+ErrorType ModelViewer::Error() { return model_->get_error(); }
+
+// ----------------------------------------------------------------------------
+
+double ModelViewer::MaxSizePerpective() { return model_->get_max_size(); }
+
+// ----------------------------------------------------------------------------
+
+std::vector<Point> const &ModelViewer::PointsArray() {
+  return model_->get_points_array();
+}
+
+// ----------------------------------------------------------------------------
+
+std::vector<std::vector<int>> const &ModelViewer::Polygons() {
+  return model_->get_polygons();
+}
+
+// ----------------------------------------------------------------------------
+
+void ModelViewer::TurnObjectX(double const &rotate) {
+  model_->TurnObj(rotate, 2);
+}
+
+// ----------------------------------------------------------------------------
+
+void ModelViewer::TurnObjectY(double const &rotate) {
+  model_->TurnObj(rotate, 1);
+}
+
+// ----------------------------------------------------------------------------
+
+void ModelViewer::TurnObjectZ(double const &rotate) {
+  model_->TurnObj(rotate, 3);
+}
+
+// ----------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------
 
 }  // namespace s21
