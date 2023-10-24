@@ -3,6 +3,7 @@
 
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QList>
 #include <QPoint>
 #include <QString>
 
@@ -43,6 +44,14 @@ class ModelViewer : public IModelViewer {
   void TurnObjectY(double const &rotate) override;
   void TurnObjectZ(double const &rotate) override;
 
+  void ScaleObject(double const &scale) override;
+
+  // -- -- -- --
+
+  void Attach(IWidgetOpenglObserved *observer) override;
+  void Detach(IWidgetOpenglObserved *observer) override;
+  void NotifyWidgetOpengl() override;
+
  private:
   Model *model_;
 
@@ -78,6 +87,8 @@ class ModelViewer : public IModelViewer {
   bool m_initialized;
   QPoint m_Pos;
   double m_sizePerspective;
+
+  QList<IWidgetOpenglObserved *> list_widget_opengl_;
 };
 
 }  // namespace s21

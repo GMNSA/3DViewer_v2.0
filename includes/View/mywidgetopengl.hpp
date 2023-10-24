@@ -12,8 +12,8 @@
 #define RGB_MIN 1
 #define RGB_MAX 255
 
-#include "../Model/model.hpp"
 #include "../Model/modelviewer.hpp"
+#include "./iwidgetopenglobserved.hpp"
 
 namespace s21 {
 
@@ -38,8 +38,18 @@ typedef enum e_typeDraw {
 
 // -------------------------------------------------
 
-class MyWidgetOPenGL : public QOpenGLWidget, protected QOpenGLFunctions {
+class MyWidgetOPenGL : public QOpenGLWidget,
+                       protected QOpenGLFunctions,
+                       public IWidgetOpenglObserved {
   Q_OBJECT
+  Q_INTERFACES(s21::IWidgetOpenglObserved)
+
+ signals:
+  // void on_moveChange(float value_);
+  void on_changeRotate();
+  void on_scaleStep();
+  void on_changeColorGifTime(int isBlack_);
+  void on_changePerperpertiveRdb(int value);
 
  public:
   explicit MyWidgetOPenGL(QWidget *parent = nullptr);
@@ -98,12 +108,7 @@ class MyWidgetOPenGL : public QOpenGLWidget, protected QOpenGLFunctions {
   // void moveRotation(e_moveRotatinoType direction_, float value_);
   int countNumber(int number);
 
- signals:
-  // void on_moveChange(float value_);
-  void on_changeRotate();
-  void on_scaleStep();
-  void on_changeColorGifTime(int isBlack_);
-  void on_changePerperpertiveRdb(int value);
+  void UpdateWidgetOpengGl() override;
 
  protected:
   void initializeGL() override;
@@ -118,6 +123,27 @@ class MyWidgetOPenGL : public QOpenGLWidget, protected QOpenGLFunctions {
 
   // QObject interface
   bool eventFilter(QObject *watched, QEvent *event) override;
+
+ private:
+  void connectionsConfiguration();
+  void qColorToRGB(const QColor &c, float &r, float &g, float &b) const;
+  int normalize_0_1(float val, float min, float max) const;
+
+  int updateData();
+  void updateInfoObject();
+
+  void changeRotate();
+  void updatePerspective();
+
+  void defaultConfig();
+  void defaultConfigSimple();
+  bool loadConfig(QString path_ = "");
+  bool writeToFileConfig(QString path_ = "");
+
+  void drawObjects(e_typeDraw type_);
+  void drawInfo();
+  void clearInfo();
+  void drawSquare();
 
  private:
   bool m_isValid;
@@ -164,31 +190,9 @@ class MyWidgetOPenGL : public QOpenGLWidget, protected QOpenGLFunctions {
   bool m_isMouse;
   QColor m_tmpColor;
 
-  Model *model_;
   ModelViewer *modelviewer_;
   // Point m_points;
   // matrix_poligon m_polygons;
-
- private:
-  void connectionsConfiguration();
-  void qColorToRGB(const QColor &c, float &r, float &g, float &b) const;
-  int normalize_0_1(float val, float min, float max) const;
-
-  int updateData();
-  void updateInfoObject();
-
-  void changeRotate();
-  void updatePerspective();
-
-  void defaultConfig();
-  void defaultConfigSimple();
-  bool loadConfig(QString path_ = "");
-  bool writeToFileConfig(QString path_ = "");
-
-  void drawObjects(e_typeDraw type_);
-  void drawInfo();
-  void clearInfo();
-  void drawSquare();
 };
 
 }  // namespace s21

@@ -4,21 +4,14 @@
 #include <QString>
 #include <vector>
 
+#include "./customtypes.hpp"
+
 namespace s21 {
+
+class IWidgetOpenglObserved;
 
 enum class ErrorType;
 struct Point;
-
-typedef enum MoveRotationType {
-  MOVE_ROTATE_Y = 1,
-  MOVE_ROTATE_X,
-  MOVE_ROTATE_Z,
-  MOVE_ROTATE_END
-} MoveRotationType;
-
-// -- -- -- --
-
-typedef enum MoveType { MOVE_X = 0, MOVE_Y, MOVE_Z, MOVE_END } MoveType;
 
 // ****************************************************************************
 
@@ -53,6 +46,14 @@ class IModelViewer {
   virtual void TurnObjectX(double const &rotate) = 0;
   virtual void TurnObjectY(double const &rotate) = 0;
   virtual void TurnObjectZ(double const &rotate) = 0;
+
+  virtual void ScaleObject(double const &scale) = 0;
+
+  // -- -- -- --
+
+  virtual void Attach(IWidgetOpenglObserved *observer) = 0;
+  virtual void Detach(IWidgetOpenglObserved *observer) = 0;
+  virtual void NotifyWidgetOpengl() = 0;
 };
 
 }  // namespace s21

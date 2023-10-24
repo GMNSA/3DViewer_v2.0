@@ -141,10 +141,34 @@ void ModelViewer::TurnObjectZ(double const &rotate) {
 
 // ----------------------------------------------------------------------------
 
-// ----------------------------------------------------------------------------
+void ModelViewer::ScaleObject(double const &scale) { model_->ScaleObj(scale); }
 
 // ----------------------------------------------------------------------------
 
+void ModelViewer::Attach(IWidgetOpenglObserved *observer) {
+  list_widget_opengl_.push_back(observer);
+}
+
+// ----------------------------------------------------------------------------
+
+void ModelViewer::Detach(IWidgetOpenglObserved *observer) {
+  list_widget_opengl_.removeOne(observer);
+}
+
+// ----------------------------------------------------------------------------
+
+void ModelViewer::NotifyWidgetOpengl() {
+  auto iter = list_widget_opengl_.begin();
+  auto iter_end = list_widget_opengl_.end();
+
+  while (iter != iter_end) {
+    // (*iter)->UpdateWidgetOpengGl();
+    // ++iter;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
 }  // namespace s21

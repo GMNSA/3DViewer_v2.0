@@ -44,7 +44,6 @@ MyWidgetOPenGL::MyWidgetOPenGL(QWidget *parent)
       m_layoutH(new QHBoxLayout(this)),
       m_isMouse(false),
       m_tmpColor({152, 84, 93}) {
-  model_ = new Model;
   modelviewer_ = new ModelViewer;
   defaultConfigSimple();
   // m_points.points = NULL;
@@ -66,8 +65,6 @@ MyWidgetOPenGL::~MyWidgetOPenGL() {
   // if (m_points.points)
   //   free(m_points.points);
   writeToFileConfig("./config.json");
-
-  if (model_) delete model_;
 
   if (modelviewer_) delete modelviewer_;
 }
@@ -180,7 +177,7 @@ bool MyWidgetOPenGL::eventFilter(QObject *watched, QEvent *event) {
 void MyWidgetOPenGL::setPointSize(double newPointSize) {
   if (newPointSize >= m_minPointSize && newPointSize <= m_maxPointSize) {
     m_pointSize = newPointSize;
-    update();
+    // !! update();
   }
 }
 
@@ -189,7 +186,7 @@ void MyWidgetOPenGL::setPointSize(double newPointSize) {
 void MyWidgetOPenGL::setPerspective(int value_) {
   if (m_perspective != value_) {
     m_perspective = value_;
-    update();
+    // !! update();
   } else {
   }
 }
@@ -205,21 +202,21 @@ void MyWidgetOPenGL::turnOffMouse() { m_isMouse = false; }
 
 void MyWidgetOPenGL::setLineType(int newLineType) {
   m_lineType = newLineType;
-  update();
+  // !! update();
 }
 
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::setPointType(int newPointType) {
   m_pointType = newPointType;
-  update();
+  // !! update();
 }
 
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::setLineWidth(double newLineWidth) {
   m_lineWidth = newLineWidth;
-  update();
+  // !! update();
 }
 
 // -------------------------------------------------------
@@ -229,7 +226,7 @@ void MyWidgetOPenGL::setLineColor(int value_) {
     m_lineColor.setHsl(255, 255, 255);
   else
     m_lineColor.setHsl(value_, 80, 80);
-  update();
+  // !! update();
 }
 
 // -------------------------------------------------------
@@ -239,7 +236,7 @@ void MyWidgetOPenGL::setPointColor(int value_) {
     m_pointColor.setHsl(255, 255, 255);
   else
     m_pointColor.setHsl(value_, 80, 80);
-  update();
+  // !! update();
 }
 
 // -------------------------------------------------------
@@ -258,7 +255,7 @@ void MyWidgetOPenGL::setBackgroundColor(int value_) {
     m_labelPolygons->setStyleSheet("QLabel { color : black; }");
     emit on_changeColorGifTime(1);
   }
-  update();
+  // !! update();
 }
 
 // -------------------------------------------------------
@@ -402,7 +399,7 @@ void MyWidgetOPenGL::updateInfoObject() {
 
     m_labelName->setText("Name: " + info.baseName());
     m_labelVertes->setText("    Vertes: " +
-                           QString::number(model_->get_points_array().size()));
+                           QString::number(modelviewer_->PointsArray().size()));
     m_labelPolygons->setText(
         "    Polygons: " + QString::number(modelviewer_->Polygons().size() *
                                            modelviewer_->PointsArray().size()));
@@ -421,13 +418,11 @@ void MyWidgetOPenGL::changeRotate() {
   if (m_isValid) {
     if (m_rotateX) {
       modelviewer_->TurnObjectX(m_rotateX);
-      // model_->TurnObj(m_rotateX, 2);
     }
     if (m_rotateY) {
       modelviewer_->TurnObjectY(m_rotateY);
-      // model_->TurnObj(m_rotateY, 1);
     }
-    update();
+    // !! update();
   }
 }
 
@@ -435,7 +430,7 @@ void MyWidgetOPenGL::changeRotate() {
 
 void MyWidgetOPenGL::lineWidth(GLfloat nWidth_) {
   m_widthLine = nWidth_ / 10;
-  update();
+  // !! update();
 }
 
 // -------------------------------------------------------
@@ -687,11 +682,11 @@ void MyWidgetOPenGL::incrementScale() {
   if (m_isValid) {
     if (m_countScale < m_maxScale) {
       ++m_countScale;
-      model_->ScaleObj(1.05);
+      modelviewer_->ScaleObject(1.05);
       // scale_obj(1.05, &m_points);
       emit on_scaleStep();
     }
-    update();
+    // !! update();
   }
 }
 
@@ -701,11 +696,11 @@ void MyWidgetOPenGL::decrementScale() {
   if (m_isValid) {
     if (m_countScale > m_minScale) {
       --m_countScale;
-      model_->ScaleObj(0.95);
+      modelviewer_->ScaleObject(0.95);
       // scale_obj(0.95, &m_points);
       emit on_scaleStep();
     }
-    update();
+    // !! update();
   }
 }
 
@@ -826,6 +821,13 @@ int MyWidgetOPenGL::countNumber(int number_) {
 
 // -------------------------------------------------------
 
+void MyWidgetOPenGL::UpdateWidgetOpengGl() {
+  // TODO(_who): release
+  paintGL();
+}
+
+// -------------------------------------------------------
+
 void MyWidgetOPenGL::updatePerspective() {
   if (m_perspective == 1) {
     glLoadIdentity();
@@ -856,14 +858,14 @@ void MyWidgetOPenGL::drawSquare() {
   glColor3f(m_pointColor.redF(), m_pointColor.greenF(), m_pointColor.blueF());
   double x, y, z, del = m_perspective == 4 ? 9 : 23;
 
-  del = model_->get_max_size() / del * m_pointSize / 20;
+  del = modelviewer_->MaxSizePerpective() / del * m_pointSize / 20;
 
-  for (size_t i = 1; i < model_->get_polygons().size(); i++) {
-    for (size_t j = 0; j < model_->get_polygons()[i].size(); j++) {
+  for (size_t i = 1; i < modelviewer_->Polygons().size(); i++) {
+    for (size_t j = 0; j < modelviewer_->Polygons()[i].size(); j++) {
       glBegin(GL_POLYGON);
-      x = model_->get_points_array()[model_->get_polygons()[i][j]].x;
-      y = model_->get_points_array()[model_->get_polygons()[i][j]].y;
-      z = model_->get_points_array()[model_->get_polygons()[i][j]].z;
+      x = modelviewer_->PointsArray()[modelviewer_->Polygons()[i][j]].x;
+      y = modelviewer_->PointsArray()[modelviewer_->Polygons()[i][j]].y;
+      z = modelviewer_->PointsArray()[modelviewer_->Polygons()[i][j]].z;
       glVertex3f(x - del, y - del, z);
       glVertex3f(x + del, y - del, z);
       glVertex3f(x + del, y + del, z);

@@ -34,8 +34,10 @@ set(PROJECT_SOURCES
 
 set(PROJECT_HEADERS
         includes/View/mainwindow.hpp
+        includes/View/iwidgetopenglobserved.hpp
         includes/View/mywidgetopengl.hpp
 
+        includes/Model/customtypes.hpp
         includes/Model/model.hpp
         includes/Model/modelviewer.hpp
 )

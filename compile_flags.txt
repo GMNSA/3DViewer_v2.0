@@ -3,6 +3,9 @@
 -Wextra
 -std=c++20
 -xc++
+-I./includes/View/
+-I./includes/Model/
+-I./includes/Controller/
 -I./ui/
 -I/usr/lib/qt6/mkspecs/linux-clang
 -I/usr/lib/qt/mkspecs/linux-clang
