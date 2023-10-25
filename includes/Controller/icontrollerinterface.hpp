@@ -1,13 +1,15 @@
 #ifndef INCLUDES_CONTROLLER_ICONTROLLER_HPP_
 #define INCLUDES_CONTROLLER_ICONTROLLER_HPP_
 
+#include <QtPlugin>
+
 #include "../Model/customtypes.hpp"
 
 namespace s21 {
 
-class IController {
+class IControllerInterface {
  public:
-  virtual ~IController() {}
+  virtual ~IControllerInterface() {}
 
   virtual void SetRotateBuffY(int const &value) = 0;
   virtual void SetRotateBuffX(int const &value) = 0;
@@ -23,5 +25,7 @@ class IController {
 };
 
 }  // namespace s21
+
+Q_DECLARE_INTERFACE(s21::IControllerInterface, "s21_IControllerInterface");
 
 #endif  // INCLUDES_CONTROLLER_ICONTROLLER_HPP_

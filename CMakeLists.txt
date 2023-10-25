@@ -27,6 +27,8 @@ set(PROJECT_SOURCES
         srcs/View/mainwindow.cc
         srcs/View/mywidgetopengl.cc
 
+        srcs/Controller/controller.cc
+
         srcs/Model/model.cpp
         srcs/Model/modelviewer.cc
         ${QTPROPERTY_BROWSER_SOURCES}
@@ -34,8 +36,11 @@ set(PROJECT_SOURCES
 
 set(PROJECT_HEADERS
         includes/View/mainwindow.hpp
-        includes/View/iwidgetopenglobserved.hpp
+        includes/View/iwidgetopenglobserver.hpp
         includes/View/mywidgetopengl.hpp
+
+        includes/Controller/icontrollerinterface.hpp
+        includes/Controller/controller.hpp
 
         includes/Model/customtypes.hpp
         includes/Model/model.hpp

@@ -8,7 +8,7 @@
 
 namespace s21 {
 
-class IWidgetOpenglObserved;
+class IWidgetOpenglgObserver;
 
 enum class ErrorType;
 struct Point;
@@ -51,9 +51,13 @@ class IModelViewer {
 
   // -- -- -- --
 
-  virtual void Attach(IWidgetOpenglObserved *observer) = 0;
-  virtual void Detach(IWidgetOpenglObserved *observer) = 0;
+  virtual void Attach(IWidgetOpenglgObserver *observer) = 0;
+  virtual void Detach(IWidgetOpenglgObserver *observer) = 0;
   virtual void NotifyWidgetOpengl() = 0;
+
+  // virtual void Attach(IMainWindowObserver *observer) = 0;
+  // virtual void Detach(IMainWindowObserver *observer) = 0;
+  // virtual void NotifyMainWindow() = 0;
 };
 
 }  // namespace s21

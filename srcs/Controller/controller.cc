@@ -2,10 +2,16 @@
 
 namespace s21 {
 
-Controller::Controller() {}
+Controller::Controller(IModelViewer *model) : model_(model) {
+  if (!(view_ = new MainWindow(this, model_))) exit(-1);
+
+  view_->show();
+}
+
+// ----------------------------------------------------------------------------
 
 Controller::~Controller() {
-  // TODO(_who): remove
+  if (view_) delete view_;
 }
 
 // ----------------------------------------------------------------------------

@@ -145,13 +145,13 @@ void ModelViewer::ScaleObject(double const &scale) { model_->ScaleObj(scale); }
 
 // ----------------------------------------------------------------------------
 
-void ModelViewer::Attach(IWidgetOpenglObserved *observer) {
+void ModelViewer::Attach(IWidgetOpenglgObserver *observer) {
   list_widget_opengl_.push_back(observer);
 }
 
 // ----------------------------------------------------------------------------
 
-void ModelViewer::Detach(IWidgetOpenglObserved *observer) {
+void ModelViewer::Detach(IWidgetOpenglgObserver *observer) {
   list_widget_opengl_.removeOne(observer);
 }
 

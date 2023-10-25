@@ -48,8 +48,8 @@ class ModelViewer : public IModelViewer {
 
   // -- -- -- --
 
-  void Attach(IWidgetOpenglObserved *observer) override;
-  void Detach(IWidgetOpenglObserved *observer) override;
+  void Attach(IWidgetOpenglgObserver *observer) override;
+  void Detach(IWidgetOpenglgObserver *observer) override;
   void NotifyWidgetOpengl() override;
 
  private:
@@ -88,7 +88,7 @@ class ModelViewer : public IModelViewer {
   QPoint m_Pos;
   double m_sizePerspective;
 
-  QList<IWidgetOpenglObserved *> list_widget_opengl_;
+  QList<IWidgetOpenglgObserver *> list_widget_opengl_;
 };
 
 }  // namespace s21

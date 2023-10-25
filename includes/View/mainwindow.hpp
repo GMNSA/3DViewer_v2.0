@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QMainWindow>
 
+#include "../Controller/icontrollerinterface.hpp"
 #include "../lib/QtGifImage/includes/gifcreator.h"
 #include "./mywidgetopengl.hpp"
 
@@ -18,7 +19,8 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
  public:
-  explicit MainWindow(QWidget *parent = nullptr);
+  MainWindow(IControllerInterface *controller, IModelViewer *model,
+             QWidget *parent = nullptr);
   ~MainWindow();
 
  signals:
@@ -54,6 +56,8 @@ class MainWindow : public QMainWindow {
 
  private:
   Ui::MainWindow *ui;
+  IControllerInterface *controller_;
+  IModelViewer *model_;
 
   MyWidgetOPenGL *m_myWidget;
 

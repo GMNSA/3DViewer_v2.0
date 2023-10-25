@@ -13,7 +13,7 @@
 #define RGB_MAX 255
 
 #include "../Model/modelviewer.hpp"
-#include "./iwidgetopenglobserved.hpp"
+#include "./iwidgetopenglobserver.hpp"
 
 namespace s21 {
 
@@ -40,9 +40,9 @@ typedef enum e_typeDraw {
 
 class MyWidgetOPenGL : public QOpenGLWidget,
                        protected QOpenGLFunctions,
-                       public IWidgetOpenglObserved {
+                       public IWidgetOpenglObserver {
   Q_OBJECT
-  Q_INTERFACES(s21::IWidgetOpenglObserved)
+  Q_INTERFACES(s21::IWidgetOpenglObserver)
 
  signals:
   // void on_moveChange(float value_);

@@ -18,9 +18,12 @@
 namespace s21 {
 
 // m_gif(new QGifImage),
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(IControllerInterface *controller, IModelViewer *model,
+                       QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
+      controller_(controller),
+      model_(model),
       m_myWidget(new MyWidgetOPenGL(this)),
       m_isPositiveHorizontal(1),
       m_isPositiveVertical(1),
