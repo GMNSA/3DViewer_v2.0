@@ -24,13 +24,14 @@ MainWindow::MainWindow(IControllerInterface *controller, IModelViewer *model,
       ui(new Ui::MainWindow),
       controller_(controller),
       model_(model),
-      m_myWidget(new MyWidgetOPenGL(this)),
+      m_myWidget(new MyWidgetOPenGL(controller, model, this)),
       m_isPositiveHorizontal(1),
       m_isPositiveVertical(1),
       m_gif(new GifCreator(m_myWidget)),
       m_timerGif(new QTimer(this)),
       m_labelGifTime(new QLabel(m_myWidget)) {
   ui->setupUi(this);
+  model_->Attach(qobject_cast<IMainWindowObserver *>(this));
 
   S21Matrix matrix(3, 3);
   qDebug() << "GET COLS: " << matrix.GetCols();
@@ -59,35 +60,51 @@ MainWindow::~MainWindow() { delete ui; }
 
 // -------------------------------------------------------
 
+void MainWindow::Update() {
+  qDebug() << "Update main window";
+  // m_myWidget->updateInfoObject();
+  changePerperpertiveRdb(model_->get_perspective());
+  ui->lineEdit_scale->setText(QString::number(model_->get_scale()));
+  // TODO:(_who) release
+}
+
+// -------------------------------------------------------
+
 void MainWindow::openFileDialog() {
-  QString fileName = QFileDialog::getOpenFileName(
+  QString filename = QFileDialog::getOpenFileName(
       this, tr("Open Object"), "./objects/", tr("Image Files (*.obj)"));
-  m_myWidget->setFileNameObject(fileName);
-  m_myWidget->update();
+  model_->OpenFileObject(filename);
+
+  // m_myWidget->setFileNameObject(filename);
+  // m_myWidget->update();
   qDebug() << "open";
 }
 
 // -------------------------------------------------------
 
-void MainWindow::rotateX(int value_) {
-  Q_UNUSED(value_);
-  m_myWidget->rotateX(value_);
+void MainWindow::rotateX(int value) {
+  Q_UNUSED(value)
+  // m_myWidget->rotateX(value_);
+  // TODO(_who): change rotate -> change buff rotate (safe)
+
+  // qDebug() << "Rotate X";
+  controller_->MoveRotationX(value);
   changeRotateSliders();
 }
 
 // -------------------------------------------------------
 
-void MainWindow::rotateY(int value_) {
-  Q_UNUSED(value_);
-  m_myWidget->rotateY(value_);
+void MainWindow::rotateY(int value) {
+  // m_myWidget->rotateY(value_);
+  controller_->MoveRotationY(value);
   changeRotateSliders();
 }
 
 // -------------------------------------------------------
 
-void MainWindow::rotateZ(int value_) {
-  Q_UNUSED(value_);
-  m_myWidget->rotateZ(value_);
+void MainWindow::rotateZ(int value) {
+  // m_myWidget->rotateZ(value_);
+  controller_->MoveRotationZ(value);
   changeRotateSliders();
 }
 
@@ -130,9 +147,15 @@ void MainWindow::connectsConfiguration() {
 // -------------------------------------------------------
 
 void MainWindow::changeRotateSliders() {
-  int x = (m_myWidget->rotateBuffX() % ROTATE_VALUE);
-  int y = (m_myWidget->rotateBuffY() % ROTATE_VALUE);
-  int z = (m_myWidget->rotateBuffZ() % ROTATE_VALUE);
+  int x = (model_->get_rotate_buff_x() % ROTATE_VALUE);
+  int y = (model_->get_rotate_buff_y() % ROTATE_VALUE);
+  int z = (model_->get_rotate_buff_z() % ROTATE_VALUE);
+  // qDebug() << "x: " << x;
+  // qDebug() << "y: " << y;
+  // qDebug() << "z: " << z;
+  // int x = (m_myWidget->rotateBuffX() % ROTATE_VALUE);
+  // int y = (m_myWidget->rotateBuffY() % ROTATE_VALUE);
+  // int z = (m_myWidget->rotateBuffZ() % ROTATE_VALUE);
   ui->slider_x->setValue(x);
   ui->slider_y->setValue(y);
   ui->slider_z->setValue(z);
@@ -189,10 +212,26 @@ void MainWindow::closeApp() { close(); }
 
 // -------------------------------------------------------
 
-void MainWindow::lineScaleChange(QString value_) {
-  Q_UNUSED(value_);
+void MainWindow::lineScaleChange(QString value) {
+  // m_myWidget->lineScaleChange(value_.toInt());
 
-  m_myWidget->lineScaleChange(value_.toInt());
+  int tmp_value = value.toInt();
+  bool is_decrement = 0;
+  auto n_scale = model_->get_scale();
+  auto min_scale = model_->get_min_scale();
+  auto max_scale = model_->get_max_scale();
+
+  is_decrement = n_scale > tmp_value ? 1 : 0;
+
+  if (is_decrement && tmp_value >= min_scale) {
+    while (n_scale != tmp_value) controller_->DecrementScale();
+  } else if (!is_decrement && tmp_value <= max_scale) {
+    while (n_scale != tmp_value) controller_->IncremenetScale();
+  }
+  // if (tmp_value >= min_scale && tmp_value <= max_scale) {
+  //   n_scale = tmp_value;
+  //   emit on_scaleStep();
+  // }
 }
 
 // -------------------------------------------------------
@@ -201,6 +240,7 @@ void MainWindow::changeBackgroundColor(int value_) {
   Q_UNUSED(value_);
 
   m_myWidget->setBackgroundColor(value_);
+  // TODO:(_who) change
 }
 
 // -------------------------------------------------------
@@ -243,18 +283,19 @@ void MainWindow::setPointType(int value_) {
 
 // -------------------------------------------------------
 
-void MainWindow::moveObject(int type_, int value_) {
-  Q_UNUSED(type_);
-  Q_UNUSED(value_);
-  if (type_ == 1) {
-    m_myWidget->moveX((value_));
-    ui->lineEdit_moveX->setText(QString::number(value_));
-  } else if (type_ == 2) {
-    m_myWidget->moveY((value_));
-    ui->lineEdit_moveY->setText(QString::number(value_));
-  } else if (type_ == 3) {
-    m_myWidget->moveZ((value_));
-    ui->lineEdit_moveZ->setText(QString::number(value_));
+void MainWindow::moveObject(int type, int value) {
+  if (type == MOVE_X) {
+    controller_->MoveDirectionX(value);
+    // m_myWidget->moveX((value_));
+    ui->lineEdit_moveX->setText(QString::number(value));
+  } else if (type == MOVE_Y) {
+    // m_myWidget->moveY((value_));
+    controller_->MoveDirectionY(value);
+    ui->lineEdit_moveY->setText(QString::number(value));
+  } else if (type == MOVE_Z) {
+    // m_myWidget->moveZ((value_));
+    controller_->MoveDirectionZ(value);
+    ui->lineEdit_moveZ->setText(QString::number(value));
   }
 }
 
@@ -314,29 +355,29 @@ void MainWindow::startGif() {
 void MainWindow::connectsMoves() {
   connect(ui->hSlider_moveX, &QSlider::valueChanged, this, [&](int value) {
     ui->lineEdit_moveX->setText(QString::number(value));
-    moveObject(1, value);
+    moveObject(MOVE_X, value);
   });
 
   connect(ui->hSlider_moveY, &QSlider::valueChanged, this, [&](int value) {
     ui->lineEdit_moveY->setText(QString::number(value));
-    moveObject(2, value);
+    moveObject(MOVE_Y, value);
   });
 
   connect(ui->hSlider_moveZ, &QSlider::valueChanged, this, [&](int value) {
     ui->lineEdit_moveZ->setText(QString::number(value));
-    moveObject(3, value);
+    moveObject(MOVE_Z, value);
   });
 
   /* *****  ***** */
 
   connect(ui->lineEdit_moveX, &QLineEdit::textEdited, this,
-          [&](QString value) { moveObject(1, value.toInt()); });
+          [&](QString value) { moveObject(MOVE_X, value.toInt()); });
 
   connect(ui->lineEdit_moveY, &QLineEdit::textEdited, this,
-          [&](QString value) { moveObject(2, value.toInt()); });
+          [&](QString value) { moveObject(MOVE_Y, value.toInt()); });
 
   connect(ui->lineEdit_moveZ, &QLineEdit::textEdited, this,
-          [&](QString value) { moveObject(3, value.toInt()); });
+          [&](QString value) { moveObject(MOVE_ROTATE_Z, value.toInt()); });
 }
 
 // -------------------------------------------------------
@@ -354,8 +395,9 @@ void MainWindow::connectsRotate() {
 
   connect(ui->lineEdit_rotateZ, &QLineEdit::textEdited, this,
           [&](QString value) { rotateZ(value.toInt()); });
-  connect(m_myWidget, &MyWidgetOPenGL::on_changeRotate, this,
-          &MainWindow::changeRotateSliders);
+
+  // connect(m_myWidget, &MyWidgetOPenGL::on_changeRotate, this,
+  //         &MainWindow::changeRotateSliders);
 }
 
 // -------------------------------------------------------
@@ -397,9 +439,9 @@ void MainWindow::connectsScale() {
           [&]() { lineScaleChange(ui->lineEdit_scale->text()); });
 
   connect(ui->pb_scalePlus, &QPushButton::clicked, m_myWidget,
-          &MyWidgetOPenGL::incrementScale);
+          [&] { controller_->IncremenetScale(); });
   connect(ui->pb_scaleMinus, &QPushButton::clicked, m_myWidget,
-          &MyWidgetOPenGL::decrementScale);
+          [&] { controller_->DecrementScale(); });
 }
 
 // -------------------------------------------------------

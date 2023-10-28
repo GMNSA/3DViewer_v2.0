@@ -6,24 +6,70 @@
 #include <QList>
 #include <QPoint>
 #include <QString>
+#include <vector>
 
 #include "./imodelviewer.hpp"
 #include "./model.hpp"
 
 namespace s21 {
 
+typedef struct SettignsData {
+} SettingsData;
+
 class ModelViewer : public IModelViewer {
  public:
   ModelViewer();
   virtual ~ModelViewer();
 
-  void set_rotate_buff_x(int const &rotate_x) override;
-  void set_rotate_buff_y(int const &rotate_y) override;
-  void set_rotate_buff_z(int const &rotate_z) override;
+ public:  // -- OVERRIDE --
+  void set_rotate_x(int const &rotate) override;
+  void set_rotate_y(int const &rotate) override;
+  void set_rotate_z(int const &rotate) override;
+
+  int get_rotate_x() const override;
+  int get_rotate_y() const override;
+  int get_rotate_z() const override;
+
+  void set_rotate_buff_x(int const &rotate) override;
+  void set_rotate_buff_y(int const &rotate) override;
+  void set_rotate_buff_z(int const &rotate) override;
 
   int get_rotate_buff_x() const override;
   int get_rotate_buff_y() const override;
   int get_rotate_buff_z() const override;
+
+  void set_background_color(int const value_) override;
+  QColor get_background_color() const override;
+
+  int get_perspective() const override;
+  QString get_filename_object() const override;
+
+  bool get_is_valid() const override;
+
+  void set_line_type(LineType const &type) override;
+  LineType get_line_type() const override;
+
+  void set_point_type(PointType const &type) override;
+  PointType get_point_type() const override;
+  void set_point_size(double const &size) override;
+  double get_point_size() const override;
+  double get_point_size_max() const override;
+  double get_point_size_min() const override;
+
+  void set_line_width(double const &value) override;
+  double get_line_width() const override;
+
+  void set_scale(int const &value) override;
+  void set_max_scale(int const &value) override;
+  void set_min_scale(int const &value) override;
+
+  int get_scale() const override;
+  int get_max_scale() const override;
+  int get_min_scale() const override;
+
+  // -- -- -- --
+
+  void OpenFileObject(QString const &filename) override;
 
   // -- -- -- --
 
@@ -42,15 +88,34 @@ class ModelViewer : public IModelViewer {
 
   void TurnObjectX(double const &rotate) override;
   void TurnObjectY(double const &rotate) override;
-  void TurnObjectZ(double const &rotate) override;
+  // void TurnObjectZ(double const &rotate) override;
 
   void ScaleObject(double const &scale) override;
 
   // -- -- -- --
 
-  void Attach(IWidgetOpenglgObserver *observer) override;
-  void Detach(IWidgetOpenglgObserver *observer) override;
+  void Attach(IWidgetOpenglObserver *observer) override;
+  void Detach(IWidgetOpenglObserver *observer) override;
   void NotifyWidgetOpengl() override;
+  void NotifyWidgetOpenglInfo() override;
+
+  // -- -- -- --
+
+  void Attach(IMainWindowObserver *observer) override;
+  void Detach(IMainWindowObserver *observer) override;
+  void NotifyMainWindow() override;
+
+  void DefaultConfig();
+  void DefaultConfigSimple();
+
+  // -- -- -- --
+
+  bool WriteToFileConfig(QString path = "") override;
+  bool LoadConfig(QString path = "") override;
+
+ public:  // -- origin --
+  int CountNumber(int number_);
+  int UpdateData();
 
  private:
   Model *model_;
@@ -69,26 +134,31 @@ class ModelViewer : public IModelViewer {
   long double move_before_y_;
   long double move_before_z_;
 
-  QString m_fileNameObject;
+  QColor line_color_;
+  QColor point_color_;
+  QColor background_color_;
 
-  int m_lineType;
-  int m_perspective;
-  double m_lineWidth;
-  double m_pointSize;
-  double m_maxPointSize;
-  double m_minPointSize;
-  int m_pointType;  // 0 - none; 1 - circle; 2 - square
+  LineType line_type_;
+  int perspective_;
+  double line_width_;
+  double point_size_;
+  double max_point_size_;
+  double min_point_size_;
+  PointType point_type_;  // 0 - none; 1 - circle; 2 - square
 
-  long double m_widthLine;
-  int m_countScale;
-  int m_maxScale;
-  int m_minScale;
+  long double widht_line_;
+  int count_scale_;
+  int max_scale_;
+  int min_scale_;
 
-  bool m_initialized;
+  bool initialized_;
   QPoint m_Pos;
-  double m_sizePerspective;
+  double size_perspective_;
 
-  QList<IWidgetOpenglgObserver *> list_widget_opengl_;
+  QString filename_object_;
+
+  QList<IWidgetOpenglObserver *> list_widget_opengl_;
+  QList<IMainWindowObserver *> list_main_menu_;
 };
 
 }  // namespace s21

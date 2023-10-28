@@ -5,25 +5,9 @@
 #include <vector>
 
 #include "../../lib/MatrixLib//includes/matrix.hpp"
+#include "./customtypes.hpp"
 
 namespace s21 {
-
-enum class ErrorType { ERROR_OK = 0, ERROR_PARSE = 1 };
-
-struct Point {
-  double x = 0;
-  double y = 0;
-  double z = 0;
-
-  double& operator[](size_t number) {
-    if (number == 0)
-      return x;
-    else if (number == 1)
-      return y;
-    else
-      return z;
-  }
-};
 
 // ----------------------------------------------------------------------------
 

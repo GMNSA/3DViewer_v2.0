@@ -8,6 +8,7 @@
 
 #include "../Controller/icontrollerinterface.hpp"
 #include "../lib/QtGifImage/includes/gifcreator.h"
+#include "./imainmenuobserver.hpp"
 #include "./mywidgetopengl.hpp"
 
 QT_BEGIN_NAMESPACE namespace Ui { class MainWindow; }
@@ -15,15 +16,16 @@ QT_END_NAMESPACE
 
 namespace s21 {
 
-class MainWindow : public QMainWindow {
+class MainWindow : public QMainWindow, virtual public IMainWindowObserver {
   Q_OBJECT
+  Q_INTERFACES(s21::IMainWindowObserver)
 
  public:
   MainWindow(IControllerInterface *controller, IModelViewer *model,
              QWidget *parent = nullptr);
   ~MainWindow();
 
- signals:
+  void Update() override;
 
  private slots:
   void openFileDialog();

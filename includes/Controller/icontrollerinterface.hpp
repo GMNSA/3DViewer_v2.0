@@ -1,5 +1,5 @@
-#ifndef INCLUDES_CONTROLLER_ICONTROLLER_HPP_
-#define INCLUDES_CONTROLLER_ICONTROLLER_HPP_
+#ifndef INCLUDES_CONTROLLER_ICONTROLLERINTERFACE_HPP_
+#define INCLUDES_CONTROLLER_ICONTROLLERINTERFACE_HPP_
 
 #include <QtPlugin>
 
@@ -19,13 +19,31 @@ class IControllerInterface {
   virtual void MoveDirectionY(float value, MoveType direction = MOVE_Y) = 0;
   virtual void MoveDirectionZ(float value, MoveType direction = MOVE_Z) = 0;
 
-  virtual void MoveRotationX(float value, MoveType direction = MOVE_X) = 0;
-  virtual void MoveRotationY(float value, MoveType direction = MOVE_Y) = 0;
-  virtual void MoveRotationZ(float value, MoveType direction = MOVE_Z) = 0;
+  virtual void MoveRotationX(float value,
+                             MoveRotationType direction = MOVE_ROTATE_X) = 0;
+  virtual void MoveRotationY(float value,
+                             MoveRotationType direction = MOVE_ROTATE_Y) = 0;
+  virtual void MoveRotationZ(float value,
+                             MoveRotationType direction = MOVE_ROTATE_Z) = 0;
+
+  virtual void TurnObjectX(double const &rotate) = 0;
+  virtual void TurnObjectY(double const &rotate) = 0;
+
+  virtual void WriteConfig(QString const &filename = "") = 0;
+  virtual void LoadConfig(QString const &filename = "") = 0;
+
+  virtual void ChangeBackgroundColor(int const &value) = 0;
+
+  virtual void OpenFile(QString const &value) = 0;
+
+  virtual void IncremenetScale() = 0;
+  virtual void DecrementScale() = 0;
+
+  // -- -- -- --
 };
 
 }  // namespace s21
 
 Q_DECLARE_INTERFACE(s21::IControllerInterface, "s21_IControllerInterface");
 
-#endif  // INCLUDES_CONTROLLER_ICONTROLLER_HPP_
+#endif  //  INCLUDES_CONTROLLER_ICONTROLLERINTERFACE_HPP_

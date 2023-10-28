@@ -12,7 +12,8 @@
 #define RGB_MIN 1
 #define RGB_MAX 255
 
-#include "../Model/modelviewer.hpp"
+#include "../Controller/icontrollerinterface.hpp"
+#include "../Model/imodelviewer.hpp"
 #include "./iwidgetopenglobserver.hpp"
 
 namespace s21 {
@@ -52,7 +53,8 @@ class MyWidgetOPenGL : public QOpenGLWidget,
   void on_changePerperpertiveRdb(int value);
 
  public:
-  explicit MyWidgetOPenGL(QWidget *parent = nullptr);
+  explicit MyWidgetOPenGL(IControllerInterface *controller, IModelViewer *model,
+                          QWidget *parent = nullptr);
   MyWidgetOPenGL(MyWidgetOPenGL const &other_) = delete;
   MyWidgetOPenGL(MyWidgetOPenGL &&other_) = delete;
   void operator=(MyWidgetOPenGL const &other_) = delete;
@@ -61,12 +63,12 @@ class MyWidgetOPenGL : public QOpenGLWidget,
 
   /* **** ***** **** */
 
-  void setFileNameObject(const QString &newFileNameObject);
-  const QString &fileNameObject() const;
+  // void setFileNameObject(const QString &newFileNameObject);
+  // const QString &fileNameObject() const;
 
-  void rotateY(int value_);
-  void rotateX(int value_);
-  void rotateZ(int value_);
+  // void rotateY(int value_);
+  // void rotateX(int value_);
+  // void rotateZ(int value_);
 
   void lineWidth(GLfloat nWidth_);
   void setScale(float value_);
@@ -75,9 +77,9 @@ class MyWidgetOPenGL : public QOpenGLWidget,
   void setRotateBuffY(int newRotateBuffY);
   void setRotateBuffZ(int newRotateBuffZ);
 
-  int rotateBuffX() const;
-  int rotateBuffY() const;
-  int rotateBuffZ() const;
+  // int rotateBuffX() const;
+  // int rotateBuffY() const;
+  // int rotateBuffZ() const;
 
   int maxScale();
   int minScale();
@@ -95,11 +97,11 @@ class MyWidgetOPenGL : public QOpenGLWidget,
   void turnOnMouse();
   void turnOffMouse();
 
-  void incrementScale();
-  void decrementScale();
+  // void incrementScale();
+  // void decrementScale();
 
   QString scaleString();
-  void lineScaleChange(int value_);
+  // void lineScaleChange(int value_);
 
   void moveX(float value_);
   void moveY(float value_);
@@ -108,7 +110,8 @@ class MyWidgetOPenGL : public QOpenGLWidget,
   // void moveRotation(e_moveRotatinoType direction_, float value_);
   int countNumber(int number);
 
-  void UpdateWidgetOpengGl() override;
+  void Update() override;
+  void UpdateInfo() override;
 
  protected:
   void initializeGL() override;
@@ -132,10 +135,10 @@ class MyWidgetOPenGL : public QOpenGLWidget,
   int updateData();
   void updateInfoObject();
 
-  void changeRotate();
+  void ChangeRotate();
   void updatePerspective();
 
-  void defaultConfig();
+  // void defaultConfig();
   void defaultConfigSimple();
   bool loadConfig(QString path_ = "");
   bool writeToFileConfig(QString path_ = "");
@@ -146,6 +149,9 @@ class MyWidgetOPenGL : public QOpenGLWidget,
   void drawSquare();
 
  private:
+  IControllerInterface *controller_;
+  IModelViewer *model_;
+
   bool m_isValid;
 
   int m_rotateX;
@@ -178,8 +184,8 @@ class MyWidgetOPenGL : public QOpenGLWidget,
   int m_maxScale;
   int m_minScale;
 
-  bool m_initialized;
-  QPoint m_Pos;
+  bool initialized_;
+  QPoint mouse_position_;
   double m_sizePerspective;
 
   QLabel *m_labelName;
@@ -190,7 +196,7 @@ class MyWidgetOPenGL : public QOpenGLWidget,
   bool m_isMouse;
   QColor m_tmpColor;
 
-  ModelViewer *modelviewer_;
+  // ModelViewer *modelviewer_;
   // Point m_points;
   // matrix_poligon m_polygons;
 };

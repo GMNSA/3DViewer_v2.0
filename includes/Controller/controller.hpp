@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include "../includes/Model/modelviewer.hpp"
+// #include "../includes/Model/modelviewer.hpp"
 #include "../includes/View/mainwindow.hpp"
 #include "./icontrollerinterface.hpp"
 
@@ -14,8 +14,9 @@ namespace s21 {
 class Controller : public QObject, virtual public IControllerInterface {
   Q_OBJECT
   Q_INTERFACES(s21::IControllerInterface)
+
  public:
-  Controller(IModelViewer *model);
+  explicit Controller(IModelViewer *model);
   Controller(Controller const &other) = delete;
   Controller &operator=(Controller const &other) = delete;
 
@@ -29,9 +30,24 @@ class Controller : public QObject, virtual public IControllerInterface {
   void MoveDirectionY(float value, MoveType direction = MOVE_Y) override;
   void MoveDirectionZ(float value, MoveType direction = MOVE_Z) override;
 
-  void MoveRotationX(float value, MoveType direction = MOVE_X) override;
-  void MoveRotationY(float value, MoveType direction = MOVE_Y) override;
-  void MoveRotationZ(float value, MoveType direction = MOVE_Z) override;
+  void MoveRotationX(float value,
+                     MoveRotationType direction = MOVE_ROTATE_X) override;
+  void MoveRotationY(float value,
+                     MoveRotationType direction = MOVE_ROTATE_Y) override;
+  void MoveRotationZ(float value,
+                     MoveRotationType direction = MOVE_ROTATE_Z) override;
+  void TurnObjectX(double const &rotate) override;
+  void TurnObjectY(double const &rotate) override;
+
+  void ChangeBackgroundColor(int const &value) override;
+
+  void WriteConfig(QString const &filename = "") override;
+  void LoadConfig(QString const &filename = "") override;
+
+  void OpenFile(QString const &value) override;
+
+  void IncremenetScale() override;
+  void DecrementScale() override;
 
  private:
   MainWindow *view_;

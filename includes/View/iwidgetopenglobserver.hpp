@@ -9,7 +9,8 @@ class IWidgetOpenglObserver {
  public:
   virtual ~IWidgetOpenglObserver() {}
 
-  virtual void UpdateWidgetOpengGl() = 0;
+  virtual void Update() = 0;
+  virtual void UpdateInfo() = 0;
 };
 
 }  // namespace s21
