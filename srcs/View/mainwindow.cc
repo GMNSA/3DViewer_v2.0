@@ -17,7 +17,6 @@
 
 namespace s21 {
 
-// m_gif(new QGifImage),
 MainWindow::MainWindow(IControllerInterface *controller, IModelViewer *model,
                        QWidget *parent)
     : QMainWindow(parent),
@@ -85,19 +84,14 @@ void MainWindow::openFileDialog() {
       this, tr("Open Object"), "./objects/", tr("Image Files (*.obj)"));
   model_->OpenFileObject(filename);
 
-  // m_myWidget->setFileNameObject(filename);
-  // m_myWidget->update();
   qDebug() << "open";
 }
 
 // -------------------------------------------------------
 
 void MainWindow::rotateX(int value) {
-  Q_UNUSED(value)
-  // m_myWidget->rotateX(value_);
   // TODO(_who): change rotate -> change buff rotate (safe)
 
-  // qDebug() << "Rotate X";
   controller_->MoveRotationX(value);
   changeRotateSliders();
 }
@@ -105,7 +99,6 @@ void MainWindow::rotateX(int value) {
 // -------------------------------------------------------
 
 void MainWindow::rotateY(int value) {
-  // m_myWidget->rotateY(value_);
   controller_->MoveRotationY(value);
   changeRotateSliders();
 }
@@ -113,7 +106,6 @@ void MainWindow::rotateY(int value) {
 // -------------------------------------------------------
 
 void MainWindow::rotateZ(int value) {
-  // m_myWidget->rotateZ(value_);
   controller_->MoveRotationZ(value);
   changeRotateSliders();
 }
@@ -128,15 +120,11 @@ void MainWindow::connectsConfiguration() {
     m_myWidget->resize(ui->widget->width(), ui->widget->height());
   });
 
-  connect(ui->radioButton_dotter, &QRadioButton::pressed, this, [&]() {
-    // m_myWidget->setLineType(1);
-    controller_->ChangeLineType(LineType::LINE_STIPPLE);
-  });
+  connect(ui->radioButton_dotter, &QRadioButton::pressed, this,
+          [&]() { controller_->ChangeLineType(LineType::LINE_STIPPLE); });
 
-  connect(ui->radioButton_solid, &QRadioButton::pressed, this, [&]() {
-    // m_myWidget->setLineType(0);
-    controller_->ChangeLineType(LineType::LINE_SIMPLE);
-  });
+  connect(ui->radioButton_solid, &QRadioButton::pressed, this,
+          [&]() { controller_->ChangeLineType(LineType::LINE_SIMPLE); });
 
   connect(ui->hSlidder_pointsSize, &QSlider::valueChanged, this,
           &MainWindow::changeSizePoint);
@@ -164,12 +152,7 @@ void MainWindow::changeRotateSliders() {
   int x = (model_->get_rotate_buff_x() % ROTATE_VALUE);
   int y = (model_->get_rotate_buff_y() % ROTATE_VALUE);
   int z = (model_->get_rotate_buff_z() % ROTATE_VALUE);
-  // qDebug() << "x: " << x;
-  // qDebug() << "y: " << y;
-  // qDebug() << "z: " << z;
-  // int x = (m_myWidget->rotateBuffX() % ROTATE_VALUE);
-  // int y = (m_myWidget->rotateBuffY() % ROTATE_VALUE);
-  // int z = (m_myWidget->rotateBuffZ() % ROTATE_VALUE);
+
   ui->slider_x->setValue(x);
   ui->slider_y->setValue(y);
   ui->slider_z->setValue(z);
@@ -177,6 +160,8 @@ void MainWindow::changeRotateSliders() {
   ui->lineEdit_rotateY->setText(QString::number(y));
   ui->lineEdit_rotateZ->setText(QString::number(z));
 }
+
+// -------------------------------------------------------
 
 void MainWindow::screenshot(int isJpeg) {
   Q_UNUSED(isJpeg);
@@ -227,7 +212,6 @@ void MainWindow::closeApp() { close(); }
 // -------------------------------------------------------
 
 void MainWindow::lineScaleChange(QString value) {
-  // m_myWidget->lineScaleChange(value_.toInt());
   // TODO(_who): will need to fix this !!!! Is it necessary or not.
 
   int tmp_value = value.toInt();
@@ -258,39 +242,34 @@ void MainWindow::lineScaleChange(QString value) {
 
 void MainWindow::changeBackgroundColor(int value) {
   controller_->ChangeBackgroundColor(value);
-
-  // m_myWidget->setBackgroundColor(value_);
-  // TODO:(_who) change
 }
 
 // -------------------------------------------------------
 
 void MainWindow::changeColorLines(int value) {
   controller_->ChangeLinesColor(value);
-  // m_myWidget->setLineColor(value);
 }
 
 // -------------------------------------------------------
 
 void MainWindow::changeColorPoints(int value) {
   controller_->ChangePointColor(value);
-  // m_myWidget->setPointColor(value_);
 }
 
 // -------------------------------------------------------
 
 void MainWindow::changeWidthLines(int value) {
   controller_->ChangeLineWidth(value);
+  // TODO(_who): need to fix (insetead of NotifyMainWindow)
   ui->lineEdit_widthLine->setText(QString::number(value));
-  // m_myWidget->setLineWidth(value);
 }
 
 // -------------------------------------------------------
 
 void MainWindow::changeSizePoint(int value) {
   controller_->ChangePointSize(value);
+  // TODO(_who): need to fix (insetead of NotifyMainWindow)
   ui->lineEdit_pointsSize->setText(QString::number(value));
-  // m_myWidget->setPointSize(value_);
 }
 
 // -------------------------------------------------------
@@ -298,7 +277,6 @@ void MainWindow::changeSizePoint(int value) {
 void MainWindow::setPointType(PointType const &type) {
   qDebug() << "Type point: " << type;
   controller_->ChangeTypePoint(type);
-  // m_myWidget->setPointType(value_);
 }
 
 // -------------------------------------------------------
@@ -306,14 +284,11 @@ void MainWindow::setPointType(PointType const &type) {
 void MainWindow::moveObject(int type, int value) {
   if (type == MOVE_X) {
     controller_->MoveDirectionX(value);
-    // m_myWidget->moveX((value_));
     ui->lineEdit_moveX->setText(QString::number(value));
   } else if (type == MOVE_Y) {
-    // m_myWidget->moveY((value_));
     controller_->MoveDirectionY(value);
     ui->lineEdit_moveY->setText(QString::number(value));
   } else if (type == MOVE_Z) {
-    // m_myWidget->moveZ((value_));
     controller_->MoveDirectionZ(value);
     ui->lineEdit_moveZ->setText(QString::number(value));
   }
@@ -478,7 +453,6 @@ void MainWindow::connectsImages() {
 
 void MainWindow::connectPerspective() {
   connect(ui->radioButton_central, &QRadioButton::pressed, this, [&]() {
-    // m_myWidget->setPerspective(0);
     controller_->ChangePerspective(PerspectiveType::PERSPECTIVE_CENTRAL);
   });
 

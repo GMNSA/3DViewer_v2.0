@@ -90,7 +90,6 @@ class MyWidgetOPenGL : public QOpenGLWidget,
 
   // void setLineWidth(double newLineWidth);
   void setPointType(int newPointType);
-  void setLineType(int newLineType);
   void setPointSize(double point_size);
 
   // void setPerspective(int value_);
