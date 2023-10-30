@@ -57,6 +57,9 @@ class Controller : public QObject, virtual public IControllerInterface {
   void ChangePerspective(int const &value) override;
   void ChangeLineType(LineType const &type) override;
 
+  void ScreenshotJPEG(QWidget *widget) override;
+  void ScreenshotBMP(QWidget *widget) override;
+
  private:
   MainWindow *view_;
   IModelViewer *model_;

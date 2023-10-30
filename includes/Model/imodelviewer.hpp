@@ -131,6 +131,11 @@ class IModelViewer {
 
   virtual bool WriteToFileConfig(QString path = "") = 0;
   virtual bool LoadConfig(QString path = "") = 0;
+
+  // -- -- -- --
+
+  virtual void ScreenshotJPEG(QWidget *widget) = 0;
+  virtual void ScreenshotBMP(QWidget *widget) = 0;
 };
 
 }  // namespace s21

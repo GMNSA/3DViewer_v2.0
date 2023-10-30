@@ -14,6 +14,12 @@ typedef enum PointType {
 
 typedef enum LineType { LINE_SIMPLE = 0, LINE_STIPPLE, LINE_END } LineType;
 
+typedef enum ScreenshotType {
+  SCREENSHOT_JPEG = 0,
+  SCREENSHOT_BPM,
+  SCREENSHOT_END
+} ScreenshotType;
+
 typedef enum PerspectiveType {
   PERSPECTIVE_CENTRAL = 0,
   PERSPECTIVE_PARALLEL,

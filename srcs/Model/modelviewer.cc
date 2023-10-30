@@ -12,6 +12,7 @@ namespace s21 {
 
 ModelViewer::ModelViewer()
     : model_(new Model),
+      image_capture_(new ImageCapture),
       is_valid_(0),
       rotate_x_(0),
       rotate_y_(0),
@@ -30,6 +31,7 @@ ModelViewer::ModelViewer()
 ModelViewer::~ModelViewer() {
   // TODO(_who): releae
   if (model_) delete model_;
+  if (image_capture_) delete image_capture_;
 }
 
 // ----------------------------------------------------------------------------
@@ -55,17 +57,11 @@ int ModelViewer::get_rotate_buff_z() const { return rotate_z_; }
 void ModelViewer::set_background_color(int value_) {
   if (value_ == 0 || value_ == 255) {
     background_color_.setHsl(0, 0, 0);
-    // labelName->setStyleSheet("QLabel { color : white; }");
-    // labelVertes->setStyleSheet("QLabel { color : white; }");
-    // labelPolygons->setStyleSheet("QLabel { color : white; }");
 
     // TODO:(_who): We need to think how to implement the (ColorGifTime)
     // emit on_changeColorGifTime(0);
   } else {
     background_color_.setHsl(value_, 50, 50);
-    // m_labelName->setStyleSheet("QLabel { color : black; }");
-    // m_labelVertes->setStyleSheet("QLabel { color : black; }");
-    // m_labelPolygons->setStyleSheet("QLabel { color : black; }");
     // emit on_changeColorGifTime(1);
   }
 
@@ -641,6 +637,20 @@ int ModelViewer::UpdateData() {
   }
 
   return (is_res);
+}
+
+// ----------------------------------------------------------------------------
+
+void ModelViewer::ScreenshotJPEG(QWidget *widget) {
+  image_capture_->set_widget(widget);
+  image_capture_->ScreenshotJPEG();
+}
+
+// ----------------------------------------------------------------------------
+
+void ModelViewer::ScreenshotBMP(QWidget *widget) {
+  image_capture_->set_widget(widget);
+  image_capture_->ScreenshotBMP();
 }
 
 }  // namespace s21

@@ -190,4 +190,16 @@ void Controller::ChangeLineType(LineType const &type) {
 
 // ----------------------------------------------------------------------------
 
+void Controller::ScreenshotJPEG(QWidget *widget) {
+  model_->ScreenshotJPEG(widget);
+}
+
+// ----------------------------------------------------------------------------
+
+void Controller::ScreenshotBMP(QWidget *widget) {
+  model_->ScreenshotBMP(widget);
+}
+
+// ----------------------------------------------------------------------------
+
 }  // namespace s21

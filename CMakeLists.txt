@@ -31,6 +31,8 @@ set(PROJECT_SOURCES
 
         srcs/Model/model.cpp
         srcs/Model/modelviewer.cc
+
+        srcs/Model/imagecapture.cc
         ${QTPROPERTY_BROWSER_SOURCES}
 )
 
@@ -45,6 +47,8 @@ set(PROJECT_HEADERS
         includes/Model/customtypes.hpp
         includes/Model/model.hpp
         includes/Model/modelviewer.hpp
+
+        includes/Model/imagecapture.hpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

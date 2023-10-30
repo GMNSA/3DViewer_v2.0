@@ -34,8 +34,8 @@ class MainWindow : public QMainWindow, virtual public IMainWindowObserver {
   void rotateY(int value_);
   void rotateZ(int value_);
 
-  void screenshotJPEG();
-  void screenshotBMP();
+  // void screenshotJPEG();
+  //  void screenshotBMP();
   void doGif();
   void startGif();
 
@@ -89,7 +89,7 @@ class MainWindow : public QMainWindow, virtual public IMainWindowObserver {
   void connectPerspective();
   void connectMouseRotate();
 
-  void screenshot(int isJpeg = 1);
+  // void screenshot(int isJpeg = 1);
   void changeColorGifTime(int isBlack_);
 };
 

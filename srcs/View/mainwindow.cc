@@ -163,37 +163,37 @@ void MainWindow::changeRotateSliders() {
 
 // -------------------------------------------------------
 
-void MainWindow::screenshot(int isJpeg) {
-  Q_UNUSED(isJpeg);
-  long ttime = time(0);
-  QString current_time = ctime(&ttime);
-  QString format;
-  QPixmap pix(m_myWidget->size() * 2);
-  QMessageBox msgBox;
-
-  QString path = QDir::currentPath() + "/screenshots/" + current_time;
-  path.chop(1);
-  path.replace(" ", "_");
-
-  if (isJpeg == 1) {
-    path += ".jpeg";
-    format = "JPG";
-  } else {
-    path += ".bmp";
-    format = "BMP";
-  }
-
-  pix.setDevicePixelRatio(2);
-  m_myWidget->render(&pix);
-
-  if (pix.save(path, format.toLatin1(), 100)) {
-    msgBox.setText("Screenshot OK (" + format + ").");
-    msgBox.exec();
-  } else {
-    msgBox.setText("Screenshot ERROR (" + format + ").");
-    msgBox.exec();
-  }
-}
+// void MainWindow::screenshot(int isJpeg) {
+//   Q_UNUSED(isJpeg);
+//   long ttime = time(0);
+//   QString current_time = ctime(&ttime);
+//   QString format;
+//   QPixmap pix(m_myWidget->size() * 2);
+//   QMessageBox msgBox;
+//
+//   QString path = QDir::currentPath() + "/screenshots/" + current_time;
+//   path.chop(1);
+//   path.replace(" ", "_");
+//
+//   if (isJpeg == 1) {
+//     path += ".jpeg";
+//     format = "JPG";
+//   } else {
+//     path += ".bmp";
+//     format = "BMP";
+//   }
+//
+//   pix.setDevicePixelRatio(2);
+//   m_myWidget->render(&pix);
+//
+//   if (pix.save(path, format.toLatin1(), 100)) {
+//     msgBox.setText("Screenshot OK (" + format + ").");
+//     msgBox.exec();
+//   } else {
+//     msgBox.setText("Screenshot ERROR (" + format + ").");
+//     msgBox.exec();
+//   }
+// }
 
 // -------------------------------------------------------
 
@@ -296,11 +296,11 @@ void MainWindow::moveObject(int type, int value) {
 
 // -------------------------------------------------------
 
-void MainWindow::screenshotJPEG() { screenshot(1); }
+// void MainWindow::screenshotJPEG() { screenshot(1); }
 
 // -------------------------------------------------------
 
-void MainWindow::screenshotBMP() { screenshot(0); }
+// void MainWindow::screenshotBMP() { screenshot(0); }
 
 // -------------------------------------------------------
 
@@ -443,8 +443,9 @@ void MainWindow::connectsScale() {
 
 void MainWindow::connectsImages() {
   connect(ui->pb_jpeg, &QPushButton::clicked, this,
-          &MainWindow::screenshotJPEG);
-  connect(ui->pb_bmp, &QPushButton::clicked, this, &MainWindow::screenshotBMP);
+          [&]() { controller_->ScreenshotJPEG(m_myWidget); });
+  connect(ui->pb_bmp, &QPushButton::clicked, this,
+          [&]() { controller_->ScreenshotBMP(m_myWidget); });
   connect(ui->pb_gif, &QPushButton::clicked, this, &MainWindow::doGif);
   connect(m_timerGif, &QTimer::timeout, this, &MainWindow::startGif);
 }

@@ -47,6 +47,9 @@ class IControllerInterface {
   virtual void ChangePerspective(int const &value) = 0;
   virtual void ChangeLineType(LineType const &type) = 0;
 
+  virtual void ScreenshotJPEG(QWidget *widget) = 0;
+  virtual void ScreenshotBMP(QWidget *widget) = 0;
+
   // -- -- -- --
 };
 

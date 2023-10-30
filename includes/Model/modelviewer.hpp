@@ -8,6 +8,7 @@
 #include <QString>
 #include <vector>
 
+#include "./imagecapture.hpp"
 #include "./imodelviewer.hpp"
 #include "./model.hpp"
 
@@ -128,12 +129,18 @@ class ModelViewer : public IModelViewer {
   bool WriteToFileConfig(QString path = "") override;
   bool LoadConfig(QString path = "") override;
 
+  // -- -- -- --
+
+  void ScreenshotJPEG(QWidget *widget) override;
+  void ScreenshotBMP(QWidget *widget) override;
+
  public:  // -- origin --
   int CountNumber(int number_);
   int UpdateData();
 
  private:
   Model *model_;
+  ImageCapture *image_capture_;
 
   bool is_valid_;
 
