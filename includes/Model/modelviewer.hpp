@@ -30,6 +30,8 @@ class ModelViewer : public IModelViewer {
   int get_rotate_y() const override;
   int get_rotate_z() const override;
 
+  // -- -- -- --
+
   void set_rotate_buff_x(int const &rotate) override;
   void set_rotate_buff_y(int const &rotate) override;
   void set_rotate_buff_z(int const &rotate) override;
@@ -38,10 +40,21 @@ class ModelViewer : public IModelViewer {
   int get_rotate_buff_y() const override;
   int get_rotate_buff_z() const override;
 
+  // -- -- -- --
+
   void set_background_color(int const value_) override;
   QColor get_background_color() const override;
+  void set_point_color(int const &value) override;
+  QColor get_point_color() const override;
+  void set_lines_color(int const &value) override;
+  QColor get_lines_color() const override;
+
+  // -- -- -- --
+
+  void set_perspective(int const &value) override;
 
   int get_perspective() const override;
+  double get_size_perspective() const override;
   QString get_filename_object() const override;
 
   bool get_is_valid() const override;
@@ -58,6 +71,8 @@ class ModelViewer : public IModelViewer {
 
   void set_line_width(double const &value) override;
   double get_line_width() const override;
+
+  // -- -- -- --
 
   void set_scale(int const &value) override;
   void set_max_scale(int const &value) override;

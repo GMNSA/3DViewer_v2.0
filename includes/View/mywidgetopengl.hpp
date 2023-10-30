@@ -70,30 +70,30 @@ class MyWidgetOPenGL : public QOpenGLWidget,
   // void rotateX(int value_);
   // void rotateZ(int value_);
 
-  void lineWidth(GLfloat nWidth_);
-  void setScale(float value_);
+  // void lineWidth(GLfloat nWidth_);
+  // void setScale(float value_);
 
-  void setRotateBuffX(int newRotateBuffX);
-  void setRotateBuffY(int newRotateBuffY);
-  void setRotateBuffZ(int newRotateBuffZ);
+  // void setRotateBuffX(int newRotateBuffX);
+  // void setRotateBuffY(int newRotateBuffY);
+  // void setRotateBuffZ(int newRotateBuffZ);
 
   // int rotateBuffX() const;
   // int rotateBuffY() const;
   // int rotateBuffZ() const;
 
-  int maxScale();
-  int minScale();
+  // int maxScale();
+  // int minScale();
 
-  void setLineColor(int value_);
-  void setPointColor(int value_);
+  // void setLineColor(int value_);
+  // void setPointColor(int value_);
   void setBackgroundColor(int value_);
 
-  void setLineWidth(double newLineWidth);
+  // void setLineWidth(double newLineWidth);
   void setPointType(int newPointType);
   void setLineType(int newLineType);
-  void setPointSize(double newPointSize);
+  void setPointSize(double point_size);
 
-  void setPerspective(int value_);
+  // void setPerspective(int value_);
   void turnOnMouse();
   void turnOffMouse();
 
@@ -139,7 +139,7 @@ class MyWidgetOPenGL : public QOpenGLWidget,
   void updatePerspective();
 
   // void defaultConfig();
-  void defaultConfigSimple();
+  // void defaultConfigSimple();
   bool loadConfig(QString path_ = "");
   bool writeToFileConfig(QString path_ = "");
 
@@ -151,19 +151,6 @@ class MyWidgetOPenGL : public QOpenGLWidget,
  private:
   IControllerInterface *controller_;
   IModelViewer *model_;
-
-  bool m_isValid;
-
-  int m_rotateX;
-  int m_rotateY;
-  int m_rotateZ;
-
-  GLint m_rotateBeforeX;
-  GLint m_rotateBeforeY;
-  GLint m_rotateBeforeZ;
-  GLfloat m_moveBeforeX;
-  GLfloat m_moveBeforeY;
-  GLfloat m_moveBeforeZ;
 
   QString m_fileNameObject;
 

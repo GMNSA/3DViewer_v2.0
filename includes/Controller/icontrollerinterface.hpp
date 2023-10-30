@@ -33,11 +33,19 @@ class IControllerInterface {
   virtual void LoadConfig(QString const &filename = "") = 0;
 
   virtual void ChangeBackgroundColor(int const &value) = 0;
+  virtual void ChangePointColor(int const &value) = 0;
+  virtual void ChangeLinesColor(int const &value) = 0;
 
   virtual void OpenFile(QString const &value) = 0;
 
   virtual void IncremenetScale() = 0;
   virtual void DecrementScale() = 0;
+
+  virtual void ChangeLineWidth(int const &value) = 0;
+  virtual void ChangePointSize(int const &value) = 0;
+  virtual void ChangeTypePoint(PointType const &type) = 0;
+  virtual void ChangePerspective(int const &value) = 0;
+  virtual void ChangeLineType(LineType const &type) = 0;
 
   // -- -- -- --
 };

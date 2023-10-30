@@ -24,6 +24,7 @@ ModelViewer::ModelViewer()
       move_before_z_(0) {
   // TODO(_who): releae
   DefaultConfig();
+  DefaultConfigSimple();
 }
 
 ModelViewer::~ModelViewer() {
@@ -75,7 +76,30 @@ QColor ModelViewer::get_background_color() const { return background_color_; }
 
 // ----------------------------------------------------------------------------
 
+void ModelViewer::set_point_color(int const &value) {
+  if (value == 0 || value == 255)
+    point_color_.setHsl(255, 255, 255);
+  else
+    point_color_.setHsl(value, 80, 80);
+  NotifyWidgetOpengl();
+}
+
+// ----------------------------------------------------------------------------
+
+void ModelViewer::set_perspective(int const &value) {
+  if (value != perspective_) {
+    perspective_ = value;
+    NotifyWidgetOpengl();
+  }
+}
+
+// ----------------------------------------------------------------------------
+
 int ModelViewer::get_perspective() const { return perspective_; }
+
+// ----------------------------------------------------------------------------
+
+double ModelViewer::get_size_perspective() const { return size_perspective_; }
 
 // ----------------------------------------------------------------------------
 
@@ -87,7 +111,10 @@ bool ModelViewer::get_is_valid() const { return is_valid_; }
 
 // ----------------------------------------------------------------------------
 
-void ModelViewer::set_line_type(LineType const &type) { line_type_ = type; }
+void ModelViewer::set_line_type(LineType const &type) {
+  line_type_ = type;
+  NotifyWidgetOpengl();
+}
 
 // ----------------------------------------------------------------------------
 
@@ -103,8 +130,33 @@ PointType ModelViewer::get_point_type() const { return point_type_; }
 
 // ----------------------------------------------------------------------------
 
-void ModelViewer::set_point_size(double const &size) { point_size_ = size; }
+void ModelViewer::set_point_size(double const &size) {
+  if (size >= min_point_size_ && size <= max_point_size_) {
+    point_size_ = size;
+    // NotifyWidgetOpengl();
+    // TODO(_who): need pofix
+    // m_pointSize = newPointSize;
+    // !! update();
+  }
+}
 
+// ----------------------------------------------------------------------------
+
+QColor ModelViewer::get_point_color() const { return point_color_; }
+
+// ----------------------------------------------------------------------------
+
+void ModelViewer::set_lines_color(int const &value) {
+  if (value == 0 || value == 255)
+    line_color_.setHsl(255, 255, 255);
+  else
+    line_color_.setHsl(value, 80, 80);
+  NotifyWidgetOpengl();
+}
+
+// ----------------------------------------------------------------------------
+
+QColor ModelViewer::get_lines_color() const { return line_color_; }
 // ----------------------------------------------------------------------------
 
 double ModelViewer::get_point_size() const { return point_size_; }
@@ -383,11 +435,13 @@ void ModelViewer::DefaultConfigSimple() {
 // ----------------------------------------------------------------------------
 
 bool ModelViewer::WriteToFileConfig(QString path) {
-  bool is_res = 1;
+  bool is_res = true;
 
   QString val;
   QString filename =
       path.isEmpty() ? QDir::currentPath() + "/config.json" : path;
+
+  qDebug() << "filename: " << filename;
 
   QFile file(filename);
 
@@ -404,9 +458,9 @@ bool ModelViewer::WriteToFileConfig(QString path) {
       perspective_ = 0;
 
     tmp.insert("perspective", perspective_);
-    tmp.insert("lineWidth", perspective_);
-    tmp.insert("pointType", perspective_);
-    tmp.insert("pointSize", perspective_);
+    tmp.insert("lineWidth", line_width_);
+    tmp.insert("pointType", point_type_);
+    tmp.insert("pointSize", point_size_);
 
     QJsonArray jsonArr;
     jsonArr.push_back(line_color_.red());
@@ -437,7 +491,6 @@ bool ModelViewer::WriteToFileConfig(QString path) {
     QByteArray byteArray = jsonDocument.toJson(QJsonDocument::Indented);
     out << byteArray;
     file.close();
-  } else {
   }
 
   return is_res;
@@ -527,7 +580,7 @@ bool ModelViewer::LoadConfig(QString path_) {
     is_res = 0;
 
     // TODO:(_who) don't forget release "Default Config"
-    DefaultConfig();
+    // DefaultConfig();
     NotifyWidgetOpengl();
   }
 

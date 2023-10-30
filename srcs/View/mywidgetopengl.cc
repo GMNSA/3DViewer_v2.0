@@ -31,16 +31,6 @@ MyWidgetOPenGL::MyWidgetOPenGL(IControllerInterface *controller,
     : QOpenGLWidget(parent),
       controller_(controller),
       model_(model),
-      m_isValid(0),
-      m_rotateX(0),
-      m_rotateY(0),
-      m_rotateZ(0),
-      m_rotateBeforeX(0),
-      m_rotateBeforeY(0),
-      m_rotateBeforeZ(0),
-      m_moveBeforeX(0),
-      m_moveBeforeY(0),
-      m_moveBeforeZ(0),
       m_labelName(new QLabel(this)),
       m_labelVertes(new QLabel(this)),
       m_labelPolygons(new QLabel(this)),
@@ -48,16 +38,10 @@ MyWidgetOPenGL::MyWidgetOPenGL(IControllerInterface *controller,
       m_isMouse(false),
       m_tmpColor({152, 84, 93}) {
   model_->Attach(qobject_cast<IWidgetOpenglObserver *>(this));
-  // modelviewer_ = new ModelViewer;
-  defaultConfigSimple();
-  // m_points.points = NULL;
-  // m_polygons.poligons = NULL;
-  // TODO(_who): for test
 
   this->installEventFilter(this);
   resize(800, 600);
 
-  // TODO(_who): don't forget release LoadConfig
   controller_->LoadConfig();
 
   initialized_ = false;
@@ -92,7 +76,7 @@ void MyWidgetOPenGL::initializeGL() {
 
 // --------------------------------------------------
 
-void MyWidgetOPenGL::resizeGL(int w_, int h_) { glViewport(0, 0, w_, h_); }
+void MyWidgetOPenGL::resizeGL(int w, int h) { glViewport(0, 0, w, h); }
 
 // --------------------------------------------------
 
@@ -114,7 +98,9 @@ void MyWidgetOPenGL::paintGL() {
   if (model_->get_is_valid()) {
     glEnable(GL_BLEND);
     glEnable(GL_MULTISAMPLE);
-    glLineWidth(model_->get_line_width());
+    // qDebug() << "line_width: " << model_->get_line_width();
+    // TODO(_who): We will need to fix (line width - too much fat and tear)
+    glLineWidth((GLfloat)model_->get_line_width());
 
     if (model_->get_line_type() == LineType::LINE_STIPPLE) {
       glEnable(GL_LINE_STIPPLE);
@@ -129,10 +115,12 @@ void MyWidgetOPenGL::paintGL() {
     }
     if (model_->get_point_type() == PointType::POINT_CIRCLE) {
       glEnable(GL_POINT_SMOOTH);
+      qDebug() << "HERE point circle";
       glPointSize(model_->get_point_size());
       drawObjects(e_typeDraw::TYPE_POINTS);
       glDisable(GL_POINT_SMOOTH);
     } else if (model_->get_point_type() == PointType::POINT_SQUARE) {
+      qDebug() << "HERE point square";
       drawSquare();
     }
   }
@@ -168,6 +156,8 @@ void MyWidgetOPenGL::mousePressEvent(QMouseEvent *event) {
 
 void MyWidgetOPenGL::mouseReleaseEvent(QMouseEvent *event) { Q_UNUSED(event); }
 
+// -------------------------------------------------------
+
 bool MyWidgetOPenGL::eventFilter(QObject *watched, QEvent *event) {
   Q_UNUSED(watched);
   bool res = false;
@@ -185,25 +175,25 @@ bool MyWidgetOPenGL::eventFilter(QObject *watched, QEvent *event) {
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::setPointSize(double newPointSize) {
-  if (newPointSize >= model_->get_point_size_min() &&
-      newPointSize <= model_->get_point_size_max()) {
-    model_->set_point_size(newPointSize);
-    // TODO(_who): need pofix
-    // m_pointSize = newPointSize;
-    // !! update();
-  }
-}
+// void MyWidgetOPenGL::setPointSize(double point_size) {
+//   if (point_size >= model_->get_point_size_min() &&
+//       point_size <= model_->get_point_size_max()) {
+//     model_->set_point_size(point_size);
+//     // TODO(_who): need pofix
+//     // m_pointSize = newPointSize;
+//     // !! update();
+//   }
+// }
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::setPerspective(int value_) {
-  if (m_perspective != value_) {
-    m_perspective = value_;
-    // !! update();
-  } else {
-  }
-}
+// void MyWidgetOPenGL::setPerspective(int value_) {
+//   if (m_perspective != value_) {
+//     m_perspective = value_;
+//     // !! update();
+//   } else {
+//   }
+// }
 
 // -------------------------------------------------------
 
@@ -228,30 +218,30 @@ void MyWidgetOPenGL::setPointType(int newPointType) {
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::setLineWidth(double newLineWidth) {
-  m_lineWidth = newLineWidth;
-  // !! update();
-}
+// void MyWidgetOPenGL::setLineWidth(double newLineWidth) {
+//   m_lineWidth = newLineWidth;
+//   // !! update();
+// }
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::setLineColor(int value_) {
-  if (value_ == 0 || value_ == 255)
-    m_lineColor.setHsl(255, 255, 255);
-  else
-    m_lineColor.setHsl(value_, 80, 80);
-  // !! update();
-}
+// void MyWidgetOPenGL::setLineColor(int value_) {
+//   if (value_ == 0 || value_ == 255)
+//     m_lineColor.setHsl(255, 255, 255);
+//   else
+//     m_lineColor.setHsl(value_, 80, 80);
+//   // !! update();
+// }
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::setPointColor(int value_) {
-  if (value_ == 0 || value_ == 255)
-    m_pointColor.setHsl(255, 255, 255);
-  else
-    m_pointColor.setHsl(value_, 80, 80);
-  // !! update();
-}
+// void MyWidgetOPenGL::setPointColor(int value_) {
+//   if (value_ == 0 || value_ == 255)
+//     m_pointColor.setHsl(255, 255, 255);
+//   else
+//     m_pointColor.setHsl(value_, 80, 80);
+//   // !! update();
+// }
 
 // -------------------------------------------------------
 
@@ -288,27 +278,27 @@ void MyWidgetOPenGL::setBackgroundColor(int value_) {
 
 // -------------------------------------------------------
 
-int MyWidgetOPenGL::maxScale() { return (m_maxScale); }
+// int MyWidgetOPenGL::maxScale() { return (m_maxScale); }
 
 // -------------------------------------------------------
 
-int MyWidgetOPenGL::minScale() { return (m_minScale); }
+// int MyWidgetOPenGL::minScale() { return (m_minScale); }
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::setRotateBuffZ(int newRotateBuffZ) {
-  m_rotateZ = newRotateBuffZ;
-}
+// void MyWidgetOPenGL::setRotateBuffZ(int newRotateBuffZ) {
+//   m_rotateZ = newRotateBuffZ;
+// }
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::setRotateBuffY(int newRotateBuffY) {
-  m_rotateY = newRotateBuffY;
-}
+// void MyWidgetOPenGL::setRotateBuffY(int newRotateBuffY) {
+//   m_rotateY = newRotateBuffY;
+// }
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::setRotateBuffX(int rotate) { m_rotateX = rotate; }
+// void MyWidgetOPenGL::setRotateBuffX(int rotate) { m_rotateX = rotate; }
 
 // -------------------------------------------------------
 
@@ -439,16 +429,15 @@ void MyWidgetOPenGL::ChangeRotate() {
     if (model_->get_rotate_y()) {
       model_->TurnObjectY(model_->get_rotate_y());
     }
-    // !! update();
   }
 }
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::lineWidth(GLfloat nWidth_) {
-  m_widthLine = nWidth_ / 10;
-  // !! update();
-}
+// void MyWidgetOPenGL::lineWidth(GLfloat nWidth_) {
+//   m_widthLine = nWidth_ / 10;
+//   // !! update();
+// }
 
 // -------------------------------------------------------
 
@@ -466,19 +455,19 @@ void MyWidgetOPenGL::lineWidth(GLfloat nWidth_) {
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::defaultConfigSimple() {
-  m_countScale = 10;
-  m_maxScale = 60;
-  m_minScale = -40;
-  m_maxPointSize = 25.0;
-  m_minPointSize = 0.0;
-  m_rotateBeforeX = 0;
-  m_rotateBeforeY = 0;
-  m_rotateBeforeZ = 0;
-  m_moveBeforeX = 0;
-  m_moveBeforeY = 0;
-  m_moveBeforeZ = 0;
-}
+// void MyWidgetOPenGL::defaultConfigSimple() {
+//   m_countScale = 10;
+//   m_maxScale = 60;
+//   m_minScale = -40;
+//   m_maxPointSize = 25.0;
+//   m_minPointSize = 0.0;
+//   m_rotateBeforeX = 0;
+//   m_rotateBeforeY = 0;
+//   m_rotateBeforeZ = 0;
+//   m_moveBeforeX = 0;
+//   m_moveBeforeY = 0;
+//   m_moveBeforeZ = 0;
+// }
 
 // -------------------------------------------------------
 
@@ -661,19 +650,20 @@ void MyWidgetOPenGL::moveZ(float value_) {
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::drawObjects(e_typeDraw type_) {
-  Q_UNUSED(type_);
-  auto type = type_ == 0 ? GL_LINE_LOOP : GL_POINTS;
+void MyWidgetOPenGL::drawObjects(e_typeDraw type_draw) {
+  Q_UNUSED(type_draw);
+  auto type = type_draw == 0 ? GL_LINE_LOOP : GL_POINTS;
   double x, y, z;
+  auto point_color = model_->get_point_color();
+  auto line_color = model_->get_lines_color();
 
   size_t n_polygons = model_->Polygons().size();
   for (size_t i = 1; i < n_polygons; i++) {
     glBegin(type);
-    if (type_ == TYPE_LINES)
-      glColor3f(m_lineColor.redF(), m_lineColor.greenF(), m_lineColor.blueF());
+    if (type_draw == TYPE_LINES)
+      glColor3f(line_color.redF(), line_color.greenF(), line_color.blueF());
     else
-      glColor3f(m_pointColor.redF(), m_pointColor.greenF(),
-                m_pointColor.blueF());
+      glColor3f(point_color.redF(), point_color.greenF(), point_color.blueF());
     for (size_t j = 0; j < model_->Polygons()[i].size(); j++) {
       x = model_->PointsArray()[model_->Polygons()[i][j]].x;
       y = model_->PointsArray()[model_->Polygons()[i][j]].y;
@@ -705,7 +695,7 @@ void MyWidgetOPenGL::drawInfo() {
 //     if (m_countScale < m_maxScale) {
 //       ++m_countScale;
 //       model_->ScaleObject(1.05);
-//       // scale_obj(1.05, &m_points);
+//       // snewPointSizecale_obj(1.05, &m_points);
 //       emit on_scaleStep();
 //     }
 //     // !! update();
@@ -845,8 +835,6 @@ QString MyWidgetOPenGL::scaleString() {
 
 void MyWidgetOPenGL::Update() {
   // TODO(_who): release
-  // paintGL();
-  qDebug() << "Update Mywidget: ";
   update();
 }
 
@@ -860,18 +848,20 @@ void MyWidgetOPenGL::UpdateInfo() {
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::updatePerspective() {
-  if (m_perspective == 1) {
+  // TODO(_who): NEEED FIX !!!
+  auto tmp_perspective = model_->get_perspective();
+  auto size_perspective = model_->get_size_perspective();
+  if (tmp_perspective == 1) {
     glLoadIdentity();
-    glFrustum(-m_sizePerspective, m_sizePerspective, -m_sizePerspective,
-              m_sizePerspective, m_sizePerspective / 2.5,
-              m_sizePerspective * 2);
-    glTranslatef(0, 0, -m_sizePerspective / 2.5 * 3);
-    m_perspective = 4;
-  } else if (m_perspective == 0) {
+    glFrustum(-size_perspective, size_perspective, -size_perspective,
+              size_perspective, size_perspective / 2.5, size_perspective * 2);
+    glTranslatef(0, 0, -size_perspective / 2.5 * 3);
+    // m_perspective = 4;
+  } else if (tmp_perspective == 0) {
     glLoadIdentity();
-    glOrtho(-m_sizePerspective, m_sizePerspective, -m_sizePerspective,
-            m_sizePerspective, -m_sizePerspective, m_sizePerspective);
-    m_perspective = 5;
+    glOrtho(-size_perspective, size_perspective, -size_perspective,
+            size_perspective, -size_perspective, size_perspective);
+    // m_perspective = 5;
   }
 }
 
@@ -886,10 +876,12 @@ void MyWidgetOPenGL::clearInfo() {
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::drawSquare() {
-  glColor3f(m_pointColor.redF(), m_pointColor.greenF(), m_pointColor.blueF());
-  double x, y, z, del = m_perspective == 4 ? 9 : 23;
+  auto point_color = model_->get_point_color();
+  glColor3f(point_color.redF(), point_color.greenF(), point_color.blueF());
+  // double x, y, z, del = m_perspective == 4 ? 9 : 23;
+  double x, y, z, del = model_->get_perspective() == 1 ? 9 : 23;
 
-  del = model_->MaxSizePerpective() / del * m_pointSize / 20;
+  del = model_->MaxSizePerpective() / del * model_->get_point_size() / 20;
 
   for (size_t i = 1; i < model_->Polygons().size(); i++) {
     for (size_t j = 0; j < model_->Polygons()[i].size(); j++) {

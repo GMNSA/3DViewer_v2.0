@@ -52,7 +52,7 @@ class MainWindow : public QMainWindow, virtual public IMainWindowObserver {
   void changeSizePoint(int value_);
   void changePerperpertiveRdb(int value_);
 
-  void setPointType(int value_);
+  void setPointType(PointType const &type);
 
   void moveObject(int type_, int value_);
 

@@ -40,6 +40,8 @@ class Controller : public QObject, virtual public IControllerInterface {
   void TurnObjectY(double const &rotate) override;
 
   void ChangeBackgroundColor(int const &value) override;
+  void ChangePointColor(int const &value) override;
+  void ChangeLinesColor(int const &value) override;
 
   void WriteConfig(QString const &filename = "") override;
   void LoadConfig(QString const &filename = "") override;
@@ -48,6 +50,12 @@ class Controller : public QObject, virtual public IControllerInterface {
 
   void IncremenetScale() override;
   void DecrementScale() override;
+
+  void ChangeLineWidth(int const &value) override;
+  void ChangePointSize(int const &value) override;
+  void ChangeTypePoint(PointType const &type) override;
+  void ChangePerspective(int const &value) override;
+  void ChangeLineType(LineType const &type) override;
 
  private:
   MainWindow *view_;

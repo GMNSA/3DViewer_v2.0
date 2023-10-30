@@ -5,9 +5,20 @@
 
 namespace s21 {
 
-typedef enum PointType { POINT_NONE = 0, POINT_CIRCLE, POINT_SQUARE } PointType;
+typedef enum PointType {
+  POINT_NONE = 0,
+  POINT_CIRCLE,
+  POINT_SQUARE,
+  POINT_END
+} PointType;
 
-typedef enum LineType { LINE_SIMPLE = 0, LINE_STIPPLE } LineType;
+typedef enum LineType { LINE_SIMPLE = 0, LINE_STIPPLE, LINE_END } LineType;
+
+typedef enum PerspectiveType {
+  PERSPECTIVE_CENTRAL = 0,
+  PERSPECTIVE_PARALLEL,
+  PERSPECTIVE_END
+} PerspectiveType;
 
 // -- -- -- --
 

@@ -1,5 +1,7 @@
 #include "../../includes/Controller/controller.hpp"
 
+#include <GL/gl.h>
+
 namespace s21 {
 
 Controller::Controller(IModelViewer *model) : model_(model) {
@@ -104,6 +106,19 @@ void Controller::ChangeBackgroundColor(int const &value) {
 
 // ----------------------------------------------------------------------------
 
+void Controller::ChangePointColor(int const &value) {
+  model_->set_point_color(value);
+}
+
+// ----------------------------------------------------------------------------
+
+void Controller::ChangeLinesColor(int const &value) {
+  model_->set_lines_color(value);
+  // TODO(_who): release set color lines
+}
+
+// ----------------------------------------------------------------------------
+
 void Controller::OpenFile(QString const &value) {
   model_->OpenFileObject(value);
 }
@@ -134,6 +149,43 @@ void Controller::DecrementScale() {
       // emit on_scaleStep();
     }
   }
+}
+
+// ----------------------------------------------------------------------------
+
+void Controller::ChangeLineWidth(int const &value) {
+  // TODO(_who): We wll to think maybe to move notifywidgetopen (model).
+  GLfloat tmp_value = value / 10.0f;
+  model_->set_line_width(tmp_value);
+  model_->NotifyWidgetOpengl();
+}
+
+// ----------------------------------------------------------------------------
+
+void Controller::ChangePointSize(int const &value) {
+  // TODO(_who): We wll to think maybe to move notifywidgetopen (model).
+  qDebug() << "Change point size [controller]: ";
+  model_->set_point_size(value);
+  model_->NotifyWidgetOpengl();
+}
+
+// ----------------------------------------------------------------------------
+
+void Controller::ChangeTypePoint(PointType const &type) {
+  model_->set_point_type(type);
+  model_->NotifyWidgetOpengl();
+}
+
+// ----------------------------------------------------------------------------
+
+void Controller::ChangePerspective(int const &value) {
+  model_->set_perspective(value);
+}
+
+// ----------------------------------------------------------------------------
+
+void Controller::ChangeLineType(LineType const &type) {
+  model_->set_line_type(type);
 }
 
 // ----------------------------------------------------------------------------

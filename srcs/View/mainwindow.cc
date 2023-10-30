@@ -118,11 +118,15 @@ void MainWindow::connectsConfiguration() {
     m_myWidget->resize(ui->widget->width(), ui->widget->height());
   });
 
-  connect(ui->radioButton_dotter, &QRadioButton::pressed, this,
-          [&]() { m_myWidget->setLineType(1); });
+  connect(ui->radioButton_dotter, &QRadioButton::pressed, this, [&]() {
+    // m_myWidget->setLineType(1);
+    controller_->ChangeLineType(LineType::LINE_STIPPLE);
+  });
 
-  connect(ui->radioButton_solid, &QRadioButton::pressed, this,
-          [&]() { m_myWidget->setLineType(0); });
+  connect(ui->radioButton_solid, &QRadioButton::pressed, this, [&]() {
+    // m_myWidget->setLineType(0);
+    controller_->ChangeLineType(LineType::LINE_SIMPLE);
+  });
 
   connect(ui->hSlidder_pointsSize, &QSlider::valueChanged, this,
           &MainWindow::changeSizePoint);
@@ -214,6 +218,7 @@ void MainWindow::closeApp() { close(); }
 
 void MainWindow::lineScaleChange(QString value) {
   // m_myWidget->lineScaleChange(value_.toInt());
+  // TODO(_who): will need to fix this !!!! Is it necessary or not.
 
   int tmp_value = value.toInt();
   bool is_decrement = 0;
@@ -223,62 +228,67 @@ void MainWindow::lineScaleChange(QString value) {
 
   is_decrement = n_scale > tmp_value ? 1 : 0;
 
+  qDebug() << "HERE 0";
   if (is_decrement && tmp_value >= min_scale) {
     while (n_scale != tmp_value) controller_->DecrementScale();
   } else if (!is_decrement && tmp_value <= max_scale) {
     while (n_scale != tmp_value) controller_->IncremenetScale();
   }
-  // if (tmp_value >= min_scale && tmp_value <= max_scale) {
-  //   n_scale = tmp_value;
-  //   emit on_scaleStep();
-  // }
+  qDebug() << "HERE 1";
+  if (tmp_value >= min_scale && tmp_value <= max_scale) {
+    qDebug() << "HERE 2";
+    n_scale = tmp_value;
+    qDebug() << "n_scale: " << n_scale;
+    qDebug() << "orogin_scale: " << model_->get_scale();
+    // emit on_scaleStep();
+  }
 }
 
 // -------------------------------------------------------
 
-void MainWindow::changeBackgroundColor(int value_) {
-  Q_UNUSED(value_);
+void MainWindow::changeBackgroundColor(int value) {
+  controller_->ChangeBackgroundColor(value);
 
-  m_myWidget->setBackgroundColor(value_);
+  // m_myWidget->setBackgroundColor(value_);
   // TODO:(_who) change
 }
 
 // -------------------------------------------------------
 
-void MainWindow::changeColorLines(int value_) {
-  Q_UNUSED(value_);
-
-  m_myWidget->setLineColor(value_);
+void MainWindow::changeColorLines(int value) {
+  controller_->ChangeLinesColor(value);
+  // m_myWidget->setLineColor(value);
 }
 
 // -------------------------------------------------------
 
-void MainWindow::changeColorPoints(int value_) {
-  Q_UNUSED(value_);
-
-  m_myWidget->setPointColor(value_);
+void MainWindow::changeColorPoints(int value) {
+  controller_->ChangePointColor(value);
+  // m_myWidget->setPointColor(value_);
 }
 
 // -------------------------------------------------------
 
-void MainWindow::changeWidthLines(int value_) {
-  Q_UNUSED(value_);
-  ui->lineEdit_widthLine->setText(QString::number(value_));
-  double value = value_ / 10.0;
-  m_myWidget->setLineWidth(value);
-}
-
-void MainWindow::changeSizePoint(int value_) {
-  Q_UNUSED(value_);
-  m_myWidget->setPointSize(value_);
-  ui->lineEdit_pointsSize->setText(QString::number(value_));
+void MainWindow::changeWidthLines(int value) {
+  controller_->ChangeLineWidth(value);
+  ui->lineEdit_widthLine->setText(QString::number(value));
+  // m_myWidget->setLineWidth(value);
 }
 
 // -------------------------------------------------------
 
-void MainWindow::setPointType(int value_) {
-  Q_UNUSED(value_);
-  m_myWidget->setPointType(value_);
+void MainWindow::changeSizePoint(int value) {
+  controller_->ChangePointSize(value);
+  ui->lineEdit_pointsSize->setText(QString::number(value));
+  // m_myWidget->setPointSize(value_);
+}
+
+// -------------------------------------------------------
+
+void MainWindow::setPointType(PointType const &type) {
+  qDebug() << "Type point: " << type;
+  controller_->ChangeTypePoint(type);
+  // m_myWidget->setPointType(value_);
 }
 
 // -------------------------------------------------------
@@ -417,13 +427,13 @@ void MainWindow::connectsColor() {
 
 void MainWindow::connectsPointType() {
   connect(ui->radioButton_no, &QRadioButton::pressed, this,
-          [&]() { m_myWidget->setPointType(0); });
+          [&]() { setPointType(PointType::POINT_NONE); });
 
   connect(ui->radioButton_circle, &QRadioButton::pressed, this,
-          [&]() { m_myWidget->setPointType(1); });
+          [&]() { setPointType(PointType::POINT_CIRCLE); });
 
   connect(ui->radioButton_squard, &QRadioButton::pressed, this,
-          [&]() { m_myWidget->setPointType(2); });
+          [&]() { setPointType(PointType::POINT_SQUARE); });
 
   connect(ui->lineEdit_pointsSize, &QLineEdit::textEdited, this,
           [&](QString value_) { changeSizePoint(value_.toInt()); });
@@ -457,11 +467,14 @@ void MainWindow::connectsImages() {
 // -------------------------------------------------------
 
 void MainWindow::connectPerspective() {
-  connect(ui->radioButton_central, &QRadioButton::pressed, this,
-          [&]() { m_myWidget->setPerspective(0); });
+  connect(ui->radioButton_central, &QRadioButton::pressed, this, [&]() {
+    // m_myWidget->setPerspective(0);
+    controller_->ChangePerspective(PerspectiveType::PERSPECTIVE_CENTRAL);
+  });
 
-  connect(ui->radioButton_parallel, &QRadioButton::pressed, this,
-          [&]() { m_myWidget->setPerspective(1); });
+  connect(ui->radioButton_parallel, &QRadioButton::pressed, this, [&]() {
+    controller_->ChangePerspective(PerspectiveType::PERSPECTIVE_PARALLEL);
+  });
 }
 
 // -------------------------------------------------------

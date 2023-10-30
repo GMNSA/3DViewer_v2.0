@@ -30,6 +30,8 @@ class IModelViewer {
   virtual int get_rotate_y() const = 0;
   virtual int get_rotate_z() const = 0;
 
+  // -- -- -- --
+
   virtual void set_rotate_buff_x(int const &rotate_x) = 0;
   virtual void set_rotate_buff_y(int const &rotate_y) = 0;
   virtual void set_rotate_buff_z(int const &rotate_z) = 0;
@@ -38,25 +40,47 @@ class IModelViewer {
   virtual int get_rotate_buff_y() const = 0;
   virtual int get_rotate_buff_z() const = 0;
 
+  // -- -- -- --
+
   virtual void set_background_color(int const value_) = 0;
   virtual QColor get_background_color() const = 0;
 
+  virtual void set_point_color(int const &value) = 0;
+  virtual QColor get_point_color() const = 0;
+
+  virtual void set_lines_color(int const &value) = 0;
+  virtual QColor get_lines_color() const = 0;
+
+  // -- -- -- --
+
+  virtual void set_perspective(int const &value) = 0;
+
   virtual int get_perspective() const = 0;
+  virtual double get_size_perspective() const = 0;
   virtual QString get_filename_object() const = 0;
   virtual bool get_is_valid() const = 0;
+
+  // -- -- -- --
 
   virtual void set_line_type(LineType const &type) = 0;
   virtual LineType get_line_type() const = 0;
 
+  // -- -- -- --
+
   virtual void set_point_type(PointType const &type) = 0;
   virtual PointType get_point_type() const = 0;
   virtual void set_point_size(double const &size) = 0;
+
   virtual double get_point_size() const = 0;
   virtual double get_point_size_max() const = 0;
   virtual double get_point_size_min() const = 0;
 
+  // -- -- -- --
+
   virtual void set_line_width(double const &value) = 0;
   virtual double get_line_width() const = 0;
+
+  // -- -- -- --
 
   virtual void set_scale(int const &value) = 0;
   virtual void set_max_scale(int const &value) = 0;
