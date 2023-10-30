@@ -65,7 +65,17 @@ void MainWindow::Update() {
   // m_myWidget->updateInfoObject();
   changePerperpertiveRdb(model_->get_perspective());
   ui->lineEdit_scale->setText(QString::number(model_->get_scale()));
-  // TODO:(_who) release
+  ui->hSlidder_pointsSize->setValue(model_->get_point_size());
+  ui->hSlider_colorLines->setValue(model_->get_lines_color().toHsl().hue());
+  ui->hSlider_colorPoints->setValue(model_->get_point_color().toHsl().hue());
+  ui->hSlider_backgroundColor->setValue(
+      model_->get_background_color().toHsl().hue());
+  if (model_->get_point_type() == PointType::POINT_CIRCLE)
+    ui->radioButton_circle->setChecked(true);
+  else if (model_->get_point_type() == PointType::POINT_SQUARE)
+    ui->radioButton_squard->setChecked(true);
+
+  ui->hSlidder_widthLine->setValue(model_->get_line_width() * 10);
 }
 
 // -------------------------------------------------------

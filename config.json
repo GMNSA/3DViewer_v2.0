@@ -5,18 +5,18 @@
         0
     ],
     "lineColor": [
+        55,
         105,
-        57,
-        55
+        98
     ],
     "lineType": 0,
     "lineWidth": 0,
     "perspective": 0,
     "pointColor": [
-        103,
         105,
+        70,
         55
     ],
-    "pointSize": 4,
+    "pointSize": 3,
     "pointType": 1
 }

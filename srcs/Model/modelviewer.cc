@@ -582,6 +582,7 @@ bool ModelViewer::LoadConfig(QString path_) {
     // TODO:(_who) don't forget release "Default Config"
     // DefaultConfig();
     NotifyWidgetOpengl();
+    NotifyMainWindow();
   }
 
   return (is_res);

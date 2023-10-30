@@ -116,6 +116,7 @@ void MyWidgetOPenGL::paintGL() {
     if (model_->get_point_type() == PointType::POINT_CIRCLE) {
       glEnable(GL_POINT_SMOOTH);
       qDebug() << "HERE point circle";
+      qDebug() << "point size: " << model_->get_point_size();
       glPointSize(model_->get_point_size());
       drawObjects(e_typeDraw::TYPE_POINTS);
       glDisable(GL_POINT_SMOOTH);
@@ -651,13 +652,12 @@ void MyWidgetOPenGL::moveZ(float value_) {
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::drawObjects(e_typeDraw type_draw) {
-  Q_UNUSED(type_draw);
   auto type = type_draw == 0 ? GL_LINE_LOOP : GL_POINTS;
   double x, y, z;
   auto point_color = model_->get_point_color();
   auto line_color = model_->get_lines_color();
-
   size_t n_polygons = model_->Polygons().size();
+
   for (size_t i = 1; i < n_polygons; i++) {
     glBegin(type);
     if (type_draw == TYPE_LINES)
