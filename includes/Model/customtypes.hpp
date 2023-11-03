@@ -1,6 +1,7 @@
 #ifndef INCLUDES_MODEL_CUSTOMTYPES_HPP_
 #define INCLUDES_MODEL_CUSTOMTYPES_HPP_
 
+#include <QString>
 #include <cstddef>
 
 namespace s21 {
@@ -55,6 +56,20 @@ struct Point {
       return z;
   }
 };
+
+// -- -- -- --
+
+typedef struct InfoData {
+  QString label_name;
+  QString label_vertex;
+  QString label_polygons;
+
+  void ClearInfo() {
+    label_name.clear();
+    label_vertex.clear();
+    label_polygons.clear();
+  }
+} InfoData;
 
 // -- -- -- --
 

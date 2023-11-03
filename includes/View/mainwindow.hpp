@@ -7,7 +7,6 @@
 #include <QMainWindow>
 
 #include "../Controller/icontrollerinterface.hpp"
-#include "../lib/QtGifImage/includes/gifcreator.h"
 #include "./imainmenuobserver.hpp"
 #include "./mywidgetopengl.hpp"
 
@@ -36,8 +35,6 @@ class MainWindow : public QMainWindow, virtual public IMainWindowObserver {
 
   // void screenshotJPEG();
   //  void screenshotBMP();
-  void doGif();
-  void startGif();
 
  private slots:
   void closeApp();
@@ -58,25 +55,15 @@ class MainWindow : public QMainWindow, virtual public IMainWindowObserver {
 
  private:
   Ui::MainWindow *ui;
+
   IControllerInterface *controller_;
   IModelViewer *model_;
-
   MyWidgetOPenGL *m_myWidget;
 
-  bool m_isPositiveHorizontal;
-  bool m_isPositiveVertical;
-  GifCreator *m_gif;
-  QTimer *m_timerGif;
   QLabel *m_labelGifTime;
-
-  double m_startTime;
-  int m_endTime;
-  int m_countFrame = 0;
-  int m_frameNum = 0;
 
  private:
   void connectsConfiguration();
-  void defaultConfig();
   void changeRotateSliders();
 
   void connectsMoves();
@@ -88,9 +75,6 @@ class MainWindow : public QMainWindow, virtual public IMainWindowObserver {
   void connectsLineWidth();
   void connectPerspective();
   void connectMouseRotate();
-
-  // void screenshot(int isJpeg = 1);
-  void changeColorGifTime(int isBlack_);
 };
 
 }  // namespace s21

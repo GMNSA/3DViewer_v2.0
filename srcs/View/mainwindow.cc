@@ -10,8 +10,8 @@
 #include "../lib/MatrixLib/includes/matrix.hpp"
 #include "./ui_mainwindow.h"
 
+// TODO(_who): need change (remvoe) define
 #define ROTATE_VALUE 720
-#define GIF_FPS 10
 
 // -------------------------------------------------------
 
@@ -24,16 +24,11 @@ MainWindow::MainWindow(IControllerInterface *controller, IModelViewer *model,
       controller_(controller),
       model_(model),
       m_myWidget(new MyWidgetOPenGL(controller, model, this)),
-      m_isPositiveHorizontal(1),
-      m_isPositiveVertical(1),
-      m_gif(new GifCreator(m_myWidget)),
-      m_timerGif(new QTimer(this)),
       m_labelGifTime(new QLabel(m_myWidget)) {
   ui->setupUi(this);
   model_->Attach(qobject_cast<IMainWindowObserver *>(this));
 
   S21Matrix matrix(3, 3);
-  qDebug() << "GET COLS: " << matrix.GetCols();
 
   ui->radioButton_solid->setChecked(true);
   ui->radioButton_no->setChecked(true);
@@ -42,15 +37,15 @@ MainWindow::MainWindow(IControllerInterface *controller, IModelViewer *model,
   m_myWidget->show();
   connectsConfiguration();
 
-  m_labelGifTime->setText("");
-  m_labelGifTime->setAlignment(Qt::AlignTop);
-  m_labelGifTime->setAlignment(Qt::AlignLeft);
-  m_labelGifTime->move(40, 40);
-  m_labelGifTime->raise();
-  QFont font = m_labelGifTime->font();
-  font.setPointSize(20);
-  font.setBold(true);
-  m_labelGifTime->setFont(font);
+  // m_labelGifTime->setText("");
+  // m_labelGifTime->setAlignment(Qt::AlignTop);
+  // m_labelGifTime->setAlignment(Qt::AlignLeft);
+  // m_labelGifTime->move(40, 40);
+  // m_labelGifTime->raise();
+  // QFont font = m_labelGifTime->font();
+  // font.setPointSize(20);
+  // font.setBold(true);
+  // m_labelGifTime->setFont(font);
 }
 
 // -------------------------------------------------------
@@ -60,8 +55,8 @@ MainWindow::~MainWindow() { delete ui; }
 // -------------------------------------------------------
 
 void MainWindow::Update() {
-  qDebug() << "Update main window";
   // m_myWidget->updateInfoObject();
+
   changePerperpertiveRdb(model_->get_perspective());
   ui->lineEdit_scale->setText(QString::number(model_->get_scale()));
   ui->hSlidder_pointsSize->setValue(model_->get_point_size());
@@ -82,7 +77,8 @@ void MainWindow::Update() {
 void MainWindow::openFileDialog() {
   QString filename = QFileDialog::getOpenFileName(
       this, tr("Open Object"), "./objects/", tr("Image Files (*.obj)"));
-  model_->OpenFileObject(filename);
+  // model_->OpenFileObject(filename);
+  controller_->OpenFile(filename);
 
   qDebug() << "open";
 }
@@ -129,8 +125,8 @@ void MainWindow::connectsConfiguration() {
   connect(ui->hSlidder_pointsSize, &QSlider::valueChanged, this,
           &MainWindow::changeSizePoint);
 
-  connect(m_myWidget, &MyWidgetOPenGL::on_changeColorGifTime, this,
-          &MainWindow::changeColorGifTime);
+  //   connect(m_myWidget, &MyWidgetOPenGL::on_changeColorGifTime, this,
+  //           &MainWindow::changeColorGifTime);
 
   connect(m_myWidget, &MyWidgetOPenGL::on_changePerperpertiveRdb, this,
           &MainWindow::changePerperpertiveRdb);
@@ -163,47 +159,13 @@ void MainWindow::changeRotateSliders() {
 
 // -------------------------------------------------------
 
-// void MainWindow::screenshot(int isJpeg) {
-//   Q_UNUSED(isJpeg);
-//   long ttime = time(0);
-//   QString current_time = ctime(&ttime);
-//   QString format;
-//   QPixmap pix(m_myWidget->size() * 2);
-//   QMessageBox msgBox;
-//
-//   QString path = QDir::currentPath() + "/screenshots/" + current_time;
-//   path.chop(1);
-//   path.replace(" ", "_");
-//
-//   if (isJpeg == 1) {
-//     path += ".jpeg";
-//     format = "JPG";
-//   } else {
-//     path += ".bmp";
-//     format = "BMP";
-//   }
-//
-//   pix.setDevicePixelRatio(2);
-//   m_myWidget->render(&pix);
-//
-//   if (pix.save(path, format.toLatin1(), 100)) {
-//     msgBox.setText("Screenshot OK (" + format + ").");
-//     msgBox.exec();
-//   } else {
-//     msgBox.setText("Screenshot ERROR (" + format + ").");
-//     msgBox.exec();
-//   }
+// void MainWindow::changeColorGifTime(int isBlack_) {
+//   Q_UNUSED(isBlack_);
+//   if (isBlack_)
+//     m_labelGifTime->setStyleSheet("QLabel { color : black; }");
+//   else
+//     m_labelGifTime->setStyleSheet("QLabel { color : white; }");
 // }
-
-// -------------------------------------------------------
-
-void MainWindow::changeColorGifTime(int isBlack_) {
-  Q_UNUSED(isBlack_);
-  if (isBlack_)
-    m_labelGifTime->setStyleSheet("QLabel { color : black; }");
-  else
-    m_labelGifTime->setStyleSheet("QLabel { color : white; }");
-}
 
 // -------------------------------------------------------
 
@@ -222,18 +184,13 @@ void MainWindow::lineScaleChange(QString value) {
 
   is_decrement = n_scale > tmp_value ? 1 : 0;
 
-  qDebug() << "HERE 0";
   if (is_decrement && tmp_value >= min_scale) {
     while (n_scale != tmp_value) controller_->DecrementScale();
   } else if (!is_decrement && tmp_value <= max_scale) {
     while (n_scale != tmp_value) controller_->IncremenetScale();
   }
-  qDebug() << "HERE 1";
   if (tmp_value >= min_scale && tmp_value <= max_scale) {
-    qDebug() << "HERE 2";
     n_scale = tmp_value;
-    qDebug() << "n_scale: " << n_scale;
-    qDebug() << "orogin_scale: " << model_->get_scale();
     // emit on_scaleStep();
   }
 }
@@ -275,7 +232,6 @@ void MainWindow::changeSizePoint(int value) {
 // -------------------------------------------------------
 
 void MainWindow::setPointType(PointType const &type) {
-  qDebug() << "Type point: " << type;
   controller_->ChangeTypePoint(type);
 }
 
@@ -292,57 +248,6 @@ void MainWindow::moveObject(int type, int value) {
     controller_->MoveDirectionZ(value);
     ui->lineEdit_moveZ->setText(QString::number(value));
   }
-}
-
-// -------------------------------------------------------
-
-// void MainWindow::screenshotJPEG() { screenshot(1); }
-
-// -------------------------------------------------------
-
-// void MainWindow::screenshotBMP() { screenshot(0); }
-
-// -------------------------------------------------------
-
-void MainWindow::doGif() {
-  m_startTime = 0;
-  m_endTime = 1000 / GIF_FPS;
-  m_timerGif->start(1000 / GIF_FPS);
-  m_frameNum = 0;
-}
-
-// -------------------------------------------------------
-
-void MainWindow::startGif() {
-  if (m_startTime == m_endTime) {
-    float time = 0;
-    QPixmap gif(m_myWidget->size());
-    m_myWidget->render(&gif);
-    gif.scaled(640, 480, Qt::IgnoreAspectRatio);
-    if (!gif.save(m_gif->imageFilePathMask().arg(m_frameNum))) {
-      // logging_line(ERROR_ANOTHER, "", __LINE__, "[ERROR] gif not save
-      // image.", 1);
-    }
-
-    time = m_startTime / 1000;
-    m_labelGifTime->setText(QString::number(time));
-    m_endTime += 1000 / GIF_FPS;
-    ++m_frameNum;
-  }
-
-  int gifLength = 5;
-  if (m_startTime >= 1000 * gifLength) {
-    if (m_gif->createGif(m_frameNum, GIF_FPS)) {
-      qDebug() << "GIF OK";
-    } else {
-      qDebug() << "GIF FALSE";
-    }
-
-    m_timerGif->stop();
-    qDebug() << "gif path: " << m_gif->gifFilePath();
-    m_labelGifTime->setText("");
-  }
-  m_startTime += 1000.0 / GIF_FPS;
 }
 
 // -------------------------------------------------------
@@ -427,8 +332,8 @@ void MainWindow::connectsPointType() {
 // -------------------------------------------------------
 
 void MainWindow::connectsScale() {
-  connect(m_myWidget, &MyWidgetOPenGL::on_scaleStep, this,
-          [&]() { ui->lineEdit_scale->setText(m_myWidget->scaleString()); });
+  // connect(m_myWidget, &MyWidgetOPenGL::on_scaleStep, this,
+  //         [&]() { ui->lineEdit_scale->setText(m_myWidget->scaleString()); });
 
   connect(ui->pb_changeScale, &QPushButton::clicked, this,
           [&]() { lineScaleChange(ui->lineEdit_scale->text()); });
@@ -446,8 +351,10 @@ void MainWindow::connectsImages() {
           [&]() { controller_->ScreenshotJPEG(m_myWidget); });
   connect(ui->pb_bmp, &QPushButton::clicked, this,
           [&]() { controller_->ScreenshotBMP(m_myWidget); });
-  connect(ui->pb_gif, &QPushButton::clicked, this, &MainWindow::doGif);
-  connect(m_timerGif, &QTimer::timeout, this, &MainWindow::startGif);
+  connect(ui->pb_gif, &QPushButton::clicked, this,
+          [&]() { controller_->Gif(m_myWidget); });
+  // connect(ui->pb_gif, &QPushButton::clicked, this, [&]() { doGif(); });
+  // connect(m_timerGif, &QTimer::timeout, this, &MainWindow::startGif);
 }
 
 // -------------------------------------------------------

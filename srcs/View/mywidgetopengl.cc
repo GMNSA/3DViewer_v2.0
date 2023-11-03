@@ -31,9 +31,9 @@ MyWidgetOPenGL::MyWidgetOPenGL(IControllerInterface *controller,
     : QOpenGLWidget(parent),
       controller_(controller),
       model_(model),
-      m_labelName(new QLabel(this)),
-      m_labelVertes(new QLabel(this)),
-      m_labelPolygons(new QLabel(this)),
+      label_name_(new QLabel(this)),
+      label_vertes_(new QLabel(this)),
+      label_polygons_(new QLabel(this)),
       m_layoutH(new QHBoxLayout(this)),
       m_isMouse(false),
       m_tmpColor({152, 84, 93}) {
@@ -60,6 +60,8 @@ void MyWidgetOPenGL::initializeGL() {
   glClearColor(0.0, 0.1, 0.0, 1.0);
 
   glEnable(GL_DEPTH_TEST);  // dissabling the buffer deep
+  glEnable(GL_CULL_FACE);
+  glEnable(GL_LINE_SMOOTH);
   glShadeModel(GL_FLAT);
 
   initialized_ = true;
@@ -96,6 +98,7 @@ void MyWidgetOPenGL::paintGL() {
       glEnable(GL_LINE_STIPPLE);
       glLineStipple(3, 255);
     }
+    glMatrixMode(GL_MODELVIEW);
 
     updatePerspective();
     drawObjects(e_typeDraw::TYPE_LINES);
@@ -105,13 +108,10 @@ void MyWidgetOPenGL::paintGL() {
     }
     if (model_->get_point_type() == PointType::POINT_CIRCLE) {
       glEnable(GL_POINT_SMOOTH);
-      qDebug() << "HERE point circle";
-      qDebug() << "point size: " << model_->get_point_size();
       glPointSize(model_->get_point_size());
       drawObjects(e_typeDraw::TYPE_POINTS);
       glDisable(GL_POINT_SMOOTH);
     } else if (model_->get_point_type() == PointType::POINT_SQUARE) {
-      qDebug() << "HERE point square";
       drawSquare();
     }
   }
@@ -171,19 +171,17 @@ void MyWidgetOPenGL::turnOffMouse() { m_isMouse = false; }
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::setBackgroundColor(int value_) {
-  if (value_ == 0 || value_ == 255) {
-    // m_backgroundColor.setHsl(0, 0, 0);
-    m_labelName->setStyleSheet("QLabel { color : white; }");
-    m_labelVertes->setStyleSheet("QLabel { color : white; }");
-    m_labelPolygons->setStyleSheet("QLabel { color : white; }");
-    emit on_changeColorGifTime(0);
+void MyWidgetOPenGL::ChangeColorFileInfo(int const &value) {
+  if (value == -1) {
+    label_name_->setStyleSheet("QLabel { color : white; }");
+    label_vertes_->setStyleSheet("QLabel { color : white; }");
+    label_polygons_->setStyleSheet("QLabel { color : white; }");
+    // emit on_changeColorGifTime(0);
   } else {
-    // m_backgroundColor.setHsl(value_, 50, 50);
-    m_labelName->setStyleSheet("QLabel { color : black; }");
-    m_labelVertes->setStyleSheet("QLabel { color : black; }");
-    m_labelPolygons->setStyleSheet("QLabel { color : black; }");
-    emit on_changeColorGifTime(1);
+    label_name_->setStyleSheet("QLabel { color : grey; }");
+    label_vertes_->setStyleSheet("QLabel { color : grey; }");
+    label_polygons_->setStyleSheet("QLabel { color : grey; }");
+    // emit on_changeColorGifTime(1);
   }
 
   // TODO(_who): release controller-> changeBackgroundColor
@@ -192,38 +190,10 @@ void MyWidgetOPenGL::setBackgroundColor(int value_) {
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::connectionsConfiguration() {}
-
-// -------------------------------------------------------
-
-void MyWidgetOPenGL::qColorToRGB(const QColor &c_, float &r_, float &g_,
-                                 float &b_) const {
-  r_ = normalize_0_1(c_.redF(), 1.0f, 255.0f);
-  g_ = normalize_0_1(c_.greenF(), 1.0f, 255.0f);
-  b_ = normalize_0_1(c_.blueF(), 1.0f, 255.0f);
-}
-
-// -------------------------------------------------------
-
-int MyWidgetOPenGL::normalize_0_1(float val, float min, float max) const {
-  return (val - min) / (max - min);
-}
-
-// -------------------------------------------------------
-
 void MyWidgetOPenGL::updateInfoObject() {
-  if (model_->get_is_valid()) {
-    qDebug() << "[HERE update info object]!!! Filename: "
-             << model_->get_filename_object();
-    QFileInfo info(model_->get_filename_object());
-
-    m_labelName->setText("Name: " + info.baseName());
-    m_labelVertes->setText("    Vertes: " +
-                           QString::number(model_->PointsArray().size()));
-    m_labelPolygons->setText("    Polygons: " +
-                             QString::number(model_->Polygons().size() *
-                                             model_->PointsArray().size()));
-  }
+  label_name_->setText(model_->get_info_file().label_name);
+  label_vertes_->setText(model_->get_info_file().label_vertex);
+  label_polygons_->setText(model_->get_info_file().label_polygons);
 }
 
 // -------------------------------------------------------
@@ -288,14 +258,14 @@ void MyWidgetOPenGL::drawObjects(e_typeDraw type_draw) {
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::drawInfo() {
-  m_labelName->setText("Name: ");
-  m_labelVertes->setText("Vertes: ");
-  m_labelPolygons->setText("Polygons: ");
+  // label_name_->setText("Name: ");
+  // label_vertes_->setText("Vertes: ");
+  // label_polygons_->setText("Polygons: ");
   m_layoutH->setAlignment(Qt::AlignTop);
   m_layoutH->addStretch();
-  m_layoutH->addWidget(m_labelName);
-  m_layoutH->addWidget(m_labelVertes);
-  m_layoutH->addWidget(m_labelPolygons);
+  m_layoutH->addWidget(label_name_);
+  m_layoutH->addWidget(label_vertes_);
+  m_layoutH->addWidget(label_polygons_);
 }
 
 // -------------------------------------------------------
@@ -312,36 +282,32 @@ void MyWidgetOPenGL::Update() { update(); }
 
 void MyWidgetOPenGL::UpdateInfo() {
   updateInfoObject();
-  qDebug() << "Update Info";
+  ChangeColorFileInfo(model_->get_background_color().toHsl().hue());
 }
 
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::updatePerspective() {
-  // TODO(_who): NEEED FIX !!!
   auto tmp_perspective = model_->get_perspective();
   auto size_perspective = model_->get_size_perspective();
 
+  glLoadIdentity();
   if (tmp_perspective == 1) {
-    glLoadIdentity();
     glFrustum(-size_perspective, size_perspective, -size_perspective,
               size_perspective, size_perspective / 2.5, size_perspective * 2);
     glTranslatef(0, 0, -size_perspective / 2.5 * 3);
-    // m_perspective = 4;
   } else if (tmp_perspective == 0) {
-    glLoadIdentity();
     glOrtho(-size_perspective, size_perspective, -size_perspective,
             size_perspective, -size_perspective, size_perspective);
-    // m_perspective = 5;
   }
 }
 
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::clearInfo() {
-  m_labelName->setText("");
-  m_labelVertes->setText("");
-  m_labelPolygons->setText("");
+  label_name_->setText("");
+  label_vertes_->setText("");
+  label_polygons_->setText("");
 }
 
 // -------------------------------------------------------
@@ -349,9 +315,7 @@ void MyWidgetOPenGL::clearInfo() {
 void MyWidgetOPenGL::drawSquare() {
   auto point_color = model_->get_point_color();
   glColor3f(point_color.redF(), point_color.greenF(), point_color.blueF());
-  // double x, y, z, del = m_perspective == 4 ? 9 : 23;
   double x, y, z, del = model_->get_perspective() == 1 ? 9 : 23;
-
   del = model_->MaxSizePerpective() / del * model_->get_point_size() / 20;
 
   for (size_t i = 1; i < model_->Polygons().size(); i++) {

@@ -22,10 +22,6 @@ class Controller : public QObject, virtual public IControllerInterface {
 
   virtual ~Controller();
 
-  void SetRotateBuffY(int const &value) override;
-  void SetRotateBuffX(int const &value) override;
-  void SetRotateBuffZ(int const &value) override;
-
   void MoveDirectionX(float value, MoveType direction = MOVE_X) override;
   void MoveDirectionY(float value, MoveType direction = MOVE_Y) override;
   void MoveDirectionZ(float value, MoveType direction = MOVE_Z) override;
@@ -59,6 +55,8 @@ class Controller : public QObject, virtual public IControllerInterface {
 
   void ScreenshotJPEG(QWidget *widget) override;
   void ScreenshotBMP(QWidget *widget) override;
+
+  void Gif(QWidget *widget) override;
 
  private:
   MainWindow *view_;

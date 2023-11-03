@@ -55,17 +55,21 @@ int ModelViewer::get_rotate_buff_z() const { return rotate_z_; }
 // ----------------------------------------------------------------------------
 
 void ModelViewer::set_background_color(int value_) {
+  qDebug() << "Change back modelview";
   if (value_ == 0 || value_ == 255) {
     background_color_.setHsl(0, 0, 0);
 
     // TODO:(_who): We need to think how to implement the (ColorGifTime)
     // emit on_changeColorGifTime(0);
+    image_capture_->ChangeColorGifTime(false);
   } else {
     background_color_.setHsl(value_, 50, 50);
+    image_capture_->ChangeColorGifTime(true);
     // emit on_changeColorGifTime(1);
   }
 
   NotifyWidgetOpengl();
+  NotifyWidgetOpenglInfo();
 }
 
 QColor ModelViewer::get_background_color() const { return background_color_; }
@@ -213,11 +217,6 @@ void ModelViewer::MoveRotation(MoveRotationType direction, float value) {
   float tmp = 0;
   int is_error = 0;
 
-  qDebug() << "rotate_before x: " << rotate_before_x_;
-  qDebug() << "rotate_before y: " << rotate_before_y_;
-  qDebug() << "rotate_before z: " << rotate_before_z_;
-  qDebug() << "value: " << value;
-
   if (is_valid_) {
     switch (direction) {
       case MOVE_ROTATE_X:
@@ -279,6 +278,10 @@ void ModelViewer::MoveDirection(MoveType direction, float value) {
   NotifyWidgetOpengl();
   // update();
 }
+
+// ----------------------------------------------------------------------------
+
+InfoData const &ModelViewer::get_info_file() { return info_data_; }
 
 // ----------------------------------------------------------------------------
 
@@ -619,7 +622,7 @@ int ModelViewer::UpdateData() {
       is_valid_ = true;
       size_perspective_ = pow(10, CountNumber(model_->get_max_size()));
 
-      // updateInfoObject();
+      UpdateInfoObject();
       NotifyWidgetOpenglInfo();
       NotifyMainWindow();
 
@@ -630,13 +633,42 @@ int ModelViewer::UpdateData() {
       else if (perspective_ == 5)
         perspective_ = 0;
     } else {
-      // clearInfo();
+      info_data_.ClearInfo();
     }
   } else {
-    // clearInfo();
+    info_data_.ClearInfo();
   }
 
   return (is_res);
+}
+
+// ----------------------------------------------------------------------------
+
+void ModelViewer::ScreenshotBMP(QWidget *widget) {
+  image_capture_->set_widget(widget);
+  image_capture_->ScreenshotBMP();
+}
+
+// ----------------------------------------------------------------------------
+
+void ModelViewer::Gif(QWidget *widget) {
+  image_capture_->set_widget(widget);
+  image_capture_->DoGif();
+}
+
+// ----------------------------------------------------------------------------
+
+void ModelViewer::UpdateInfoObject() {
+  if (get_is_valid()) {
+    QFileInfo info(get_filename_object());
+
+    info_data_.label_name = ("Name: " + info.baseName());
+    info_data_.label_vertex =
+        ("    Vertes: " + QString::number(PointsArray().size()));
+    info_data_.label_polygons =
+        ("    Polygons: " +
+         QString::number(Polygons().size() * PointsArray().size()));
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -648,9 +680,8 @@ void ModelViewer::ScreenshotJPEG(QWidget *widget) {
 
 // ----------------------------------------------------------------------------
 
-void ModelViewer::ScreenshotBMP(QWidget *widget) {
-  image_capture_->set_widget(widget);
-  image_capture_->ScreenshotBMP();
+QLabel *ModelViewer::GetLabelGifTime() const {
+  return image_capture_->get_label_gif_time();
 }
 
 }  // namespace s21

@@ -11,7 +11,9 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_CXX_FLAGS "-g -Wall -Wextra -Werror -ggdb")
+set(CMAKE_CXX_FLAGS "-g -Wall -Wextra -Werror -ggdb -fsanitize=address")
+
+
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core OpenGLWidgets OpenGL Gui REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core OpenGLWidgets OpenGL Gui REQUIRED)
@@ -19,8 +21,18 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core OpenGLWidgets OpenGL Gui REQU
 include_directories(./lib/QtGifImage/src/gifimage/)
 include_directories(./lib/MatrixLib/src/gifimage/)
 
+cmake_host_system_information(RESULT PRETTY_NAME QUERY OS_NAME)
+message(STATUS "${PRETTY_NAME}")
+
+if (${PRETTY_NAME} STREQUAL "Linux")
+    add_compile_definitions(__LINUX__)
+else()
+    add_compile_definitions(__MACOS__)
+endif()
+
 file(GLOB_RECURSE QTPROPERTY_BROWSER_SOURCES
 ./lib/QtGifImage/src/gifimage/qtgifimage.pri)
+
 
 set(PROJECT_SOURCES
         srcs/main.cc

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>863</width>
+    <width>790</width>
     <height>754</height>
    </rect>
   </property>
@@ -656,10 +656,10 @@
            <property name="frameShadow">
             <enum>QFrame::Raised</enum>
            </property>
-           <layout class="QFormLayout" name="formLayout">
+           <layout class="QGridLayout" name="gridLayout_2">
             <item row="0" column="0">
-             <layout class="QVBoxLayout" name="verticalLayout_4">
-              <item>
+             <layout class="QGridLayout" name="gridLayout">
+              <item row="0" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_12">
                 <item>
                  <widget class="QRadioButton" name="radioButton_circle">
@@ -749,7 +749,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>863</width>
+     <width>790</width>
      <height>19</height>
     </rect>
    </property>
@@ -790,8 +790,8 @@
   </connection>
  </connections>
  <buttongroups>
-  <buttongroup name="buttonGroup_2"/>
-  <buttongroup name="buttonGroup_3"/>
   <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_3"/>
+  <buttongroup name="buttonGroup_2"/>
  </buttongroups>
 </ui>

@@ -1,6 +1,7 @@
 #ifndef INCLUDES_MODEL_IMODELVIEWER_HPP_
 #define INCLUDES_MODEL_IMODELVIEWER_HPP_
 
+#include <QLabel>
 #include <QString>
 #include <vector>
 
@@ -99,6 +100,8 @@ class IModelViewer {
   virtual void MoveRotation(MoveRotationType direction, float value) = 0;
   virtual void MoveDirection(MoveType direction, float value) = 0;
 
+  virtual InfoData const &get_info_file() = 0;
+
   // -- -- -- --
 
   virtual void PolygonsClear() = 0;
@@ -136,6 +139,10 @@ class IModelViewer {
 
   virtual void ScreenshotJPEG(QWidget *widget) = 0;
   virtual void ScreenshotBMP(QWidget *widget) = 0;
+
+  virtual void Gif(QWidget *widget) = 0;
+
+  virtual QLabel *GetLabelGifTime() const = 0;
 };
 
 }  // namespace s21

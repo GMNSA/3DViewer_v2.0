@@ -11,10 +11,6 @@ class IControllerInterface {
  public:
   virtual ~IControllerInterface() {}
 
-  virtual void SetRotateBuffY(int const &value) = 0;
-  virtual void SetRotateBuffX(int const &value) = 0;
-  virtual void SetRotateBuffZ(int const &value) = 0;
-
   virtual void MoveDirectionX(float value, MoveType direction = MOVE_X) = 0;
   virtual void MoveDirectionY(float value, MoveType direction = MOVE_Y) = 0;
   virtual void MoveDirectionZ(float value, MoveType direction = MOVE_Z) = 0;
@@ -49,6 +45,8 @@ class IControllerInterface {
 
   virtual void ScreenshotJPEG(QWidget *widget) = 0;
   virtual void ScreenshotBMP(QWidget *widget) = 0;
+
+  virtual void Gif(QWidget *widget) = 0;
 
   // -- -- -- --
 };

@@ -14,8 +14,7 @@
 
 namespace s21 {
 
-typedef struct SettignsData {
-} SettingsData;
+// ----------------------------------------------------------------------------
 
 class ModelViewer : public IModelViewer {
  public:
@@ -92,6 +91,8 @@ class ModelViewer : public IModelViewer {
   void MoveRotation(MoveRotationType direction, float value) override;
   void MoveDirection(MoveType direction, float value) override;
 
+  InfoData const &get_info_file() override;
+
   void PolygonsClear() override;
   void Parse(QString const &str) override;
   ErrorType Error() override;
@@ -134,9 +135,15 @@ class ModelViewer : public IModelViewer {
   void ScreenshotJPEG(QWidget *widget) override;
   void ScreenshotBMP(QWidget *widget) override;
 
+  void Gif(QWidget *widget) override;
+  QLabel *GetLabelGifTime() const override;
+
  public:  // -- origin --
   int CountNumber(int number_);
   int UpdateData();
+
+ private:
+  void UpdateInfoObject();
 
  private:
   Model *model_;
@@ -168,16 +175,18 @@ class ModelViewer : public IModelViewer {
   double min_point_size_;
   PointType point_type_;  // 0 - none; 1 - circle; 2 - square
 
-  long double widht_line_;
+  // long double widht_line_;
   int count_scale_;
   int max_scale_;
   int min_scale_;
 
-  bool initialized_;
+  // bool initialized_;
   QPoint m_Pos;
   double size_perspective_;
 
   QString filename_object_;
+
+  InfoData info_data_;
 
   QList<IWidgetOpenglObserver *> list_widget_opengl_;
   QList<IMainWindowObserver *> list_main_menu_;

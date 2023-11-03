@@ -1,7 +1,5 @@
 #include "../../includes/Controller/controller.hpp"
 
-#include <GL/gl.h>
-
 namespace s21 {
 
 Controller::Controller(IModelViewer *model) : model_(model) {
@@ -14,24 +12,6 @@ Controller::Controller(IModelViewer *model) : model_(model) {
 
 Controller::~Controller() {
   if (view_) delete view_;
-}
-
-// ----------------------------------------------------------------------------
-
-void Controller::SetRotateBuffY(int const &value) {
-  model_->set_rotate_buff_y(value);
-}
-
-// ----------------------------------------------------------------------------
-
-void Controller::SetRotateBuffX(int const &value) {
-  model_->set_rotate_buff_x(value);
-}
-
-// ----------------------------------------------------------------------------
-
-void Controller::SetRotateBuffZ(int const &value) {
-  model_->set_rotate_buff_z(value);
 }
 
 // ----------------------------------------------------------------------------
@@ -199,6 +179,10 @@ void Controller::ScreenshotJPEG(QWidget *widget) {
 void Controller::ScreenshotBMP(QWidget *widget) {
   model_->ScreenshotBMP(widget);
 }
+
+// ----------------------------------------------------------------------------
+
+void Controller::Gif(QWidget *widget) { model_->Gif(widget); }
 
 // ----------------------------------------------------------------------------
 
