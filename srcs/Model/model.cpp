@@ -26,7 +26,6 @@ Model::Model(std::string const& file) : file_(file) {
 void Model::Parse(std::string const& filename) {
   error_ = ErrorType::ERROR_OK;
   if (!filename.empty()) file_ = filename;
-  // TODO(_who): clear data
   max_size_ = 0;
   polygons_.clear();
   points_array_.clear();

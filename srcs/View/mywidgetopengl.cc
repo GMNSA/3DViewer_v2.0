@@ -123,7 +123,6 @@ void MyWidgetOPenGL::wheelEvent(QWheelEvent *event) {
   auto is_decrement = event->angleDelta().ry() < 0 ? 1 : 0;
   (is_decrement) ? controller_->DecrementScale()
                  : controller_->IncremenetScale();
-  // emit on_scaleStep();
 }
 
 // --------------------------------------------------
@@ -236,7 +235,9 @@ void MyWidgetOPenGL::drawObjects(e_typeDraw type_draw) {
   double z = 0.0;
   auto point_color = model_->get_point_color();
   auto line_color = model_->get_lines_color();
-  size_t n_polygons = model_->Polygons().size();
+  auto polygons = model_->Polygons();
+  size_t n_polygons = polygons.size();
+  auto points_array = model_->PointsArray();
 
   for (size_t i = 1; i < n_polygons; i++) {
     glBegin(type);
@@ -244,10 +245,10 @@ void MyWidgetOPenGL::drawObjects(e_typeDraw type_draw) {
       glColor3f(line_color.redF(), line_color.greenF(), line_color.blueF());
     else
       glColor3f(point_color.redF(), point_color.greenF(), point_color.blueF());
-    for (size_t j = 0; j < model_->Polygons()[i].size(); j++) {
-      x = model_->PointsArray()[model_->Polygons()[i][j]].x;
-      y = model_->PointsArray()[model_->Polygons()[i][j]].y;
-      z = model_->PointsArray()[model_->Polygons()[i][j]].z;
+    for (size_t j = 0; j < polygons[i].size(); j++) {
+      x = points_array[polygons[i][j]].x;
+      y = points_array[polygons[i][j]].y;
+      z = points_array[polygons[i][j]].z;
 
       glVertex3f(x, y, z);
     }
@@ -317,13 +318,16 @@ void MyWidgetOPenGL::drawSquare() {
   glColor3f(point_color.redF(), point_color.greenF(), point_color.blueF());
   double x, y, z, del = model_->get_perspective() == 1 ? 9 : 23;
   del = model_->MaxSizePerpective() / del * model_->get_point_size() / 20;
+  auto polygons = model_->Polygons();
+  size_t n_polygons = polygons.size();
+  auto points_array = model_->PointsArray();
 
-  for (size_t i = 1; i < model_->Polygons().size(); i++) {
-    for (size_t j = 0; j < model_->Polygons()[i].size(); j++) {
+  for (size_t i = 1; i < n_polygons; i++) {
+    for (size_t j = 0; j < polygons[i].size(); j++) {
       glBegin(GL_POLYGON);
-      x = model_->PointsArray()[model_->Polygons()[i][j]].x;
-      y = model_->PointsArray()[model_->Polygons()[i][j]].y;
-      z = model_->PointsArray()[model_->Polygons()[i][j]].z;
+      x = points_array[polygons[i][j]].x;
+      y = points_array[polygons[i][j]].y;
+      z = points_array[polygons[i][j]].z;
       glVertex3f(x - del, y - del, z);
       glVertex3f(x + del, y - del, z);
       glVertex3f(x + del, y + del, z);

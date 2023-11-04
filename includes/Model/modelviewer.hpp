@@ -14,6 +14,48 @@
 
 namespace s21 {
 
+// typedef struct DataViewer {
+//   bool is_valid_;
+//
+//   int rotate_x_;
+//   int rotate_y_;
+//   int rotate_z_;
+//
+//   qint64 rotate_before_x_;
+//   qint64 rotate_before_y_;
+//   qint64 rotate_before_z_;
+//
+//   long double move_before_x_;
+//   long double move_before_y_;
+//   long double move_before_z_;
+//
+//   QColor line_color_;
+//   QColor point_color_;
+//   QColor background_color_;
+//
+//   LineType line_type_;
+//   int perspective_;
+//   double line_width_;
+//   double point_size_;
+//   double max_point_size_;
+//   double min_point_size_;
+//   PointType point_type_;  // 0 - none; 1 - circle; 2 - square
+//
+//   // long double widht_line_;
+//   int count_scale_;
+//   int max_scale_;
+//   int min_scale_;
+//
+//   // bool initialized_;
+//   QPoint m_Pos;
+//   double size_perspective_;
+//
+//   QString filename_object_;
+//
+//   InfoData info_data_;
+//
+// } DataViewer;
+
 // ----------------------------------------------------------------------------
 
 class ModelViewer : public IModelViewer {
