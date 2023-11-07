@@ -27,7 +27,7 @@
 namespace s21 {
 
 MyWidgetOPenGL::MyWidgetOPenGL(IControllerInterface *controller,
-                               IModelViewer *model, QWidget *parent)
+                               IFacadeModel *model, QWidget *parent)
     : QOpenGLWidget(parent),
       controller_(controller),
       model_(model),
@@ -74,27 +74,27 @@ void MyWidgetOPenGL::resizeGL(int w, int h) { glViewport(0, 0, w, h); }
 // --------------------------------------------------
 
 void MyWidgetOPenGL::paintGL() {
-  if (!initialized_ || !model_->get_is_valid())
+  if (!initialized_ || !model_->GetDataViewer().is_valid)
     glClearColor(m_tmpColor.redF(), m_tmpColor.greenF(), m_tmpColor.blueF(),
                  1.0f);
   else
-    glClearColor(model_->get_background_color().redF(),
-                 model_->get_background_color().greenF(),
-                 model_->get_background_color().blueF(), 1.0f);
+    glClearColor(model_->GetDataViewer().background_color.redF(),
+                 model_->GetDataViewer().background_color.greenF(),
+                 model_->GetDataViewer().background_color.blueF(), 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-  if (!initialized_ || !model_->get_is_valid()) {
+  if (!initialized_ || !model_->GetDataViewer().is_valid) {
     return;
   }
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  if (model_->get_is_valid()) {
+  if (model_->GetDataViewer().is_valid) {
     glEnable(GL_BLEND);
     glEnable(GL_MULTISAMPLE);
     // TODO(_who): We will need to fix (line width - too much fat and tear)
-    glLineWidth((GLfloat)model_->get_line_width());
+    glLineWidth((GLfloat)model_->GetDataViewer().line_width);
 
-    if (model_->get_line_type() == LineType::LINE_STIPPLE) {
+    if (model_->GetDataViewer().line_type == LineType::LINE_STIPPLE) {
       glEnable(GL_LINE_STIPPLE);
       glLineStipple(3, 255);
     }
@@ -103,15 +103,15 @@ void MyWidgetOPenGL::paintGL() {
     updatePerspective();
     drawObjects(e_typeDraw::TYPE_LINES);
 
-    if (model_->get_line_type() == LineType::LINE_STIPPLE) {
+    if (model_->GetDataViewer().line_type == LineType::LINE_STIPPLE) {
       glDisable(GL_LINE_STIPPLE);
     }
-    if (model_->get_point_type() == PointType::POINT_CIRCLE) {
+    if (model_->GetDataViewer().point_type == PointType::POINT_CIRCLE) {
       glEnable(GL_POINT_SMOOTH);
-      glPointSize(model_->get_point_size());
+      glPointSize(model_->GetDataViewer().point_size);
       drawObjects(e_typeDraw::TYPE_POINTS);
       glDisable(GL_POINT_SMOOTH);
-    } else if (model_->get_point_type() == PointType::POINT_SQUARE) {
+    } else if (model_->GetDataViewer().point_type == PointType::POINT_SQUARE) {
       drawSquare();
     }
   }
@@ -128,10 +128,12 @@ void MyWidgetOPenGL::wheelEvent(QWheelEvent *event) {
 // --------------------------------------------------
 
 void MyWidgetOPenGL::mouseMoveEvent(QMouseEvent *event) {
-  model_->set_rotate_x(mouse_position_.x() - event->pos().x());
-  model_->set_rotate_y(mouse_position_.y() - event->pos().y());
+  // model_->set_rotate_x(mouse_position_.x() - event->pos().x());
+  // model_->set_rotate_y(mouse_position_.y() - event->pos().y());
+  controller_->TurnObjectX(mouse_position_.x() - event->pos().x());
+  controller_->TurnObjectY(mouse_position_.y() - event->pos().y());
   mouse_position_ = event->pos();
-  ChangeRotate();
+  // ChangeRotate();
 }
 
 // --------------------------------------------------
@@ -190,40 +192,41 @@ void MyWidgetOPenGL::ChangeColorFileInfo(int const &value) {
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::updateInfoObject() {
-  label_name_->setText(model_->get_info_file().label_name);
-  label_vertes_->setText(model_->get_info_file().label_vertex);
-  label_polygons_->setText(model_->get_info_file().label_polygons);
+  auto &info = model_->GetDataViewer().info_data;
+  label_name_->setText(info.label_name);
+  label_vertes_->setText(info.label_vertex);
+  label_polygons_->setText(info.label_polygons);
 }
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::ChangeRotate() {
-  if (model_->get_is_valid()) {
-    if (model_->get_rotate_x()) {
-      model_->TurnObjectX(model_->get_rotate_x());
-    }
-    if (model_->get_rotate_y()) {
-      model_->TurnObjectY(model_->get_rotate_y());
-    }
-  }
-}
+// void MyWidgetOPenGL::ChangeRotate() {
+//   if (model_->get_is_valid()) {
+//     if (model_->get_rotate_x()) {
+//       model_->TurnObjectX(model_->get_rotate_x());
+//     }
+//     if (model_->get_rotate_y()) {
+//       model_->TurnObjectY(model_->get_rotate_y());
+//     }
+//   }
+// }
 
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::moveX(float value_) {
-  model_->MoveDirection(MOVE_X, value_);
+  controller_->MoveDirectionX(value_);
 }
 
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::moveY(float value_) {
-  model_->MoveDirection(MOVE_Y, value_);
+  controller_->MoveDirectionY(value_);
 }
 
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::moveZ(float value_) {
-  model_->MoveDirection(MOVE_Z, value_);
+  controller_->MoveDirectionZ(value_);
 }
 
 // -------------------------------------------------------
@@ -233,8 +236,8 @@ void MyWidgetOPenGL::drawObjects(e_typeDraw type_draw) {
   double x = 0.0;
   double y = 0.0;
   double z = 0.0;
-  auto point_color = model_->get_point_color();
-  auto line_color = model_->get_lines_color();
+  auto point_color = model_->GetDataViewer().point_color;
+  auto line_color = model_->GetDataViewer().line_color;
   auto polygons = model_->Polygons();
   size_t n_polygons = polygons.size();
   auto points_array = model_->PointsArray();
@@ -283,14 +286,14 @@ void MyWidgetOPenGL::Update() { update(); }
 
 void MyWidgetOPenGL::UpdateInfo() {
   updateInfoObject();
-  ChangeColorFileInfo(model_->get_background_color().toHsl().hue());
+  ChangeColorFileInfo(model_->GetDataViewer().background_color.toHsl().hue());
 }
 
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::updatePerspective() {
-  auto tmp_perspective = model_->get_perspective();
-  auto size_perspective = model_->get_size_perspective();
+  auto tmp_perspective = model_->GetDataViewer().perspective;
+  auto size_perspective = model_->GetDataViewer().size_perspective;
 
   glLoadIdentity();
   if (tmp_perspective == 1) {
@@ -314,10 +317,11 @@ void MyWidgetOPenGL::clearInfo() {
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::drawSquare() {
-  auto point_color = model_->get_point_color();
+  auto point_color = model_->GetDataViewer().point_color;
   glColor3f(point_color.redF(), point_color.greenF(), point_color.blueF());
-  double x, y, z, del = model_->get_perspective() == 1 ? 9 : 23;
-  del = model_->MaxSizePerpective() / del * model_->get_point_size() / 20;
+  double x, y, z, del = model_->GetDataViewer().perspective == 1 ? 9 : 23;
+  del = model_->GetDataViewer().max_perspective / del *
+        model_->GetDataViewer().point_size / 20;
   auto polygons = model_->Polygons();
   size_t n_polygons = polygons.size();
   auto points_array = model_->PointsArray();

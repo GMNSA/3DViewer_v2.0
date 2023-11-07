@@ -17,7 +17,7 @@
 
 namespace s21 {
 
-MainWindow::MainWindow(IControllerInterface *controller, IModelViewer *model,
+MainWindow::MainWindow(IControllerInterface *controller, IFacadeModel *model,
                        QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
@@ -26,6 +26,7 @@ MainWindow::MainWindow(IControllerInterface *controller, IModelViewer *model,
       m_myWidget(new MyWidgetOPenGL(controller, model, this)),
       m_labelGifTime(new QLabel(m_myWidget)) {
   ui->setupUi(this);
+  // TODO(_who): remove qdebug
   model_->Attach(qobject_cast<IMainWindowObserver *>(this));
 
   S21Matrix matrix(3, 3);
@@ -56,54 +57,92 @@ MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::Update() {
   // m_myWidget->updateInfoObject();
+  auto data = model_->GetDataViewer();
 
-  changePerperpertiveRdb(model_->get_perspective());
-  ui->lineEdit_scale->setText(QString::number(model_->get_scale()));
-  ui->hSlidder_pointsSize->setValue(model_->get_point_size());
-  ui->hSlider_colorLines->setValue(model_->get_lines_color().toHsl().hue());
-  ui->hSlider_colorPoints->setValue(model_->get_point_color().toHsl().hue());
-  ui->hSlider_backgroundColor->setValue(
-      model_->get_background_color().toHsl().hue());
-  if (model_->get_point_type() == PointType::POINT_CIRCLE)
+  changePerperpertiveRdb(data.perspective);
+  ui->lineEdit_scale->setText(QString::number(data.count_scale));
+  ui->hSlidder_pointsSize->setValue(data.point_size);
+  ui->hSlider_colorLines->setValue(data.line_color.toHsl().hue());
+  ui->hSlider_colorPoints->setValue(data.point_color.toHsl().hue());
+  ui->hSlider_backgroundColor->setValue(data.background_color.toHsl().hue());
+  if (data.point_type == PointType::POINT_CIRCLE)
     ui->radioButton_circle->setChecked(true);
-  else if (model_->get_point_type() == PointType::POINT_SQUARE)
+  else if (data.point_type == PointType::POINT_SQUARE)
     ui->radioButton_squard->setChecked(true);
 
-  ui->hSlidder_widthLine->setValue(model_->get_line_width() * 10);
+  ui->hSlidder_widthLine->setValue(data.line_width * 10);
 }
 
+// -------------------------------------------------------
+
+void MainWindow::ChangeRotateSlidersX(int const &value) {
+  int x = (value % ROTATE_VALUE);
+
+  ui->slider_x->setValue(x);
+  ui->lineEdit_rotateX->setText(QString::number(x));
+}
+
+void MainWindow::ChangeRotateSlidersY(int const &value) {
+  int y = (value % ROTATE_VALUE);
+
+  ui->slider_y->setValue(y);
+  ui->lineEdit_rotateY->setText(QString::number(y));
+}
+
+void MainWindow::ChangeRotateSlidersZ(int const &value) {
+  int z = (value % ROTATE_VALUE);
+
+  ui->slider_z->setValue(z);
+  ui->lineEdit_rotateZ->setText(QString::number(z));
+}
+
+void MainWindow::ChangeLineWidth(double const &width) {
+  ui->lineEdit_widthLine->setText(QString::number(width));
+}
+
+void MainWindow::ChangePointSize(int const &value) {
+  ui->lineEdit_pointsSize->setText(QString::number(value));
+}
+
+void MainWindow::ChangeMoveSliderX(int const &value) {
+  ui->lineEdit_moveX->setText(QString::number(value));
+}
+
+void MainWindow::ChangeMoveSliderY(int const &value) {
+  ui->lineEdit_moveY->setText(QString::number(value));
+}
+
+void MainWindow::ChangeMoveSliderZ(int const &value) {
+  ui->lineEdit_moveZ->setText(QString::number(value));
+}
+
+void MainWindow::BlockSlideRotate(bool const &is_block) {
+  if (!is_block) {
+    ui->slider_x->setEnabled(true);
+    ui->slider_y->setEnabled(true);
+    ui->slider_z->setEnabled(true);
+    ui->lineEdit_rotateX->setEnabled(true);
+    ui->lineEdit_rotateY->setEnabled(true);
+    ui->lineEdit_rotateZ->setEnabled(true);
+    m_myWidget->turnOffMouse();
+  } else {
+    ui->slider_x->setEnabled(false);
+    ui->slider_y->setEnabled(false);
+    ui->slider_z->setEnabled(false);
+    ui->lineEdit_rotateX->setEnabled(false);
+    ui->lineEdit_rotateY->setEnabled(false);
+    ui->lineEdit_rotateZ->setEnabled(false);
+    m_myWidget->turnOnMouse();
+  }
+}
 // -------------------------------------------------------
 
 void MainWindow::openFileDialog() {
   QString filename = QFileDialog::getOpenFileName(
       this, tr("Open Object"), "./objects/", tr("Image Files (*.obj)"));
-  // model_->OpenFileObject(filename);
   controller_->OpenFile(filename);
 
   qDebug() << "open";
-}
-
-// -------------------------------------------------------
-
-void MainWindow::rotateX(int value) {
-  // TODO(_who): change rotate -> change buff rotate (safe)
-
-  controller_->MoveRotationX(value);
-  changeRotateSliders();
-}
-
-// -------------------------------------------------------
-
-void MainWindow::rotateY(int value) {
-  controller_->MoveRotationY(value);
-  changeRotateSliders();
-}
-
-// -------------------------------------------------------
-
-void MainWindow::rotateZ(int value) {
-  controller_->MoveRotationZ(value);
-  changeRotateSliders();
 }
 
 // -------------------------------------------------------
@@ -123,7 +162,7 @@ void MainWindow::connectsConfiguration() {
           [&]() { controller_->ChangeLineType(LineType::LINE_SIMPLE); });
 
   connect(ui->hSlidder_pointsSize, &QSlider::valueChanged, this,
-          &MainWindow::changeSizePoint);
+          [&](int const &value) { controller_->ChangePointSize(value); });
 
   //   connect(m_myWidget, &MyWidgetOPenGL::on_changeColorGifTime, this,
   //           &MainWindow::changeColorGifTime);
@@ -144,18 +183,18 @@ void MainWindow::connectsConfiguration() {
 
 // -------------------------------------------------------
 
-void MainWindow::changeRotateSliders() {
-  int x = (model_->get_rotate_buff_x() % ROTATE_VALUE);
-  int y = (model_->get_rotate_buff_y() % ROTATE_VALUE);
-  int z = (model_->get_rotate_buff_z() % ROTATE_VALUE);
-
-  ui->slider_x->setValue(x);
-  ui->slider_y->setValue(y);
-  ui->slider_z->setValue(z);
-  ui->lineEdit_rotateX->setText(QString::number(x));
-  ui->lineEdit_rotateY->setText(QString::number(y));
-  ui->lineEdit_rotateZ->setText(QString::number(z));
-}
+// void MainWindow::changeRotateSliders() {
+//   int x = (model_->get_rotate_buff_x() % ROTATE_VALUE);
+//   int y = (model_->get_rotate_buff_y() % ROTATE_VALUE);
+//   int z = (model_->get_rotate_buff_z() % ROTATE_VALUE);
+//
+//   ui->slider_x->setValue(x);
+//   ui->slider_y->setValue(y);
+//   ui->slider_z->setValue(z);
+//   ui->lineEdit_rotateX->setText(QString::number(x));
+//   ui->lineEdit_rotateY->setText(QString::number(y));
+//   ui->lineEdit_rotateZ->setText(QString::number(z));
+// }
 
 // -------------------------------------------------------
 
@@ -174,13 +213,13 @@ void MainWindow::closeApp() { close(); }
 // -------------------------------------------------------
 
 void MainWindow::lineScaleChange(QString value) {
-  // TODO(_who): will need to fix this !!!! Is it necessary or not.
+  // TODO(_who): will need to fix this !!!! Don't work set scale
 
   int tmp_value = value.toInt();
   bool is_decrement = 0;
-  auto n_scale = model_->get_scale();
-  auto min_scale = model_->get_min_scale();
-  auto max_scale = model_->get_max_scale();
+  auto n_scale = model_->GetDataViewer().count_scale;
+  auto min_scale = model_->GetDataViewer().min_scale;
+  auto max_scale = model_->GetDataViewer().max_scale;
 
   is_decrement = n_scale > tmp_value ? 1 : 0;
 
@@ -193,46 +232,6 @@ void MainWindow::lineScaleChange(QString value) {
     n_scale = tmp_value;
     // emit on_scaleStep();
   }
-}
-
-// -------------------------------------------------------
-
-void MainWindow::changeBackgroundColor(int value) {
-  controller_->ChangeBackgroundColor(value);
-}
-
-// -------------------------------------------------------
-
-void MainWindow::changeColorLines(int value) {
-  controller_->ChangeLinesColor(value);
-}
-
-// -------------------------------------------------------
-
-void MainWindow::changeColorPoints(int value) {
-  controller_->ChangePointColor(value);
-}
-
-// -------------------------------------------------------
-
-void MainWindow::changeWidthLines(int value) {
-  controller_->ChangeLineWidth(value);
-  // TODO(_who): need to fix (insetead of NotifyMainWindow)
-  ui->lineEdit_widthLine->setText(QString::number(value));
-}
-
-// -------------------------------------------------------
-
-void MainWindow::changeSizePoint(int value) {
-  controller_->ChangePointSize(value);
-  // TODO(_who): need to fix (insetead of NotifyMainWindow)
-  ui->lineEdit_pointsSize->setText(QString::number(value));
-}
-
-// -------------------------------------------------------
-
-void MainWindow::setPointType(PointType const &type) {
-  controller_->ChangeTypePoint(type);
 }
 
 // -------------------------------------------------------
@@ -253,19 +252,19 @@ void MainWindow::moveObject(int type, int value) {
 // -------------------------------------------------------
 
 void MainWindow::connectsMoves() {
-  connect(ui->hSlider_moveX, &QSlider::valueChanged, this, [&](int value) {
-    ui->lineEdit_moveX->setText(QString::number(value));
-    moveObject(MOVE_X, value);
-  });
+  connect(ui->hSlider_moveX, &QSlider::valueChanged, this,
+          [&](int value) { controller_->MoveDirectionX(value); });
 
   connect(ui->hSlider_moveY, &QSlider::valueChanged, this, [&](int value) {
-    ui->lineEdit_moveY->setText(QString::number(value));
-    moveObject(MOVE_Y, value);
+    controller_->MoveDirectionY(value);
+    // ui->lineEdit_moveY->setText(QString::number(value));
+    // moveObject(MOVE_Y, value);
   });
 
   connect(ui->hSlider_moveZ, &QSlider::valueChanged, this, [&](int value) {
-    ui->lineEdit_moveZ->setText(QString::number(value));
-    moveObject(MOVE_Z, value);
+    controller_->MoveDirectionZ(value);
+    // ui->lineEdit_moveZ->setText(QString::number(value));
+    // moveObject(MOVE_Z, value);
   });
 
   /* *****  ***** */
@@ -283,18 +282,24 @@ void MainWindow::connectsMoves() {
 // -------------------------------------------------------
 
 void MainWindow::connectsRotate() {
-  connect(ui->slider_x, &QSlider::valueChanged, this, &MainWindow::rotateX);
-  connect(ui->slider_y, &QSlider::valueChanged, this, &MainWindow::rotateY);
-  connect(ui->slider_z, &QSlider::valueChanged, this, &MainWindow::rotateZ);
+  connect(ui->slider_x, &QSlider::valueChanged, this,
+          [&](int const &value) { controller_->MoveRotationX(value); });
+  connect(ui->slider_y, &QSlider::valueChanged, this,
+          [&](int const &value) { controller_->MoveRotationY(value); });
+  connect(ui->slider_z, &QSlider::valueChanged, this,
+          [&](int const &value) { controller_->MoveRotationZ(value); });
 
-  connect(ui->lineEdit_rotateX, &QLineEdit::textEdited, this,
-          [&](QString value) { rotateX(value.toInt()); });
+  connect(
+      ui->lineEdit_rotateX, &QLineEdit::textEdited, this,
+      [&](QString const &value) { controller_->MoveRotationX(value.toInt()); });
 
-  connect(ui->lineEdit_rotateY, &QLineEdit::textEdited, this,
-          [&](QString value) { rotateY(value.toInt()); });
+  connect(
+      ui->lineEdit_rotateY, &QLineEdit::textEdited, this,
+      [&](QString const &value) { controller_->MoveRotationY(value.toInt()); });
 
-  connect(ui->lineEdit_rotateZ, &QLineEdit::textEdited, this,
-          [&](QString value) { rotateZ(value.toInt()); });
+  connect(
+      ui->lineEdit_rotateZ, &QLineEdit::textEdited, this,
+      [&](QString const &value) { controller_->MoveRotationZ(value.toInt()); });
 
   // connect(m_myWidget, &MyWidgetOPenGL::on_changeRotate, this,
   //         &MainWindow::changeRotateSliders);
@@ -304,29 +309,29 @@ void MainWindow::connectsRotate() {
 
 void MainWindow::connectsColor() {
   connect(ui->hSlider_colorLines, &QSlider::valueChanged, this,
-          &MainWindow::changeColorLines);
-  connect(ui->hSlider_colorPoints, &QSlider::valueChanged, this,
-          &MainWindow::changeColorPoints);
+          [&](int const &value) { controller_->ChangeLinesColor(value); });
   connect(ui->hSlider_backgroundColor, &QSlider::valueChanged, this,
-          &MainWindow::changeBackgroundColor);
+          [&](int const &value) { controller_->ChangeBackgroundColor(value); });
   connect(ui->hSlider_colorPoints, &QSlider::valueChanged, this,
-          &MainWindow::changeColorPoints);
+          [&](int const &value) { controller_->ChangePointColor(value); });
 }
 
 // -------------------------------------------------------
 
 void MainWindow::connectsPointType() {
   connect(ui->radioButton_no, &QRadioButton::pressed, this,
-          [&]() { setPointType(PointType::POINT_NONE); });
+          [&]() { controller_->ChangeTypePoint(PointType::POINT_NONE); });
 
   connect(ui->radioButton_circle, &QRadioButton::pressed, this,
-          [&]() { setPointType(PointType::POINT_CIRCLE); });
+          [&]() { controller_->ChangeTypePoint(PointType::POINT_CIRCLE); });
 
   connect(ui->radioButton_squard, &QRadioButton::pressed, this,
-          [&]() { setPointType(PointType::POINT_SQUARE); });
+          [&]() { controller_->ChangeTypePoint(PointType::POINT_SQUARE); });
 
   connect(ui->lineEdit_pointsSize, &QLineEdit::textEdited, this,
-          [&](QString value_) { changeSizePoint(value_.toInt()); });
+          [&](QString const &value) {
+            controller_->ChangePointSize(value.toInt());
+          });
 }
 
 // -------------------------------------------------------
@@ -373,34 +378,18 @@ void MainWindow::connectPerspective() {
 
 void MainWindow::connectMouseRotate() {
   connect(ui->checkBox_mouseOn, &QCheckBox::stateChanged, this,
-          [&](int state_) {
-            if (!state_) {
-              ui->slider_x->setEnabled(true);
-              ui->slider_y->setEnabled(true);
-              ui->slider_z->setEnabled(true);
-              ui->lineEdit_rotateX->setEnabled(true);
-              ui->lineEdit_rotateY->setEnabled(true);
-              ui->lineEdit_rotateZ->setEnabled(true);
-              m_myWidget->turnOffMouse();
-            } else {
-              ui->slider_x->setEnabled(false);
-              ui->slider_y->setEnabled(false);
-              ui->slider_z->setEnabled(false);
-              ui->lineEdit_rotateX->setEnabled(false);
-              ui->lineEdit_rotateY->setEnabled(false);
-              ui->lineEdit_rotateZ->setEnabled(false);
-              m_myWidget->turnOnMouse();
-            }
-          });
+          [&](int const &state) { BlockSlideRotate(state); });
 }
 
 // -------------------------------------------------------
 
 void MainWindow::connectsLineWidth() {
   connect(ui->hSlidder_widthLine, &QSlider::valueChanged, this,
-          &MainWindow::changeWidthLines);
+          [&](int const &value) { controller_->ChangeLineWidth(value); });
   connect(ui->lineEdit_widthLine, &QLineEdit::textEdited, this,
-          [&](QString value) { changeWidthLines(value.toDouble()); });
+          [&](QString const &value) {
+            controller_->ChangeLineWidth(value.toDouble());
+          });
 }
 
 // -------------------------------------------------------

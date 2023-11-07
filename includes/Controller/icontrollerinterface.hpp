@@ -37,7 +37,7 @@ class IControllerInterface {
   virtual void IncremenetScale() = 0;
   virtual void DecrementScale() = 0;
 
-  virtual void ChangeLineWidth(int const &value) = 0;
+  virtual void ChangeLineWidth(double const &value) = 0;
   virtual void ChangePointSize(int const &value) = 0;
   virtual void ChangeTypePoint(PointType const &type) = 0;
   virtual void ChangePerspective(int const &value) = 0;

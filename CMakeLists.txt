@@ -45,6 +45,9 @@ set(PROJECT_SOURCES
         srcs/Model/model.cpp
         srcs/Model/modelviewer.cc
 
+        srcs/Model/facademodel.cc
+
+        srcs/Model/datamanager.cc
         srcs/Model/imagecapture.cc
         ${QTPROPERTY_BROWSER_SOURCES}
 )
@@ -60,7 +63,10 @@ set(PROJECT_HEADERS
         includes/Model/customtypes.hpp
         includes/Model/model.hpp
         includes/Model/modelviewer.hpp
+        includes/Model/ifacademodel.hpp
+        includes/Model/facademodel.hpp
 
+        includes/Model/datamanager.hpp
         includes/Model/imagecapture.hpp
 )
 

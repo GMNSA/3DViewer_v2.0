@@ -15,7 +15,7 @@
       "adapter": "vscode-cpptools",
       "configuration": {
         "request": "launch",
-        "program": "BUILD/bin_test/tst_model_deposit",
+        "program": "BUILD/3DV2",
         "cwd": "${workspaceRoot}",
         "args": [ "*${args:--update-gadget-config}" ],
         "justMyCode#json": "${justMyCode:true}"

@@ -20,18 +20,23 @@ class MainWindow : public QMainWindow, virtual public IMainWindowObserver {
   Q_INTERFACES(s21::IMainWindowObserver)
 
  public:
-  MainWindow(IControllerInterface *controller, IModelViewer *model,
+  MainWindow(IControllerInterface *controller, IFacadeModel *model,
              QWidget *parent = nullptr);
   ~MainWindow();
 
   void Update() override;
+  void ChangeMoveSliderX(int const &value);
+  void ChangeMoveSliderY(int const &value);
+  void ChangeMoveSliderZ(int const &value);
+  void ChangeRotateSlidersY(int const &value);
+  void ChangeRotateSlidersZ(int const &value);
+  void ChangeRotateSlidersX(int const &value);
+  void ChangeLineWidth(double const &width);
+  void ChangePointSize(int const &value);
 
- private slots:
+  void BlockSlideRotate(bool const &is_block);
+
   void openFileDialog();
-
-  void rotateX(int value_);
-  void rotateY(int value_);
-  void rotateZ(int value_);
 
   // void screenshotJPEG();
   //  void screenshotBMP();
@@ -41,15 +46,12 @@ class MainWindow : public QMainWindow, virtual public IMainWindowObserver {
 
   void lineScaleChange(QString value_);
 
-  void changeBackgroundColor(int value_);
-  void changeColorLines(int value_);
-  void changeColorPoints(int value_);
+  // void changeBackgroundColor(int value_);
+  // void changeColorLines(int value_);
+  // void changeColorPoints(int value_);
 
-  void changeWidthLines(int value_);
-  void changeSizePoint(int value_);
+  // void changeWidthLines(int value_);
   void changePerperpertiveRdb(int value_);
-
-  void setPointType(PointType const &type);
 
   void moveObject(int type_, int value_);
 
@@ -57,14 +59,14 @@ class MainWindow : public QMainWindow, virtual public IMainWindowObserver {
   Ui::MainWindow *ui;
 
   IControllerInterface *controller_;
-  IModelViewer *model_;
+  IFacadeModel *model_;
   MyWidgetOPenGL *m_myWidget;
 
   QLabel *m_labelGifTime;
 
  private:
   void connectsConfiguration();
-  void changeRotateSliders();
+  // void changeRotateSliders();
 
   void connectsMoves();
   void connectsRotate();

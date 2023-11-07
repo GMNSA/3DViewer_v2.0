@@ -33,16 +33,6 @@ class IModelViewer {
 
   // -- -- -- --
 
-  virtual void set_rotate_buff_x(int const &rotate_x) = 0;
-  virtual void set_rotate_buff_y(int const &rotate_y) = 0;
-  virtual void set_rotate_buff_z(int const &rotate_z) = 0;
-
-  virtual int get_rotate_buff_x() const = 0;
-  virtual int get_rotate_buff_y() const = 0;
-  virtual int get_rotate_buff_z() const = 0;
-
-  // -- -- -- --
-
   virtual void set_background_color(int const value_) = 0;
   virtual QColor get_background_color() const = 0;
 
@@ -105,7 +95,6 @@ class IModelViewer {
   // -- -- -- --
 
   virtual void PolygonsClear() = 0;
-  virtual void Parse(QString const &str) = 0;
   virtual ErrorType Error() = 0;
   virtual double MaxSizePerpective() = 0;
   virtual std::vector<Point> const &PointsArray() = 0;
@@ -115,7 +104,8 @@ class IModelViewer {
 
   virtual void TurnObjectX(double const &rotate) = 0;
   virtual void TurnObjectY(double const &rotate) = 0;
-  // virtual void TurnObjectZ(double const &rotate) = 0;
+
+  // -- -- -- --
 
   virtual void ScaleObject(double const &scale) = 0;
 

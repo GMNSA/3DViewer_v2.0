@@ -13,7 +13,7 @@
 #define RGB_MAX 255
 
 #include "../Controller/icontrollerinterface.hpp"
-#include "../Model/imodelviewer.hpp"
+#include "../Model/ifacademodel.hpp"
 #include "./iwidgetopenglobserver.hpp"
 
 namespace s21 {
@@ -42,7 +42,7 @@ class MyWidgetOPenGL : public QOpenGLWidget,
   void on_changePerperpertiveRdb(int value);
 
  public:
-  explicit MyWidgetOPenGL(IControllerInterface *controller, IModelViewer *model,
+  explicit MyWidgetOPenGL(IControllerInterface *controller, IFacadeModel *model,
                           QWidget *parent = nullptr);
   MyWidgetOPenGL(MyWidgetOPenGL const &other_) = delete;
   MyWidgetOPenGL(MyWidgetOPenGL &&other_) = delete;
@@ -84,7 +84,7 @@ class MyWidgetOPenGL : public QOpenGLWidget,
   int updateData();
   void updateInfoObject();
 
-  void ChangeRotate();
+  // void ChangeRotate();
   void updatePerspective();
 
   void drawObjects(e_typeDraw type_);
@@ -94,7 +94,7 @@ class MyWidgetOPenGL : public QOpenGLWidget,
 
  private:
   IControllerInterface *controller_;
-  IModelViewer *model_;
+  IFacadeModel *model_;
 
   QString m_fileNameObject;
 
