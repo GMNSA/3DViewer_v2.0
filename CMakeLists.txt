@@ -20,7 +20,7 @@ find_package(QT NAMES Qt6 Qt5 COMPONENTS Core OpenGLWidgets OpenGL Gui REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core OpenGLWidgets OpenGL Gui REQUIRED)
 
 include_directories(./lib/QtGifImage/src/gifimage/)
-include_directories(./lib/MatrixLib/src/gifimage/)
+include_directories(./lib/MatrixLib/src/)
 
 cmake_host_system_information(RESULT PRETTY_NAME QUERY OS_NAME)
 message(STATUS "${PRETTY_NAME}")

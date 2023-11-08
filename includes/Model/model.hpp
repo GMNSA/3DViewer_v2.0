@@ -7,6 +7,11 @@
 #include "../../lib/MatrixLib//includes/matrix.hpp"
 #include "./customtypes.hpp"
 
+/**
+ * @brief Class for tests.
+ */
+class ModelViewerTest;
+
 namespace s21 {
 
 // ----------------------------------------------------------------------------
@@ -19,10 +24,8 @@ class Model {
   void ScaleObj(double const& scale);
   void TurnObj(double const& rotation, int const& axis);
   void MoveObj(Point& move_point);
-  void PrintPoints();
   void Parse(std::string const& filename = "");
 
-  void set_max_size(double const& size);
   double get_max_size();
 
   ErrorType get_error();
@@ -49,6 +52,8 @@ class Model {
   std::string file_;
   std::vector<Point> points_array_;  // !!
   std::vector<std::vector<int>> polygons_;
+
+  friend ModelViewerTest;
 };
 
 }  // namespace s21

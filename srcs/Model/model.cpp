@@ -6,17 +6,6 @@
 
 namespace s21 {
 
-void PrintMatrix(S21Matrix matrix) {
-  for (int i = 0; i < matrix.GetRows(); i++) {
-    for (int j = 0; j < matrix.GetCols(); j++) {
-      cout << matrix(i, j) << " ";
-    }
-    cout << endl;
-  }
-}
-
-// ----------------------------------------------------------------------------
-
 Model::Model(std::string const& file) : file_(file) {
   if (!file.empty()) Parse();
 }
@@ -162,9 +151,6 @@ void Model::AffineTransformation(S21Matrix& matrix_affin) {
     matrix_point(1, 0) = points_array_[i].y;
     matrix_point(2, 0) = points_array_[i].z;
     matrix_result = matrix_affin * matrix_point;
-    // PrintMatrix(matrix_affin);
-    // PrintMatrix(matrix_point);
-    // PrintMatrix(matrix_result);
     points_array_[i].x = matrix_result(0, 0);
     points_array_[i].y = matrix_result(1, 0);
     points_array_[i].z = matrix_result(2, 0);
@@ -173,34 +159,11 @@ void Model::AffineTransformation(S21Matrix& matrix_affin) {
 
 // ----------------------------------------------------------------------------
 
-void Model::PrintPoints() {
-  for (unsigned i = 0; i < points_array_.size(); i++) {
-    cout << points_array_[i].x << " ";
-    cout << points_array_[i].y << " ";
-    cout << points_array_[i].z << endl;
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-// int main() {
-//   Model s("/home/usup/Desktop/cow.obj");
-//   s.TurnObj(180, 1);
-//   s.PrintPoints();
-//   return 0;
-// }
-
-// ----------------------------------------------------------------------------
-
 void Model::add_max_size(Point const& point) {
   if (fabs(point.x) > max_size_) max_size_ = fabs(point.x);
   if (fabs(point.y) > max_size_) max_size_ = fabs(point.y);
   if (fabs(point.z) > max_size_) max_size_ = fabs(point.z);
 }
-
-// ----------------------------------------------------------------------------
-
-void Model::set_max_size(double const& size) { max_size_ = size; }
 
 // ----------------------------------------------------------------------------
 

@@ -8,7 +8,6 @@ ifeq ($(shell uname), Darwin)
   OS=Darwin
 endif
 
-
 .PHONY: all clean rebuild check test_model tests check fix open tests_open uninstall
 
 all: install start
@@ -16,6 +15,7 @@ all: install start
 clean:
 	rm -rf ./BUILD
 	rm -rf ./tests/BUILD
+	rm -rf ./tests/libBin
 	rm -rf ./libBin/*
 
 install: checkdir
@@ -43,13 +43,19 @@ dist:
 	tar -cf 3DV2.0.tar ./*
 
 tests:
+ifeq ($(shell file tests/BUILD/), tests/BUILD/: directory)
+	$(info Directory does exist)
+	cd tests/BUILD && cmake .. && make && ctest && make make_coverage
+else
 	cd tests && mkdir -p BUILD && cd BUILD && cmake .. && make && ctest && make make_coverage
+endif
+	./tests/BUILD/bin_test/tst_viewer
 
 tests_open:
 ifeq ($(OS), Linux)
-	firefox ./tests/BUILD/coverage_report/index.html
+	firefox ./tests/BUILD/coverage_report/Model/index.html
 else
-	open ./tests/BUILD/coverage_report/index.html
+	open ./tests/BUILD/coverage_report/Model/index.html
 endif
 
 check:

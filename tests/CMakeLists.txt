@@ -8,9 +8,9 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/archive)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin_test)
 
-set(OUT_NAME tst_calculator)
+set(OUT_NAME tst_viewer)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra -Werror  -fprofile-arcs -ftest-coverage ")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra -Werror  -fprofile-arcs -ftest-coverage -fsanitize=address")
 
 find_package(GTest REQUIRED)
 find_package(Threads REQUIRED)
@@ -21,49 +21,31 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
 set(HEADERS
-    includes/tst_model_calculator.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/../includes/Model/modelcalculator.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/../includes/Model/polishnotation.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/../includes/Model/validatetext.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/../includes/Model/imodelcredit.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/../includes/Model/modelcredit.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/../includes/Model/imodeldeposit.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/../includes/Model/modeldeposit.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/../includes/custom_types.hpp
+    includes/tst_model_viewer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/../includes/Model/model.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/../includes/Model/customtypes.hpp
 )
 
 set(SOURCES
     srcs/main.cc
-    srcs/tst_model_calculator.cc
-    srcs/tst_model_credit.cc
-    srcs/tst_model_deposit.cc
-    srcs/tst_polishnotation.cc
-    srcs/tst_validatortext.cc
-    ${CMAKE_CURRENT_LIST_DIR}/../srcs/Model/modelcalculator.cc
-    ${CMAKE_CURRENT_LIST_DIR}/../srcs/Model/polishnotation.cc
-    ${CMAKE_CURRENT_LIST_DIR}/../srcs/Model/validatetext.cc
-    ${CMAKE_CURRENT_LIST_DIR}/../srcs/Model/modelcredit.cc
-    ${CMAKE_CURRENT_LIST_DIR}/../srcs/Model/modeldeposit.cc
+    srcs/tst_model_viewer.cc
+    ${CMAKE_CURRENT_LIST_DIR}/../srcs/Model/model.cpp
 )
 
+
 add_executable(${OUT_NAME} ${SOURCES} ${HEADERS})
+add_subdirectory(../lib lib)
 
 enable_testing()
 
-include_directories(
-    ./include
-    ${GTEST_INCLUDE_DIRS}
-    ${CMAKE_CURRENT_LIST_DIR}/../includes/Model/
-    ${CMAKE_CURRENT_LIST_DIR}/../srcs/Model/
-)
-
 target_include_directories(${OUT_NAME}
     PUBLIC
+    ${GTEST_INCLUDE_DIRS}
     ${CMAKE_CURRENT_LIST_DIR}/includes
     ${CMAKE_CURRENT_LIST_DIR}/../includes/Model/
     ${CMAKE_CURRENT_LIST_DIR}/../srcs/Model/
+    ${CMAKE_CURRENT_LIST_DIR}/libBin
 )
-
 
 target_link_libraries(${OUT_NAME}
     PUBLIC
@@ -71,12 +53,15 @@ target_link_libraries(${OUT_NAME}
     Threads::Threads
     Qt${QT_VERSION_MAJOR}::Widgets
     gcov
+    MatrixLib
 )
 
 add_custom_target(coverage
-  COMMAND lcov --capture --directory ./CMakeFiles/tst_calculator.dir/home/* --output-file coverage.info
-  COMMAND lcov --remove coverage.info '/usr/*' --output-file coverage.info
-  COMMAND lcov --list coverage.info
+    COMMAND lcov --capture --directory ./CMakeFiles/tst_viewer.dir/home/* --output-file coverage.info
+    COMMAND lcov --remove coverage.info '/usr/*' --output-file coverage.info
+    COMMAND lcov --remove coverage.info 'lib/MatrixLib/includes' --output-file coverage.info
+    COMMAND lcov --remove coverage.info 'includes/Model/customtypes.hpp' --output-file coverage.info
+    COMMAND lcov --list coverage.info
 )
 
 add_custom_target(coverage_report
