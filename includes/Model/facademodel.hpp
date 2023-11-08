@@ -44,6 +44,7 @@ class FacadeModel : public IFacadeModel {
 
   void IncremenetScale() override;
   void DecrementScale() override;
+  void ChangeScale(int const &value) override;
 
   DataViewer const &GetDataViewer() const override;
 
@@ -81,7 +82,7 @@ class FacadeModel : public IFacadeModel {
 
   ModelViewer *model_;
   DataManager *data_manager_;
-  // ImageCapture *image_capture_;
+  ImageCapture *image_capture_;
 };
 
 }  // namespace s21

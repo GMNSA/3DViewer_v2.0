@@ -128,12 +128,9 @@ void MyWidgetOPenGL::wheelEvent(QWheelEvent *event) {
 // --------------------------------------------------
 
 void MyWidgetOPenGL::mouseMoveEvent(QMouseEvent *event) {
-  // model_->set_rotate_x(mouse_position_.x() - event->pos().x());
-  // model_->set_rotate_y(mouse_position_.y() - event->pos().y());
   controller_->TurnObjectX(mouse_position_.x() - event->pos().x());
   controller_->TurnObjectY(mouse_position_.y() - event->pos().y());
   mouse_position_ = event->pos();
-  // ChangeRotate();
 }
 
 // --------------------------------------------------
@@ -199,17 +196,6 @@ void MyWidgetOPenGL::updateInfoObject() {
 }
 
 // -------------------------------------------------------
-
-// void MyWidgetOPenGL::ChangeRotate() {
-//   if (model_->get_is_valid()) {
-//     if (model_->get_rotate_x()) {
-//       model_->TurnObjectX(model_->get_rotate_x());
-//     }
-//     if (model_->get_rotate_y()) {
-//       model_->TurnObjectY(model_->get_rotate_y());
-//     }
-//   }
-// }
 
 // -------------------------------------------------------
 

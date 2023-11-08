@@ -123,10 +123,6 @@ void ModelViewer::SetPointSize(double const &size) {
   if (size >= data_viewer_->min_point_size &&
       size <= data_viewer_->max_point_size) {
     data_viewer_->point_size = size;
-    // NotifyWidgetOpengl();
-    // TODO(_who): need pofix
-    // m_pointSize = newPointSize;
-    // !! update();
   }
 }
 
@@ -137,7 +133,6 @@ void ModelViewer::SetLinesColor(int const &value) {
     data_viewer_->line_color.setHsl(255, 255, 255);
   else
     data_viewer_->line_color.setHsl(value, 80, 80);
-  // NotifyWidgetOpengl();
 }
 
 // ----------------------------------------------------------------------------
@@ -173,14 +168,11 @@ DataViewer const &ModelViewer::GetDataViewer() const { return *data_viewer_; }
 bool ModelViewer::OpenFileObject(QString const &filename) {
   data_viewer_->filename_object = filename;
   return UpdateData();
-  //  NotifyWidgetOpengl();
 }
 
 // ----------------------------------------------------------------------------
 
 void ModelViewer::MoveRotation(MoveRotationType direction, float value) {
-  Q_UNUSED(direction);
-  Q_UNUSED(value);
   float tmp = 0;
   int is_error = 0;
 
@@ -205,8 +197,6 @@ void ModelViewer::MoveRotation(MoveRotationType direction, float value) {
 
     if (!is_error) {
       model_->TurnObj(tmp, direction);
-      // NotifyMainWindow();
-      // NotifyWidgetOpengl();
     }
   }
 }
@@ -215,7 +205,6 @@ void ModelViewer::MoveRotation(MoveRotationType direction, float value) {
 
 void ModelViewer::MoveDirection(MoveType direction, float value) {
   value = value * model_->get_max_size() / 99;
-
   Point t;
   float tmp = 0;
   int isError = 0;
@@ -242,8 +231,6 @@ void ModelViewer::MoveDirection(MoveType direction, float value) {
   }
 
   if (!isError) model_->MoveObj(t);
-  // NotifyWidgetOpengl();
-  // update();
 }
 
 // ----------------------------------------------------------------------------
@@ -274,21 +261,15 @@ std::vector<std::vector<int>> const &ModelViewer::Polygons() {
 
 void ModelViewer::TurnObjectX(double const &rotate) {
   model_->TurnObj(rotate, MoveRotationType::MOVE_ROTATE_X);
-  // NotifyWidgetOpengl();
 }
 
 void ModelViewer::TurnObjectY(double const &rotate) {
   model_->TurnObj(rotate, MoveRotationType::MOVE_ROTATE_Y);
-  // NotifyWidgetOpengl();
 }
 
 // ----------------------------------------------------------------------------
 
-void ModelViewer::ScaleObject(double const &scale) {
-  model_->ScaleObj(scale);
-  // NotifyMainWindow();
-  // NotifyWidgetOpengl();
-}
+void ModelViewer::ScaleObject(double const &scale) { model_->ScaleObj(scale); }
 
 // ----------------------------------------------------------------------------
 
@@ -498,7 +479,7 @@ int ModelViewer::CountNumber(int number_) {
 
 // ----------------------------------------------------------------------------
 
-int ModelViewer::UpdateData() {
+bool ModelViewer::UpdateData() {
   QFileInfo check_file(data_viewer_->filename_object);
   bool is_res = false;
   data_viewer_->is_valid = false;
@@ -520,10 +501,6 @@ int ModelViewer::UpdateData() {
           pow(10, CountNumber(model_->get_max_size()));
 
       UpdateInfoObject();
-      // NotifyWidgetOpenglInfo();
-      // NotifyMainWindow();
-
-      // emit on_changePerperpertiveRdb(m_perspective);
 
       if (data_viewer_->perspective == 4)
         data_viewer_->perspective = 1;
@@ -546,11 +523,13 @@ int ModelViewer::UpdateData() {
 void ModelViewer::ScreenshotBMP(QWidget *widget) {
   image_capture_->set_widget(widget);
   image_capture_->ScreenshotBMP();
+  // TODO(_who): remove
 }
 
 // ----------------------------------------------------------------------------
 
 void ModelViewer::Gif(QWidget *widget) {
+  // TODO(probiuss): remove
   image_capture_->set_widget(widget);
   image_capture_->DoGif();
 }
@@ -573,6 +552,7 @@ void ModelViewer::UpdateInfoObject() {
 // ----------------------------------------------------------------------------
 
 void ModelViewer::ScreenshotJPEG(QWidget *widget) {
+  // TODO(_who): remove
   image_capture_->set_widget(widget);
   image_capture_->ScreenshotJPEG();
 }

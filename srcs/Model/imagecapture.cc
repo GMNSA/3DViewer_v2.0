@@ -8,7 +8,7 @@
 namespace s21 {
 
 ImageCapture::ImageCapture(QObject *parent)
-    : QObject(parent), widget_(nullptr), gif_fps_(5) {
+    : QObject(parent), widget_(nullptr), gif_fps_(10) {
   if (!(gif_ = new GifCreator)) exit(-1);
   if (!(timer_gif_ = new QTimer)) exit(-1);
   if (!(label_gif_time_ = new QLabel)) exit(-1);
@@ -53,7 +53,6 @@ void ImageCapture::set_widget(QWidget *my_widget) {
     widget_ = my_widget;
     gif_->setParent(widget_);
 
-    qDebug() << "YES";
     label_gif_time_->setText("Piter pa");
     label_gif_time_->setAlignment(Qt::AlignTop);
     label_gif_time_->setAlignment(Qt::AlignLeft);
@@ -63,9 +62,6 @@ void ImageCapture::set_widget(QWidget *my_widget) {
     font.setPointSize(20);
     font.setBold(true);
     label_gif_time_->setFont(font);
-    // label_gif_time_->setText("HOOOOOOODIIII");
-    // label_gif_time_->setStyleSheet("QLabel { color : white; }");
-    // qDebug() << "OK STYLESHEET";
   }
 }
 

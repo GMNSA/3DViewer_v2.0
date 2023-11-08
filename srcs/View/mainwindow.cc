@@ -37,6 +37,7 @@ MainWindow::MainWindow(IControllerInterface *controller, IFacadeModel *model,
   m_myWidget->setParent(ui->widget);
   m_myWidget->show();
   connectsConfiguration();
+  controller_->LoadConfig();
 
   // m_labelGifTime->setText("");
   // m_labelGifTime->setAlignment(Qt::AlignTop);
@@ -183,21 +184,6 @@ void MainWindow::connectsConfiguration() {
 
 // -------------------------------------------------------
 
-// void MainWindow::changeRotateSliders() {
-//   int x = (model_->get_rotate_buff_x() % ROTATE_VALUE);
-//   int y = (model_->get_rotate_buff_y() % ROTATE_VALUE);
-//   int z = (model_->get_rotate_buff_z() % ROTATE_VALUE);
-//
-//   ui->slider_x->setValue(x);
-//   ui->slider_y->setValue(y);
-//   ui->slider_z->setValue(z);
-//   ui->lineEdit_rotateX->setText(QString::number(x));
-//   ui->lineEdit_rotateY->setText(QString::number(y));
-//   ui->lineEdit_rotateZ->setText(QString::number(z));
-// }
-
-// -------------------------------------------------------
-
 // void MainWindow::changeColorGifTime(int isBlack_) {
 //   Q_UNUSED(isBlack_);
 //   if (isBlack_)
@@ -208,46 +194,12 @@ void MainWindow::connectsConfiguration() {
 
 // -------------------------------------------------------
 
-void MainWindow::closeApp() { close(); }
-
-// -------------------------------------------------------
-
-void MainWindow::lineScaleChange(QString value) {
-  // TODO(_who): will need to fix this !!!! Don't work set scale
-
-  int tmp_value = value.toInt();
-  bool is_decrement = 0;
-  auto n_scale = model_->GetDataViewer().count_scale;
-  auto min_scale = model_->GetDataViewer().min_scale;
-  auto max_scale = model_->GetDataViewer().max_scale;
-
-  is_decrement = n_scale > tmp_value ? 1 : 0;
-
-  if (is_decrement && tmp_value >= min_scale) {
-    while (n_scale != tmp_value) controller_->DecrementScale();
-  } else if (!is_decrement && tmp_value <= max_scale) {
-    while (n_scale != tmp_value) controller_->IncremenetScale();
-  }
-  if (tmp_value >= min_scale && tmp_value <= max_scale) {
-    n_scale = tmp_value;
-    // emit on_scaleStep();
-  }
+void MainWindow::closeApp() {
+  controller_->WriteConfig();
+  close();
 }
 
 // -------------------------------------------------------
-
-void MainWindow::moveObject(int type, int value) {
-  if (type == MOVE_X) {
-    controller_->MoveDirectionX(value);
-    ui->lineEdit_moveX->setText(QString::number(value));
-  } else if (type == MOVE_Y) {
-    controller_->MoveDirectionY(value);
-    ui->lineEdit_moveY->setText(QString::number(value));
-  } else if (type == MOVE_Z) {
-    controller_->MoveDirectionZ(value);
-    ui->lineEdit_moveZ->setText(QString::number(value));
-  }
-}
 
 // -------------------------------------------------------
 
@@ -255,28 +207,22 @@ void MainWindow::connectsMoves() {
   connect(ui->hSlider_moveX, &QSlider::valueChanged, this,
           [&](int value) { controller_->MoveDirectionX(value); });
 
-  connect(ui->hSlider_moveY, &QSlider::valueChanged, this, [&](int value) {
-    controller_->MoveDirectionY(value);
-    // ui->lineEdit_moveY->setText(QString::number(value));
-    // moveObject(MOVE_Y, value);
-  });
+  connect(ui->hSlider_moveY, &QSlider::valueChanged, this,
+          [&](int value) { controller_->MoveDirectionY(value); });
 
-  connect(ui->hSlider_moveZ, &QSlider::valueChanged, this, [&](int value) {
-    controller_->MoveDirectionZ(value);
-    // ui->lineEdit_moveZ->setText(QString::number(value));
-    // moveObject(MOVE_Z, value);
-  });
+  connect(ui->hSlider_moveZ, &QSlider::valueChanged, this,
+          [&](int value) { controller_->MoveDirectionZ(value); });
 
   /* *****  ***** */
 
   connect(ui->lineEdit_moveX, &QLineEdit::textEdited, this,
-          [&](QString value) { moveObject(MOVE_X, value.toInt()); });
+          [&](QString value) { controller_->MoveDirectionX(value.toInt()); });
 
   connect(ui->lineEdit_moveY, &QLineEdit::textEdited, this,
-          [&](QString value) { moveObject(MOVE_Y, value.toInt()); });
+          [&](QString value) { controller_->MoveDirectionY(value.toInt()); });
 
   connect(ui->lineEdit_moveZ, &QLineEdit::textEdited, this,
-          [&](QString value) { moveObject(MOVE_ROTATE_Z, value.toInt()); });
+          [&](QString value) { controller_->MoveDirectionZ(value.toInt()); });
 }
 
 // -------------------------------------------------------
@@ -340,8 +286,9 @@ void MainWindow::connectsScale() {
   // connect(m_myWidget, &MyWidgetOPenGL::on_scaleStep, this,
   //         [&]() { ui->lineEdit_scale->setText(m_myWidget->scaleString()); });
 
-  connect(ui->pb_changeScale, &QPushButton::clicked, this,
-          [&]() { lineScaleChange(ui->lineEdit_scale->text()); });
+  connect(ui->pb_changeScale, &QPushButton::clicked, this, [&]() {
+    controller_->ChangeScale(ui->lineEdit_scale->text().toInt());
+  });
 
   connect(ui->pb_scalePlus, &QPushButton::clicked, m_myWidget,
           [&] { controller_->IncremenetScale(); });

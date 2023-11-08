@@ -37,6 +37,7 @@ class IFacadeModel {
 
   virtual void IncremenetScale() = 0;
   virtual void DecrementScale() = 0;
+  virtual void ChangeScale(int const &value) = 0;
 
   virtual void ChangeLineWidth(double const &value) = 0;
   virtual void ChangePointSize(int const &value) = 0;

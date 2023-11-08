@@ -5,15 +5,14 @@
 namespace s21 {
 
 FacadeModel::FacadeModel()
-    : model_(new ModelViewer()), data_manager_(new DataManager()) {
-  // TODO(_who): release
-}
+    : model_(new ModelViewer()),
+      data_manager_(new DataManager()),
+      image_capture_(new ImageCapture()) {}
 
 FacadeModel::~FacadeModel() {
-  // TODO(_who): release
   if (model_) delete model_;
   if (data_manager_) delete data_manager_;
-  // if (image_capture_) delete image_capture_;
+  if (image_capture_) delete image_capture_;
 }
 
 // ----------------------------------------------------------------------------
@@ -84,7 +83,7 @@ void FacadeModel::ChangeLinesColor(int const &value) {
 }
 
 void FacadeModel::OpenFile(QString const &filename) {
-  LoadData();
+  // LoadData();
   model_->SetFilename(filename);
   bool res = model_->OpenFileObject(filename);
 
@@ -131,8 +130,6 @@ void FacadeModel::IncremenetScale() {
   }
 }
 
-// ----------------------------------------------------------------------------
-
 void FacadeModel::DecrementScale() {
   auto current_scale = model_->GetDataViewer().count_scale;
   auto min_scale = model_->GetDataViewer().min_scale;
@@ -144,6 +141,29 @@ void FacadeModel::DecrementScale() {
     NotifyMainWindow();
   }
 }
+
+void FacadeModel::ChangeScale(int const &value) {
+  bool is_decrement = 0;
+  auto n_scale = model_->GetDataViewer().count_scale;
+  auto min_scale = model_->GetDataViewer().min_scale;
+  auto max_scale = model_->GetDataViewer().max_scale;
+
+  is_decrement = n_scale > value ? 1 : 0;
+
+  if (is_decrement && value >= min_scale) {
+    while (n_scale != value) {
+      n_scale = model_->GetDataViewer().count_scale;
+      DecrementScale();
+    }
+  } else if (!is_decrement && value <= max_scale) {
+    while (n_scale != value) {
+      n_scale = model_->GetDataViewer().count_scale;
+      IncremenetScale();
+    }
+  }
+}
+
+// ----------------------------------------------------------------------------
 
 DataViewer const &FacadeModel::GetDataViewer() const {
   return model_->GetDataViewer();
@@ -177,10 +197,7 @@ void FacadeModel::MoveRotationMouse(MoveRotationType direction, float value) {
 
 void FacadeModel::PolygonsClear() { model_->PolygonsClear(); }
 
-ErrorType FacadeModel::get_error() {
-  // TODO(probiuss): release error
-  return {};
-}
+ErrorType FacadeModel::get_error() { return {}; }
 
 std::vector<Point> const &FacadeModel::PointsArray() {
   return model_->PointsArray();
@@ -196,16 +213,27 @@ void FacadeModel::ResetData() { model_->DefaultConfig(); }
 
 // -- -------------------------------------------- --
 
-void FacadeModel::ScreenshotJPEG(QWidget *widget) { Q_UNUSED(widget); }
-void FacadeModel::ScreenshotBMP(QWidget *widget) { Q_UNUSED(widget); }
-void FacadeModel::Gif(QWidget *widget) { Q_UNUSED(widget); }
+void FacadeModel::ScreenshotJPEG(QWidget *widget) {
+  image_capture_->set_widget(widget);
+  image_capture_->ScreenshotJPEG();
+}
+
+void FacadeModel::ScreenshotBMP(QWidget *widget) {
+  image_capture_->set_widget(widget);
+  image_capture_->ScreenshotBMP();
+}
+
+void FacadeModel::Gif(QWidget *widget) {
+  image_capture_->set_widget(widget);
+  image_capture_->DoGif();
+}
+
 QLabel *FacadeModel::GetLabelGifTime() const { return nullptr; }
 
 // -- -------------------------------------------- --
 
 bool FacadeModel::SaveData(QString const &path) {
   data_manager_->SaveData(path, model_->GetDataViewer());
-  // TODO(_who): check google style
   return data_manager_->get_is_valid();
 }
 

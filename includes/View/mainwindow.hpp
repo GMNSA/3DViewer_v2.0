@@ -44,16 +44,9 @@ class MainWindow : public QMainWindow, virtual public IMainWindowObserver {
  private slots:
   void closeApp();
 
-  void lineScaleChange(QString value_);
-
-  // void changeBackgroundColor(int value_);
-  // void changeColorLines(int value_);
-  // void changeColorPoints(int value_);
-
-  // void changeWidthLines(int value_);
   void changePerperpertiveRdb(int value_);
 
-  void moveObject(int type_, int value_);
+  // void moveObject(int type_, int value_);
 
  private:
   Ui::MainWindow *ui;

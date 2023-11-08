@@ -46,6 +46,7 @@ class Controller : public QObject, virtual public IControllerInterface {
 
   void IncremenetScale() override;
   void DecrementScale() override;
+  void ChangeScale(int const &value) override;
 
   void ChangeLineWidth(double const &value) override;
   void ChangePointSize(int const &value) override;
