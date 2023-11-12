@@ -35,8 +35,8 @@ MyWidgetOPenGL::MyWidgetOPenGL(IControllerInterface *controller,
       label_vertes_(new QLabel(this)),
       label_polygons_(new QLabel(this)),
       m_layoutH(new QHBoxLayout(this)),
-      m_isMouse(false),
-      m_tmpColor({152, 84, 93}) {
+      is_mouse_(false),
+      tmp_color_({52, 84, 93}) {
   model_->Attach(qobject_cast<IWidgetOpenglObserver *>(this));
 
   this->installEventFilter(this);
@@ -45,7 +45,16 @@ MyWidgetOPenGL::MyWidgetOPenGL(IControllerInterface *controller,
   controller_->LoadConfig();
 
   initialized_ = false;
-  drawInfo();
+  DrawInfo();
+  // m_labelGifTime->setText("");
+  // m_labelGifTime->setAlignment(Qt::AlignTop);
+  // m_labelGifTime->setAlignment(Qt::AlignLeft);
+  // m_labelGifTime->move(40, 40);
+  // m_labelGifTime->raise();
+  // QFont font = m_labelGifTime->font();
+  // font.setPointSize(20);
+  // font.setBold(true);
+  // m_labelGifTime->setFont(font);
 }
 
 // --------------------------------------------------
@@ -75,7 +84,7 @@ void MyWidgetOPenGL::resizeGL(int w, int h) { glViewport(0, 0, w, h); }
 
 void MyWidgetOPenGL::paintGL() {
   if (!initialized_ || !model_->GetDataViewer().is_valid)
-    glClearColor(m_tmpColor.redF(), m_tmpColor.greenF(), m_tmpColor.blueF(),
+    glClearColor(tmp_color_.redF(), tmp_color_.greenF(), tmp_color_.blueF(),
                  1.0f);
   else
     glClearColor(model_->GetDataViewer().background_color.redF(),
@@ -100,8 +109,8 @@ void MyWidgetOPenGL::paintGL() {
     }
     glMatrixMode(GL_MODELVIEW);
 
-    updatePerspective();
-    drawObjects(e_typeDraw::TYPE_LINES);
+    UpdatePerspective();
+    DrawObjects(e_typeDraw::TYPE_LINES);
 
     if (model_->GetDataViewer().line_type == LineType::LINE_STIPPLE) {
       glDisable(GL_LINE_STIPPLE);
@@ -109,10 +118,10 @@ void MyWidgetOPenGL::paintGL() {
     if (model_->GetDataViewer().point_type == PointType::POINT_CIRCLE) {
       glEnable(GL_POINT_SMOOTH);
       glPointSize(model_->GetDataViewer().point_size);
-      drawObjects(e_typeDraw::TYPE_POINTS);
+      DrawObjects(e_typeDraw::TYPE_POINTS);
       glDisable(GL_POINT_SMOOTH);
     } else if (model_->GetDataViewer().point_type == PointType::POINT_SQUARE) {
-      drawSquare();
+      DrawSquare();
     }
   }
 }
@@ -149,7 +158,7 @@ bool MyWidgetOPenGL::eventFilter(QObject *watched, QEvent *event) {
   Q_UNUSED(watched);
   bool res = false;
 
-  if (!m_isMouse) {
+  if (!is_mouse_) {
     if (event->type() == QEvent::Wheel) {
       res = true;
     } else if (event->type() == QEvent::MouseMove) {
@@ -162,10 +171,10 @@ bool MyWidgetOPenGL::eventFilter(QObject *watched, QEvent *event) {
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::turnOnMouse() { m_isMouse = true; }
+void MyWidgetOPenGL::TurnOnMouse() { is_mouse_ = true; }
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::turnOffMouse() { m_isMouse = false; }
+void MyWidgetOPenGL::TurnOffMouse() { is_mouse_ = false; }
 
 // -------------------------------------------------------
 
@@ -181,15 +190,13 @@ void MyWidgetOPenGL::ChangeColorFileInfo(int const &value) {
     label_polygons_->setStyleSheet("QLabel { color : grey; }");
     // emit on_changeColorGifTime(1);
   }
-
-  // TODO(_who): release controller-> changeBackgroundColor
-  // !! update();
 }
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::updateInfoObject() {
+void MyWidgetOPenGL::UpdateInfoObject() {
   auto &info = model_->GetDataViewer().info_data;
+
   label_name_->setText(info.label_name);
   label_vertes_->setText(info.label_vertex);
   label_polygons_->setText(info.label_polygons);
@@ -197,27 +204,19 @@ void MyWidgetOPenGL::updateInfoObject() {
 
 // -------------------------------------------------------
 
-// -------------------------------------------------------
-
-void MyWidgetOPenGL::moveX(float value_) {
-  controller_->MoveDirectionX(value_);
-}
+void MyWidgetOPenGL::MoveX(float value) { controller_->MoveDirectionX(value); }
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::moveY(float value_) {
-  controller_->MoveDirectionY(value_);
-}
+void MyWidgetOPenGL::MoveY(float value) { controller_->MoveDirectionY(value); }
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::moveZ(float value_) {
-  controller_->MoveDirectionZ(value_);
-}
+void MyWidgetOPenGL::MoveZ(float value) { controller_->MoveDirectionZ(value); }
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::drawObjects(e_typeDraw type_draw) {
+void MyWidgetOPenGL::DrawObjects(e_typeDraw const &type_draw) {
   auto type = type_draw == 0 ? GL_LINE_LOOP : GL_POINTS;
   double x = 0.0;
   double y = 0.0;
@@ -247,7 +246,7 @@ void MyWidgetOPenGL::drawObjects(e_typeDraw type_draw) {
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::drawInfo() {
+void MyWidgetOPenGL::DrawInfo() {
   // label_name_->setText("Name: ");
   // label_vertes_->setText("Vertes: ");
   // label_polygons_->setText("Polygons: ");
@@ -260,24 +259,18 @@ void MyWidgetOPenGL::drawInfo() {
 
 // -------------------------------------------------------
 
-QString MyWidgetOPenGL::scaleString() {
-  return (QString::number(m_countScale));
-}
-
-// -------------------------------------------------------
-
 void MyWidgetOPenGL::Update() { update(); }
 
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::UpdateInfo() {
-  updateInfoObject();
+  UpdateInfoObject();
   ChangeColorFileInfo(model_->GetDataViewer().background_color.toHsl().hue());
 }
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::updatePerspective() {
+void MyWidgetOPenGL::UpdatePerspective() {
   auto tmp_perspective = model_->GetDataViewer().perspective;
   auto size_perspective = model_->GetDataViewer().size_perspective;
 
@@ -294,7 +287,7 @@ void MyWidgetOPenGL::updatePerspective() {
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::clearInfo() {
+void MyWidgetOPenGL::ClearInfo() {
   label_name_->setText("");
   label_vertes_->setText("");
   label_polygons_->setText("");
@@ -302,7 +295,7 @@ void MyWidgetOPenGL::clearInfo() {
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::drawSquare() {
+void MyWidgetOPenGL::DrawSquare() {
   auto point_color = model_->GetDataViewer().point_color;
   glColor3f(point_color.redF(), point_color.greenF(), point_color.blueF());
   double x, y, z, del = model_->GetDataViewer().perspective == 1 ? 9 : 23;
@@ -326,5 +319,15 @@ void MyWidgetOPenGL::drawSquare() {
     }
   }
 }
+
+// void MainWindow::changeColorGifTime(int isBlack_) {
+//   Q_UNUSED(isBlack_);
+//   if (isBlack_)
+//     m_labelGifTime->setStyleSheet("QLabel { color : black; }");
+//   else
+//     m_labelGifTime->setStyleSheet("QLabel { color : white; }");
+// }
+
+// -------------------------------------------------------
 
 }  // namespace s21

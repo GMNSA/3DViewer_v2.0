@@ -24,7 +24,6 @@ class MainWindow : public QMainWindow, virtual public IMainWindowObserver {
              QWidget *parent = nullptr);
   ~MainWindow();
 
-  void Update() override;
   void ChangeMoveSliderX(int const &value);
   void ChangeMoveSliderY(int const &value);
   void ChangeMoveSliderZ(int const &value);
@@ -36,40 +35,35 @@ class MainWindow : public QMainWindow, virtual public IMainWindowObserver {
 
   void BlockSlideRotate(bool const &is_block);
 
-  void openFileDialog();
+  void OpenFileDialog();
 
-  // void screenshotJPEG();
-  //  void screenshotBMP();
+ public:  // -- override --
+  void Update() override;
 
  private slots:
-  void closeApp();
-
-  void changePerperpertiveRdb(int value_);
-
-  // void moveObject(int type_, int value_);
+  void CloseApp();
+  void ChangePerperpertiveRdb(int const &value_);
 
  private:
   Ui::MainWindow *ui;
 
   IControllerInterface *controller_;
   IFacadeModel *model_;
-  MyWidgetOPenGL *m_myWidget;
+  MyWidgetOPenGL *my_widget_;
 
-  QLabel *m_labelGifTime;
+  static int const kRotate_value_slider_;
 
  private:
-  void connectsConfiguration();
-  // void changeRotateSliders();
-
-  void connectsMoves();
-  void connectsRotate();
-  void connectsColor();
-  void connectsPointType();
-  void connectsScale();
-  void connectsImages();
-  void connectsLineWidth();
-  void connectPerspective();
-  void connectMouseRotate();
+  void ConnectsConfiguration();
+  void ConnectsMoves();
+  void ConnectsRotate();
+  void ConnectsColor();
+  void ConnectsPointType();
+  void ConnectsScale();
+  void ConnectsImages();
+  void ConnectsLineWidth();
+  void ConnectPerspective();
+  void ConnectMouseRotate();
 };
 
 }  // namespace s21

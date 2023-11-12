@@ -10,19 +10,14 @@
 
 namespace s21 {
 
-ModelViewer::ModelViewer()
-    : model_(new Model),
-      data_viewer_(new DataViewer),
-      image_capture_(new ImageCapture) {
+ModelViewer::ModelViewer() : model_(new Model), data_viewer_(new DataViewer) {
   data_viewer_->ClearData();
   DefaultConfig();
   DefaultConfigSimple();
 }
 
 ModelViewer::~ModelViewer() {
-  // TODO(_who): releae
   if (model_) delete model_;
-  if (image_capture_) delete image_capture_;
   if (data_viewer_) delete data_viewer_;
 }
 
@@ -43,14 +38,8 @@ void ModelViewer::SetRotateZ(int const &rotate) {
 void ModelViewer::SetBackgroundColor(int value_) {
   if (value_ == 0 || value_ == 255) {
     data_viewer_->background_color.setHsl(0, 0, 0);
-
-    // TODO:(_who): We need to think how to implement the (ColorGifTime)
-    // emit on_changeColorGifTime(0);
-    image_capture_->ChangeColorGifTime(false);
   } else {
     data_viewer_->background_color.setHsl(value_, 50, 50);
-    image_capture_->ChangeColorGifTime(true);
-    // emit on_changeColorGifTime(1);
   }
 }
 
@@ -452,11 +441,6 @@ bool ModelViewer::LoadConfig(QString path_) {
 
   } else {
     is_res = 0;
-
-    // TODO:(_who) don't forget release "Default Config"
-    // DefaultConfig();
-    // NotifyWidgetOpengl();
-    // NotifyMainWindow();
   }
 
   return (is_res);
@@ -520,22 +504,6 @@ bool ModelViewer::UpdateData() {
 
 // ----------------------------------------------------------------------------
 
-void ModelViewer::ScreenshotBMP(QWidget *widget) {
-  image_capture_->set_widget(widget);
-  image_capture_->ScreenshotBMP();
-  // TODO(_who): remove
-}
-
-// ----------------------------------------------------------------------------
-
-void ModelViewer::Gif(QWidget *widget) {
-  // TODO(probiuss): remove
-  image_capture_->set_widget(widget);
-  image_capture_->DoGif();
-}
-
-// ----------------------------------------------------------------------------
-
 void ModelViewer::UpdateInfoObject() {
   if (data_viewer_->is_valid) {
     QFileInfo info(data_viewer_->filename_object);
@@ -550,17 +518,5 @@ void ModelViewer::UpdateInfoObject() {
 }
 
 // ----------------------------------------------------------------------------
-
-void ModelViewer::ScreenshotJPEG(QWidget *widget) {
-  // TODO(_who): remove
-  image_capture_->set_widget(widget);
-  image_capture_->ScreenshotJPEG();
-}
-
-// ----------------------------------------------------------------------------
-
-QLabel *ModelViewer::GetLabelGifTime() const {
-  return image_capture_->get_label_gif_time();
-}
 
 }  // namespace s21

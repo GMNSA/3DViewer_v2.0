@@ -7,15 +7,13 @@
 #include <QTimer>
 #include <QWidget>
 
-#include "../lib/MatrixLib/includes/matrix.hpp"
 #include "./ui_mainwindow.h"
-
-// TODO(_who): need change (remvoe) define
-#define ROTATE_VALUE 720
 
 // -------------------------------------------------------
 
 namespace s21 {
+
+int const MainWindow::kRotate_value_slider_ = 720;
 
 MainWindow::MainWindow(IControllerInterface *controller, IFacadeModel *model,
                        QWidget *parent)
@@ -23,31 +21,18 @@ MainWindow::MainWindow(IControllerInterface *controller, IFacadeModel *model,
       ui(new Ui::MainWindow),
       controller_(controller),
       model_(model),
-      m_myWidget(new MyWidgetOPenGL(controller, model, this)),
-      m_labelGifTime(new QLabel(m_myWidget)) {
+      my_widget_(new MyWidgetOPenGL(controller, model, this)) {
   ui->setupUi(this);
-  // TODO(_who): remove qdebug
   model_->Attach(qobject_cast<IMainWindowObserver *>(this));
-
-  S21Matrix matrix(3, 3);
 
   ui->radioButton_solid->setChecked(true);
   ui->radioButton_no->setChecked(true);
 
-  m_myWidget->setParent(ui->widget);
-  m_myWidget->show();
-  connectsConfiguration();
-  controller_->LoadConfig();
+  my_widget_->setParent(ui->widget);
+  my_widget_->show();
 
-  // m_labelGifTime->setText("");
-  // m_labelGifTime->setAlignment(Qt::AlignTop);
-  // m_labelGifTime->setAlignment(Qt::AlignLeft);
-  // m_labelGifTime->move(40, 40);
-  // m_labelGifTime->raise();
-  // QFont font = m_labelGifTime->font();
-  // font.setPointSize(20);
-  // font.setBold(true);
-  // m_labelGifTime->setFont(font);
+  ConnectsConfiguration();
+  controller_->LoadConfig();
 }
 
 // -------------------------------------------------------
@@ -57,10 +42,9 @@ MainWindow::~MainWindow() { delete ui; }
 // -------------------------------------------------------
 
 void MainWindow::Update() {
-  // m_myWidget->updateInfoObject();
   auto data = model_->GetDataViewer();
 
-  changePerperpertiveRdb(data.perspective);
+  ChangePerperpertiveRdb(data.perspective);
   ui->lineEdit_scale->setText(QString::number(data.count_scale));
   ui->hSlidder_pointsSize->setValue(data.point_size);
   ui->hSlider_colorLines->setValue(data.line_color.toHsl().hue());
@@ -77,21 +61,21 @@ void MainWindow::Update() {
 // -------------------------------------------------------
 
 void MainWindow::ChangeRotateSlidersX(int const &value) {
-  int x = (value % ROTATE_VALUE);
+  int x = (value % kRotate_value_slider_);
 
   ui->slider_x->setValue(x);
   ui->lineEdit_rotateX->setText(QString::number(x));
 }
 
 void MainWindow::ChangeRotateSlidersY(int const &value) {
-  int y = (value % ROTATE_VALUE);
+  int y = (value % kRotate_value_slider_);
 
   ui->slider_y->setValue(y);
   ui->lineEdit_rotateY->setText(QString::number(y));
 }
 
 void MainWindow::ChangeRotateSlidersZ(int const &value) {
-  int z = (value % ROTATE_VALUE);
+  int z = (value % kRotate_value_slider_);
 
   ui->slider_z->setValue(z);
   ui->lineEdit_rotateZ->setText(QString::number(z));
@@ -125,7 +109,7 @@ void MainWindow::BlockSlideRotate(bool const &is_block) {
     ui->lineEdit_rotateX->setEnabled(true);
     ui->lineEdit_rotateY->setEnabled(true);
     ui->lineEdit_rotateZ->setEnabled(true);
-    m_myWidget->turnOffMouse();
+    my_widget_->TurnOffMouse();
   } else {
     ui->slider_x->setEnabled(false);
     ui->slider_y->setEnabled(false);
@@ -133,27 +117,25 @@ void MainWindow::BlockSlideRotate(bool const &is_block) {
     ui->lineEdit_rotateX->setEnabled(false);
     ui->lineEdit_rotateY->setEnabled(false);
     ui->lineEdit_rotateZ->setEnabled(false);
-    m_myWidget->turnOnMouse();
+    my_widget_->TurnOnMouse();
   }
 }
 // -------------------------------------------------------
 
-void MainWindow::openFileDialog() {
+void MainWindow::OpenFileDialog() {
   QString filename = QFileDialog::getOpenFileName(
       this, tr("Open Object"), "./objects/", tr("Image Files (*.obj)"));
   controller_->OpenFile(filename);
-
-  qDebug() << "open";
 }
 
 // -------------------------------------------------------
 
-void MainWindow::connectsConfiguration() {
+void MainWindow::ConnectsConfiguration() {
   connect(ui->pb_openFIle, &QPushButton::clicked, this,
-          &MainWindow::openFileDialog);
+          &MainWindow::OpenFileDialog);
 
   connect(ui->widget, &QOpenGLWidget::resized, this, [&]() {
-    m_myWidget->resize(ui->widget->width(), ui->widget->height());
+    my_widget_->resize(ui->widget->width(), ui->widget->height());
   });
 
   connect(ui->radioButton_dotter, &QRadioButton::pressed, this,
@@ -165,36 +147,20 @@ void MainWindow::connectsConfiguration() {
   connect(ui->hSlidder_pointsSize, &QSlider::valueChanged, this,
           [&](int const &value) { controller_->ChangePointSize(value); });
 
-  //   connect(m_myWidget, &MyWidgetOPenGL::on_changeColorGifTime, this,
-  //           &MainWindow::changeColorGifTime);
-
-  connect(m_myWidget, &MyWidgetOPenGL::on_changePerperpertiveRdb, this,
-          &MainWindow::changePerperpertiveRdb);
-
-  connectsPointType();
-  connectsRotate();
-  connectsMoves();
-  connectsColor();
-  connectsScale();
-  connectsImages();
-  connectsLineWidth();
-  connectPerspective();
-  connectMouseRotate();
+  ConnectsPointType();
+  ConnectsRotate();
+  ConnectsMoves();
+  ConnectsColor();
+  ConnectsScale();
+  ConnectsImages();
+  ConnectsLineWidth();
+  ConnectPerspective();
+  ConnectMouseRotate();
 }
 
 // -------------------------------------------------------
 
-// void MainWindow::changeColorGifTime(int isBlack_) {
-//   Q_UNUSED(isBlack_);
-//   if (isBlack_)
-//     m_labelGifTime->setStyleSheet("QLabel { color : black; }");
-//   else
-//     m_labelGifTime->setStyleSheet("QLabel { color : white; }");
-// }
-
-// -------------------------------------------------------
-
-void MainWindow::closeApp() {
+void MainWindow::CloseApp() {
   controller_->WriteConfig();
   close();
 }
@@ -203,7 +169,7 @@ void MainWindow::closeApp() {
 
 // -------------------------------------------------------
 
-void MainWindow::connectsMoves() {
+void MainWindow::ConnectsMoves() {
   connect(ui->hSlider_moveX, &QSlider::valueChanged, this,
           [&](int value) { controller_->MoveDirectionX(value); });
 
@@ -227,7 +193,7 @@ void MainWindow::connectsMoves() {
 
 // -------------------------------------------------------
 
-void MainWindow::connectsRotate() {
+void MainWindow::ConnectsRotate() {
   connect(ui->slider_x, &QSlider::valueChanged, this,
           [&](int const &value) { controller_->MoveRotationX(value); });
   connect(ui->slider_y, &QSlider::valueChanged, this,
@@ -246,14 +212,11 @@ void MainWindow::connectsRotate() {
   connect(
       ui->lineEdit_rotateZ, &QLineEdit::textEdited, this,
       [&](QString const &value) { controller_->MoveRotationZ(value.toInt()); });
-
-  // connect(m_myWidget, &MyWidgetOPenGL::on_changeRotate, this,
-  //         &MainWindow::changeRotateSliders);
 }
 
 // -------------------------------------------------------
 
-void MainWindow::connectsColor() {
+void MainWindow::ConnectsColor() {
   connect(ui->hSlider_colorLines, &QSlider::valueChanged, this,
           [&](int const &value) { controller_->ChangeLinesColor(value); });
   connect(ui->hSlider_backgroundColor, &QSlider::valueChanged, this,
@@ -264,7 +227,7 @@ void MainWindow::connectsColor() {
 
 // -------------------------------------------------------
 
-void MainWindow::connectsPointType() {
+void MainWindow::ConnectsPointType() {
   connect(ui->radioButton_no, &QRadioButton::pressed, this,
           [&]() { controller_->ChangeTypePoint(PointType::POINT_NONE); });
 
@@ -282,36 +245,31 @@ void MainWindow::connectsPointType() {
 
 // -------------------------------------------------------
 
-void MainWindow::connectsScale() {
-  // connect(m_myWidget, &MyWidgetOPenGL::on_scaleStep, this,
-  //         [&]() { ui->lineEdit_scale->setText(m_myWidget->scaleString()); });
-
+void MainWindow::ConnectsScale() {
   connect(ui->pb_changeScale, &QPushButton::clicked, this, [&]() {
     controller_->ChangeScale(ui->lineEdit_scale->text().toInt());
   });
 
-  connect(ui->pb_scalePlus, &QPushButton::clicked, m_myWidget,
+  connect(ui->pb_scalePlus, &QPushButton::clicked, my_widget_,
           [&] { controller_->IncremenetScale(); });
-  connect(ui->pb_scaleMinus, &QPushButton::clicked, m_myWidget,
+  connect(ui->pb_scaleMinus, &QPushButton::clicked, my_widget_,
           [&] { controller_->DecrementScale(); });
 }
 
 // -------------------------------------------------------
 
-void MainWindow::connectsImages() {
+void MainWindow::ConnectsImages() {
   connect(ui->pb_jpeg, &QPushButton::clicked, this,
-          [&]() { controller_->ScreenshotJPEG(m_myWidget); });
+          [&]() { controller_->ScreenshotJPEG(my_widget_); });
   connect(ui->pb_bmp, &QPushButton::clicked, this,
-          [&]() { controller_->ScreenshotBMP(m_myWidget); });
+          [&]() { controller_->ScreenshotBMP(my_widget_); });
   connect(ui->pb_gif, &QPushButton::clicked, this,
-          [&]() { controller_->Gif(m_myWidget); });
-  // connect(ui->pb_gif, &QPushButton::clicked, this, [&]() { doGif(); });
-  // connect(m_timerGif, &QTimer::timeout, this, &MainWindow::startGif);
+          [&]() { controller_->Gif(my_widget_); });
 }
 
 // -------------------------------------------------------
 
-void MainWindow::connectPerspective() {
+void MainWindow::ConnectPerspective() {
   connect(ui->radioButton_central, &QRadioButton::pressed, this, [&]() {
     controller_->ChangePerspective(PerspectiveType::PERSPECTIVE_CENTRAL);
   });
@@ -323,14 +281,14 @@ void MainWindow::connectPerspective() {
 
 // -------------------------------------------------------
 
-void MainWindow::connectMouseRotate() {
+void MainWindow::ConnectMouseRotate() {
   connect(ui->checkBox_mouseOn, &QCheckBox::stateChanged, this,
           [&](int const &state) { BlockSlideRotate(state); });
 }
 
 // -------------------------------------------------------
 
-void MainWindow::connectsLineWidth() {
+void MainWindow::ConnectsLineWidth() {
   connect(ui->hSlidder_widthLine, &QSlider::valueChanged, this,
           [&](int const &value) { controller_->ChangeLineWidth(value); });
   connect(ui->lineEdit_widthLine, &QLineEdit::textEdited, this,
@@ -341,9 +299,8 @@ void MainWindow::connectsLineWidth() {
 
 // -------------------------------------------------------
 
-void MainWindow::changePerperpertiveRdb(int value_) {
-  Q_UNUSED(value_);
-  if (value_ == 1)
+void MainWindow::ChangePerperpertiveRdb(int const &value) {
+  if (value == 1)
     ui->radioButton_parallel->setChecked(true);
   else
     ui->radioButton_central->setChecked(true);

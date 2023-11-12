@@ -34,39 +34,30 @@ class MyWidgetOPenGL : public QOpenGLWidget,
   Q_OBJECT
   Q_INTERFACES(s21::IWidgetOpenglObserver)
 
- signals:
-  // void on_moveChange(float value_);
-  void on_changeRotate();
-  void on_scaleStep();
-  void on_changeColorGifTime(int const &is_black);
-  void on_changePerperpertiveRdb(int value);
-
  public:
   explicit MyWidgetOPenGL(IControllerInterface *controller, IFacadeModel *model,
                           QWidget *parent = nullptr);
-  MyWidgetOPenGL(MyWidgetOPenGL const &other_) = delete;
-  MyWidgetOPenGL(MyWidgetOPenGL &&other_) = delete;
-  void operator=(MyWidgetOPenGL const &other_) = delete;
-  void operator=(MyWidgetOPenGL &&other_) = delete;
+  MyWidgetOPenGL(MyWidgetOPenGL const &other) = delete;
+  MyWidgetOPenGL(MyWidgetOPenGL &&other) = delete;
+  void operator=(MyWidgetOPenGL const &other) = delete;
+  void operator=(MyWidgetOPenGL &&other) = delete;
   virtual ~MyWidgetOPenGL();
 
   /* **** ***** **** */
 
   void ChangeColorFileInfo(int const &value);
 
-  void turnOnMouse();
-  void turnOffMouse();
+  void TurnOnMouse();
+  void TurnOffMouse();
 
-  QString scaleString();
-
-  void moveX(float value_);
-  void moveY(float value_);
-  void moveZ(float value_);
+  void MoveX(float value);
+  void MoveY(float value);
+  void MoveZ(float value);
 
   void Update() override;
   void UpdateInfo() override;
 
- protected:
+ protected:  // -- override --
   void initializeGL() override;
   void resizeGL(int w, int h) override;
   void paintGL() override;
@@ -81,40 +72,31 @@ class MyWidgetOPenGL : public QOpenGLWidget,
   bool eventFilter(QObject *watched, QEvent *event) override;
 
  private:
-  int updateData();
-  void updateInfoObject();
+  void UpdateInfoObject();
 
   // void ChangeRotate();
-  void updatePerspective();
+  void UpdatePerspective();
 
-  void drawObjects(e_typeDraw type_);
-  void drawInfo();
-  void clearInfo();
-  void drawSquare();
+  void DrawObjects(e_typeDraw const &type_);
+  void DrawInfo();
+  void ClearInfo();
+  void DrawSquare();
 
  private:
   IControllerInterface *controller_;
   IFacadeModel *model_;
 
-  QString m_fileNameObject;
-
-  int m_countScale;
-
   bool initialized_;
   QPoint mouse_position_;
-  double m_sizePerspective;
 
   QLabel *label_name_;
   QLabel *label_vertes_;
   QLabel *label_polygons_;
+  QLabel *label_gif_time_;
   QHBoxLayout *m_layoutH;
 
-  bool m_isMouse;
-  QColor m_tmpColor;
-
-  // ModelViewer *modelviewer_;
-  // Point m_points;
-  // matrix_poligon m_polygons;
+  bool is_mouse_;
+  QColor tmp_color_;
 };
 
 }  // namespace s21

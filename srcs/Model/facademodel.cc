@@ -83,7 +83,6 @@ void FacadeModel::ChangeLinesColor(int const &value) {
 }
 
 void FacadeModel::OpenFile(QString const &filename) {
-  // LoadData();
   model_->SetFilename(filename);
   bool res = model_->OpenFileObject(filename);
 

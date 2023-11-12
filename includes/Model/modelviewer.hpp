@@ -78,16 +78,8 @@ class ModelViewer {
   bool WriteToFileConfig(QString path = "");
   bool LoadConfig(QString path = "");
 
-  // -- -- -- --
-
-  void ScreenshotJPEG(QWidget *widget);
-  void ScreenshotBMP(QWidget *widget);
-
-  void Gif(QWidget *widget);
-  QLabel *GetLabelGifTime() const;
-
  public:  // -- origin --
-          // TODO(probiuss): need to thing move to update data from public to
+          // TODO(probiuss): need to think move to update data from public to
           // private.
   bool UpdateData();
 
@@ -98,7 +90,6 @@ class ModelViewer {
  private:
   Model *model_;
   DataViewer *data_viewer_;
-  ImageCapture *image_capture_;
 
   QList<IWidgetOpenglObserver *> list_widget_opengl_;
   QList<IMainWindowObserver *> list_main_menu_;

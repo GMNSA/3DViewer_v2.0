@@ -83,7 +83,6 @@ void ImageCapture::DoGif() {
 // -------------------------------------------------------
 
 void ImageCapture::ChangeColorGifTime(bool const &is_black) {
-  Q_UNUSED(is_black);
   if (is_black)
     label_gif_time_->setStyleSheet("QLabel { color : black; }");
   else
