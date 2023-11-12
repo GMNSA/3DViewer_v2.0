@@ -4,8 +4,8 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 #else
-// #include <GLUT/glut.h>
-// #include <OPenGL/gl.h>
+#include <GLUT/glut.h>
+#include <OPenGL/gl.h>
 #endif
 #include <QColor>
 #include <QDebug>
