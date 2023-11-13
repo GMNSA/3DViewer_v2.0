@@ -42,7 +42,7 @@ set(PROJECT_SOURCES
 
         srcs/Controller/controller.cc
 
-        srcs/Model/model.cpp
+        srcs/Model/model.cc
         srcs/Model/modelviewer.cc
 
         srcs/Model/facademodel.cc

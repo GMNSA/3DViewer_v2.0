@@ -90,6 +90,9 @@
               </item>
               <item>
                <widget class="QLineEdit" name="lineEdit_moveY">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
                 <property name="maximumSize">
                  <size>
                   <width>35</width>
@@ -130,6 +133,9 @@
               </item>
               <item>
                <widget class="QLineEdit" name="lineEdit_moveX">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
                 <property name="maximumSize">
                  <size>
                   <width>35</width>
@@ -170,6 +176,9 @@
               </item>
               <item>
                <widget class="QLineEdit" name="lineEdit_moveZ">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
                 <property name="maximumSize">
                  <size>
                   <width>35</width>
@@ -393,6 +402,9 @@
               </item>
               <item>
                <widget class="QLineEdit" name="lineEdit_rotateX">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
                 <property name="maximumSize">
                  <size>
                   <width>35</width>
@@ -436,6 +448,9 @@
               </item>
               <item>
                <widget class="QLineEdit" name="lineEdit_rotateY">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
                 <property name="maximumSize">
                  <size>
                   <width>35</width>
@@ -479,6 +494,9 @@
               </item>
               <item>
                <widget class="QLineEdit" name="lineEdit_rotateZ">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
                 <property name="maximumSize">
                  <size>
                   <width>35</width>
@@ -790,8 +808,8 @@
   </connection>
  </connections>
  <buttongroups>
-  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="buttonGroup_3"/>
+  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="buttonGroup"/>
  </buttongroups>
 </ui>

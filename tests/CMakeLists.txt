@@ -29,7 +29,7 @@ set(HEADERS
 set(SOURCES
     srcs/main.cc
     srcs/tst_model_viewer.cc
-    ${CMAKE_CURRENT_LIST_DIR}/../srcs/Model/model.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../srcs/Model/model.cc
 )
 
 
