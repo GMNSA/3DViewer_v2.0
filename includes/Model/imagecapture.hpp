@@ -7,43 +7,41 @@
 #include <QWidget>
 
 #include "../../includes/Model/customtypes.hpp"
+#include "../../includes/Model/ifacademodel.hpp"
 #include "../lib/QtGifImage/includes/gifcreator.h"
 
 namespace s21 {
 
 class ImageCapture : public QObject {
  public:
-  explicit ImageCapture(QObject *parent = nullptr);
+  explicit ImageCapture(IFacadeModel *facade_model, QObject *parent = nullptr);
   ImageCapture(ImageCapture const &other) = delete;
   ImageCapture &operator=(ImageCapture const &other) = delete;
 
   virtual ~ImageCapture();
 
   void set_widget(QWidget *my_widget);
+  bool get_is_start_timer() const;
 
   void ScreenshotJPEG();
   void ScreenshotBMP();
-
   void DoGif();
-  void StartGif();
-
-  void ChangeColorGifTime(bool const &is_black);
-  QLabel *get_label_gif_time() const;
 
  private:
   void Screenshot(int const &is_jpeg = ScreenshotType::SCREENSHOT_JPEG);
+  void StartGif();
 
  private:
+  IFacadeModel *facade_model_;
   QWidget *widget_;
   int gif_fps_;
   double start_time_;
   int end_time_;
-  // int count_frame_ = 0;
   int frame_num_ = 0;
 
   GifCreator *gif_;
   QTimer *timer_gif_;
-  QLabel *label_gif_time_;
+  bool is_start_timer_;
 };
 
 }  // namespace s21

@@ -67,7 +67,7 @@ class FacadeModel : public IFacadeModel {
   void ScreenshotJPEG(QWidget *widget) override;
   void ScreenshotBMP(QWidget *widget) override;
   void Gif(QWidget *widget) override;
-  QLabel *GetLabelGifTime() const override;
+  bool GifTimerIsRun() override;
 
   // -- -- -- --
 

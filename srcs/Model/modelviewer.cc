@@ -476,8 +476,6 @@ bool ModelViewer::UpdateData() {
 
     if (model_->get_error() == ErrorType::ERROR_OK &&
         !data_viewer_->filename_object.isEmpty()) {
-      // TODO(_who): don't forget release DefaultConfigSimple
-
       is_res = true;
       DefaultConfigSimple();
       data_viewer_->is_valid = true;

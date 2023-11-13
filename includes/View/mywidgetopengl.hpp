@@ -9,9 +9,6 @@
 #include <QOpenGLFunctions>
 #include <QtOpenGLWidgets>
 
-#define RGB_MIN 1
-#define RGB_MAX 255
-
 #include "../Controller/icontrollerinterface.hpp"
 #include "../Model/ifacademodel.hpp"
 #include "./iwidgetopenglobserver.hpp"
@@ -23,8 +20,6 @@ typedef enum e_typeDraw {
   TYPE_POINTS,
   END_TYPE_DRAW
 } e_typeDraw;
-
-// -------------------------------------------------------
 
 // -------------------------------------------------
 
@@ -74,7 +69,6 @@ class MyWidgetOPenGL : public QOpenGLWidget,
  private:
   void UpdateInfoObject();
 
-  // void ChangeRotate();
   void UpdatePerspective();
 
   void DrawObjects(e_typeDraw const &type_);

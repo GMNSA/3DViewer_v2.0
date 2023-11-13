@@ -151,7 +151,10 @@ void Controller::ScreenshotBMP(QWidget *widget) {
 
 // ----------------------------------------------------------------------------
 
-void Controller::Gif(QWidget *widget) { model_->Gif(widget); }
+void Controller::Gif(QWidget *widget) {
+  model_->Gif(widget);
+  view_->GifStartButton(true);
+}
 
 // ----------------------------------------------------------------------------
 

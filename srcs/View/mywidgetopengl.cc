@@ -46,15 +46,6 @@ MyWidgetOPenGL::MyWidgetOPenGL(IControllerInterface *controller,
 
   initialized_ = false;
   DrawInfo();
-  // m_labelGifTime->setText("");
-  // m_labelGifTime->setAlignment(Qt::AlignTop);
-  // m_labelGifTime->setAlignment(Qt::AlignLeft);
-  // m_labelGifTime->move(40, 40);
-  // m_labelGifTime->raise();
-  // QFont font = m_labelGifTime->font();
-  // font.setPointSize(20);
-  // font.setBold(true);
-  // m_labelGifTime->setFont(font);
 }
 
 // --------------------------------------------------
@@ -100,7 +91,6 @@ void MyWidgetOPenGL::paintGL() {
   if (model_->GetDataViewer().is_valid) {
     glEnable(GL_BLEND);
     glEnable(GL_MULTISAMPLE);
-    // TODO(_who): We will need to fix (line width - too much fat and tear)
     glLineWidth((GLfloat)model_->GetDataViewer().line_width);
 
     if (model_->GetDataViewer().line_type == LineType::LINE_STIPPLE) {
@@ -183,12 +173,10 @@ void MyWidgetOPenGL::ChangeColorFileInfo(int const &value) {
     label_name_->setStyleSheet("QLabel { color : white; }");
     label_vertes_->setStyleSheet("QLabel { color : white; }");
     label_polygons_->setStyleSheet("QLabel { color : white; }");
-    // emit on_changeColorGifTime(0);
   } else {
     label_name_->setStyleSheet("QLabel { color : grey; }");
     label_vertes_->setStyleSheet("QLabel { color : grey; }");
     label_polygons_->setStyleSheet("QLabel { color : grey; }");
-    // emit on_changeColorGifTime(1);
   }
 }
 
@@ -247,9 +235,6 @@ void MyWidgetOPenGL::DrawObjects(e_typeDraw const &type_draw) {
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::DrawInfo() {
-  // label_name_->setText("Name: ");
-  // label_vertes_->setText("Vertes: ");
-  // label_polygons_->setText("Polygons: ");
   m_layoutH->setAlignment(Qt::AlignTop);
   m_layoutH->addStretch();
   m_layoutH->addWidget(label_name_);
@@ -319,14 +304,6 @@ void MyWidgetOPenGL::DrawSquare() {
     }
   }
 }
-
-// void MainWindow::changeColorGifTime(int isBlack_) {
-//   Q_UNUSED(isBlack_);
-//   if (isBlack_)
-//     m_labelGifTime->setStyleSheet("QLabel { color : black; }");
-//   else
-//     m_labelGifTime->setStyleSheet("QLabel { color : white; }");
-// }
 
 // -------------------------------------------------------
 

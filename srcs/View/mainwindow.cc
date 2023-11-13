@@ -56,6 +56,7 @@ void MainWindow::Update() {
     ui->radioButton_squard->setChecked(true);
 
   ui->hSlidder_widthLine->setValue(data.line_width * 10);
+  if (!model_->GifTimerIsRun()) GifStartButton(false);
 }
 
 // -------------------------------------------------------
@@ -120,6 +121,11 @@ void MainWindow::BlockSlideRotate(bool const &is_block) {
     my_widget_->TurnOnMouse();
   }
 }
+
+void MainWindow::GifStartButton(bool const &is_work) {
+  ui->pb_gif->setEnabled(!is_work);
+}
+
 // -------------------------------------------------------
 
 void MainWindow::OpenFileDialog() {

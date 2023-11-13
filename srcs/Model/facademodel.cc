@@ -7,7 +7,7 @@ namespace s21 {
 FacadeModel::FacadeModel()
     : model_(new ModelViewer()),
       data_manager_(new DataManager()),
-      image_capture_(new ImageCapture()) {}
+      image_capture_(new ImageCapture(this)) {}
 
 FacadeModel::~FacadeModel() {
   if (model_) delete model_;
@@ -227,7 +227,9 @@ void FacadeModel::Gif(QWidget *widget) {
   image_capture_->DoGif();
 }
 
-QLabel *FacadeModel::GetLabelGifTime() const { return nullptr; }
+bool FacadeModel::GifTimerIsRun() {
+  return image_capture_->get_is_start_timer();
+}
 
 // -- -------------------------------------------- --
 

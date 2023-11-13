@@ -1,8 +1,6 @@
 #ifndef INCLUDES_VIEW_MAINWINDOW_HPP_
 #define INCLUDES_VIEW_MAINWINDOW_HPP_
 
-// #include <stdbool.h>
-
 #include <QLabel>
 #include <QMainWindow>
 
@@ -34,6 +32,7 @@ class MainWindow : public QMainWindow, virtual public IMainWindowObserver {
   void ChangePointSize(int const &value);
 
   void BlockSlideRotate(bool const &is_block);
+  void GifStartButton(bool const &is_work);
 
   void OpenFileDialog();
 

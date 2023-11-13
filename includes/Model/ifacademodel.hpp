@@ -49,10 +49,6 @@ class IFacadeModel {
 
   // -- -- -- --
 
-  // virtual void OpenFileData(QString const &filename) = 0;
-
-  // -- -- -- --
-
   virtual void MoveRotationSlider(MoveRotationType direction, float value) = 0;
   virtual void MoveDirectionSlider(MoveType direction, float value) = 0;
   virtual void MoveRotationMouse(MoveRotationType direction, float value) = 0;
@@ -73,7 +69,7 @@ class IFacadeModel {
   virtual void ScreenshotBMP(QWidget *widget) = 0;
 
   virtual void Gif(QWidget *widget) = 0;
-  virtual QLabel *GetLabelGifTime() const = 0;
+  virtual bool GifTimerIsRun() = 0;
 
   // -- -- -- --
 
