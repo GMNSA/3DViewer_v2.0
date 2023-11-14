@@ -8,8 +8,6 @@
 #include <QString>
 #include <vector>
 
-#include "./imagecapture.hpp"
-#include "./imodelviewer.hpp"
 #include "./model.hpp"
 
 namespace s21 {
@@ -75,9 +73,6 @@ class ModelViewer {
 
   // -- -- -- --
 
-  bool WriteToFileConfig(QString path = "");
-  bool LoadConfig(QString path = "");
-
  public:  // -- origin --
           // TODO(probiuss): need to think move to update data from public to
           // private.
@@ -90,9 +85,6 @@ class ModelViewer {
  private:
   Model *model_;
   DataViewer *data_viewer_;
-
-  QList<IWidgetOpenglObserver *> list_widget_opengl_;
-  QList<IMainWindowObserver *> list_main_menu_;
 };
 
 }  // namespace s21
