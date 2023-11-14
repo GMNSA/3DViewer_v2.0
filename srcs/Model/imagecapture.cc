@@ -68,6 +68,10 @@ void ImageCapture::StartGif() {
     widget_->render(&gif);
     gif.scaled(640, 480, Qt::IgnoreAspectRatio);
 
+    if (!gif.save(gif_->imageFilePathMask().arg(frame_num_))) {
+      // // TODO(probiuss): need raise ERROR
+    }
+
     end_time_ += 1000 / gif_fps_;
     ++frame_num_;
   }
