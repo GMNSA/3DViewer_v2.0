@@ -47,12 +47,21 @@ target_include_directories(${OUT_NAME}
     ${CMAKE_CURRENT_LIST_DIR}/libBin
 )
 
+cmake_host_system_information(RESULT PRETTY_NAME QUERY OS_NAME)
+message(STATUS "${PRETTY_NAME}")
+
+if (${PRETTY_NAME} STREQUAL "Linux")
+    target_link_libraries(${OUT_NAME}
+        PUBLIC
+        gcov
+    )
+endif()
+
 target_link_libraries(${OUT_NAME}
     PUBLIC
     ${GTEST_LIBRARIES}
     Threads::Threads
     Qt${QT_VERSION_MAJOR}::Widgets
-    gcov
     MatrixLib
 )
 
