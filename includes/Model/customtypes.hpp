@@ -14,13 +14,19 @@ typedef enum PointType {
   POINT_END
 } PointType;
 
+// -- -- -- --
+
 typedef enum LineType { LINE_SIMPLE = 0, LINE_STIPPLE, LINE_END } LineType;
+
+// -- -- -- --
 
 typedef enum ScreenshotType {
   SCREENSHOT_JPEG = 0,
   SCREENSHOT_BPM,
   SCREENSHOT_END
 } ScreenshotType;
+
+// -- -- -- --
 
 typedef enum PerspectiveType {
   PERSPECTIVE_CENTRAL = 0,
@@ -31,15 +37,20 @@ typedef enum PerspectiveType {
 // -- -- -- --
 
 typedef enum MoveRotationType {
-  MOVE_ROTATE_Y = 1,
-  MOVE_ROTATE_X,
+  MOVE_ROTATE_X = 0,
+  MOVE_ROTATE_Y,
   MOVE_ROTATE_Z,
   MOVE_ROTATE_END
 } MoveRotationType;
 
 // -- -- -- --
 
-typedef enum MoveType { MOVE_X = 0, MOVE_Y, MOVE_Z, MOVE_END } MoveType;
+typedef enum MoveDirectionType {
+  MOVE_DIRECTION_X = 0,
+  MOVE_DIRECTION_Y,
+  MOVE_DIRECTION_Z,
+  MOVE_DIRECTION_END
+} MoveType;
 
 // -- -- -- --
 

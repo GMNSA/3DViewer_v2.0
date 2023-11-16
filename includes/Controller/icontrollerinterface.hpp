@@ -11,16 +11,22 @@ class IControllerInterface {
  public:
   virtual ~IControllerInterface() {}
 
-  virtual void MoveDirectionX(float value, MoveType direction = MOVE_X) = 0;
-  virtual void MoveDirectionY(float value, MoveType direction = MOVE_Y) = 0;
-  virtual void MoveDirectionZ(float value, MoveType direction = MOVE_Z) = 0;
+  virtual void MoveDirectionX(float const &value,
+                              MoveType const &direction = MOVE_DIRECTION_X) = 0;
+  virtual void MoveDirectionY(float const &value,
+                              MoveType const &direction = MOVE_DIRECTION_Y) = 0;
+  virtual void MoveDirectionZ(float const &value,
+                              MoveType const &direction = MOVE_DIRECTION_Z) = 0;
 
-  virtual void MoveRotationX(float value,
-                             MoveRotationType direction = MOVE_ROTATE_X) = 0;
-  virtual void MoveRotationY(float value,
-                             MoveRotationType direction = MOVE_ROTATE_Y) = 0;
-  virtual void MoveRotationZ(float value,
-                             MoveRotationType direction = MOVE_ROTATE_Z) = 0;
+  virtual void MoveRotationX(
+      float const &value,
+      MoveRotationType const &direction = MOVE_ROTATE_X) = 0;
+  virtual void MoveRotationY(
+      float const &value,
+      MoveRotationType const &direction = MOVE_ROTATE_Y) = 0;
+  virtual void MoveRotationZ(
+      float const &value,
+      MoveRotationType const &direction = MOVE_ROTATE_Z) = 0;
 
   virtual void TurnObjectX(double const &rotate) = 0;
   virtual void TurnObjectY(double const &rotate) = 0;
