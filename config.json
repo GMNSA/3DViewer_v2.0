@@ -1,0 +1,22 @@
+{
+    "backColor": [
+        0,
+        0,
+        0
+    ],
+    "lineColor": [
+        105,
+        65,
+        55
+    ],
+    "lineType": 0,
+    "lineWidth": 0,
+    "perspective": 0,
+    "pointColor": [
+        55,
+        95,
+        105
+    ],
+    "pointSize": 3,
+    "pointType": 1
+}
