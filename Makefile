@@ -18,7 +18,7 @@ clean:
 	rm -rf ./tests/libBin
 	rm -rf ./libBin/*
 	rm -rf ./lib/libBin/
-	rm -r ./CMakeLists.txt.user
+	rm -rf ./CMakeLists.txt.user
 
 install: checkdir
 	cd BUILD && cmake .. && make
