@@ -22,16 +22,20 @@ class Controller : public QObject, virtual public IControllerInterface {
 
   virtual ~Controller();
 
-  void MoveDirectionX(float value, MoveType direction = MOVE_X) override;
-  void MoveDirectionY(float value, MoveType direction = MOVE_Y) override;
-  void MoveDirectionZ(float value, MoveType direction = MOVE_Z) override;
+  void MoveDirectionX(float const &value,
+                      MoveType const &direction = MOVE_DIRECTION_X) override;
+  void MoveDirectionY(float const &value,
+                      MoveType const &direction = MOVE_DIRECTION_Y) override;
+  void MoveDirectionZ(float const &value,
+                      MoveType const &direction = MOVE_DIRECTION_Z) override;
 
-  void MoveRotationX(float value,
-                     MoveRotationType direction = MOVE_ROTATE_X) override;
-  void MoveRotationY(float value,
-                     MoveRotationType direction = MOVE_ROTATE_Y) override;
-  void MoveRotationZ(float value,
-                     MoveRotationType direction = MOVE_ROTATE_Z) override;
+  void MoveRotationX(float const &value, MoveRotationType const &direction =
+                                             MOVE_ROTATE_X) override;
+  void MoveRotationY(float const &value, MoveRotationType const &direction =
+                                             MOVE_ROTATE_Y) override;
+  void MoveRotationZ(float const &value, MoveRotationType const &direction =
+                                             MOVE_ROTATE_Z) override;
+
   void TurnObjectX(double const &rotate) override;
   void TurnObjectY(double const &rotate) override;
 
