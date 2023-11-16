@@ -35,7 +35,6 @@ class ModelViewerTest : public ::testing::Test {
   void ScaleObj(double const& scale);
   void TurnObj(double const& rotation, int const& axis);
   void MoveObj(s21::Point& move_point);
-  void AffineTransformation(S21Matrix& matrix_affin);
   double GetMaxSize() const;
   void PolygonsClear();
 

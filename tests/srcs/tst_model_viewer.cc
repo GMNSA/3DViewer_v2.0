@@ -51,12 +51,6 @@ void ModelViewerTest::MoveObj(s21::Point& move_point) {
 
 // -- -- -- --
 
-void ModelViewerTest::AffineTransformation(S21Matrix& matrix_affin) {
-  model_->AffineTransformation(matrix_affin);
-}
-
-// -- -- -- --
-
 double ModelViewerTest::GetMaxSize() const { return model_->get_max_size(); }
 
 // -- -- -- --
@@ -162,7 +156,7 @@ TEST_F(ModelViewerTest, TestTurnObj) {
 
   Parse(current_dir.toStdString());
 
-  TurnObj(50, 1);
+  TurnObj(50, s21::MOVE_ROTATE_Y);
   ASSERT_DOUBLE_EQ(2.06868, GetPointsArray()[2].x);
   ASSERT_EQ(1, eq_double(-1.39998, GetPointsArray()[2].y));
 
@@ -171,7 +165,7 @@ TEST_F(ModelViewerTest, TestTurnObj) {
   ASSERT_EQ(1, eq_double(-1.34112, GetPointsArray()[6].y));
   ASSERT_EQ(1, eq_double(-1.67165, GetPointsArray()[6].z));
 
-  TurnObj(50, 2);
+  TurnObj(50, s21::MOVE_ROTATE_X);
   ASSERT_EQ(1, eq_double(2.634751, GetPointsArray()[2].x));
   ASSERT_EQ(1, eq_double(-1.399985, GetPointsArray()[2].y));
   ASSERT_EQ(1, eq_double(0.48965187, GetPointsArray()[2].z));
@@ -179,7 +173,7 @@ TEST_F(ModelViewerTest, TestTurnObj) {
   ASSERT_EQ(1, eq_double(-1.341115, GetPointsArray()[6].y));
   ASSERT_EQ(1, eq_double(0.597590, GetPointsArray()[6].z));
 
-  TurnObj(50, 3);
+  TurnObj(50, s21::MOVE_ROTATE_Z);
   ASSERT_EQ(1, eq_double(0.621135, GetPointsArray()[2].x));
   ASSERT_EQ(1, eq_double(-2.918229, GetPointsArray()[2].y));
   ASSERT_EQ(1, eq_double(0.489651, GetPointsArray()[2].z));
@@ -211,44 +205,6 @@ TEST_F(ModelViewerTest, TestMoveOjb) {
   ASSERT_EQ(1, eq_double(5.182780, GetPointsArray()[6].x));
   ASSERT_EQ(1, eq_double(5.418506, GetPointsArray()[6].y));
   ASSERT_EQ(1, eq_double(-6.101870, GetPointsArray()[6].z));
-}
-
-// -- -- -- --
-
-TEST_F(ModelViewerTest, TestAffine_transformation) {
-  QString current_path = QDir::currentPath();
-  QString current_dir;
-  QString first_name = "/tests/objects_for_test/cow.obj";
-  QString second_name = "/../objects_for_test/cow.obj";
-  QDir direcotry;
-
-  if (direcotry.exists(current_path + first_name))
-    current_dir = current_path + first_name;
-  else
-    current_dir = current_path + second_name;
-
-  Parse(current_dir.toStdString());
-
-  S21Matrix matrix_move(4, 4);
-
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 4; j++) {
-      if (i == j)
-        matrix_move(i, j) = 1;
-      else
-        matrix_move(i, j) = 0;
-    }
-  }
-  matrix_move(0, 3) = 3;
-  matrix_move(1, 3) = 5;
-  matrix_move(2, 3) = -4;
-  AffineTransformation(matrix_move);
-  ASSERT_DOUBLE_EQ(1, eq_double(5.068680, GetPointsArray()[2].x));
-  ASSERT_DOUBLE_EQ(1, eq_double(5.405136, GetPointsArray()[2].y));
-  ASSERT_DOUBLE_EQ(1, eq_double(-6.167500, GetPointsArray()[2].z));
-  ASSERT_DOUBLE_EQ(1, eq_double(5.182780, GetPointsArray()[6].x));
-  ASSERT_DOUBLE_EQ(1, eq_double(5.418506, GetPointsArray()[6].y));
-  ASSERT_DOUBLE_EQ(1, eq_double(-6.101870, GetPointsArray()[6].z));
 }
 
 // -- -- -- --

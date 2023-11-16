@@ -68,7 +68,6 @@ target_link_libraries(${OUT_NAME}
 add_custom_target(coverage
     COMMAND lcov --capture --directory ./CMakeFiles/tst_viewer.dir/home/* --output-file coverage.info
     COMMAND lcov --remove coverage.info '/usr/*' --output-file coverage.info
-    COMMAND lcov --remove coverage.info 'lib/MatrixLib/includes' --output-file coverage.info
     COMMAND lcov --remove coverage.info 'includes/Model/customtypes.hpp' --output-file coverage.info
     COMMAND lcov --list coverage.info
 )

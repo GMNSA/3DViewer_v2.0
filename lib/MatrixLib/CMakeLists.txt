@@ -30,7 +30,7 @@ else()
 endif()
 
 
-set(CMAKE_CXX_FLAGS "-g -Wall -Wextra -Werror -ggdb")
+set(CMAKE_CXX_FLAGS "-g -Wall -Wextra -Werror -ggdb -fsanitize=address")
 
 set(SOURCES
     srcs/matrix.cc
