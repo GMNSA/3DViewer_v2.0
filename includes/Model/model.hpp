@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "../../lib/MatrixLib//includes/matrix.hpp"
+#include "../../lib/MatrixLib/includes/matrix.hpp"
 #include "./customtypes.hpp"
 
 /**
@@ -42,7 +42,6 @@ class Model {
  private:
   void AddPoint(char* line);
   void AddPoligon(char* line);
-  void AffineTransformation(S21Matrix& matrix_affin);
   void MatrixRotation(S21Matrix& matrix_turn, double const& rotation,
                       int const& axis);
   void add_max_size(Point const& t);

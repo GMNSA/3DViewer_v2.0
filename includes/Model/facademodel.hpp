@@ -48,9 +48,12 @@ class FacadeModel : public IFacadeModel {
 
   DataViewer const &GetDataViewer() const override;
 
-  void MoveRotationSlider(MoveRotationType direction, float value) override;
-  void MoveDirectionSlider(MoveType direction, float value) override;
-  void MoveRotationMouse(MoveRotationType direction, float value) override;
+  void MoveRotationSlider(MoveRotationType const &direction,
+                          float const &value) override;
+  void MoveDirectionSlider(MoveType const &direction,
+                           float const &value) override;
+  void MoveRotationMouse(MoveRotationType const &direction,
+                         float const &value) override;
 
   void PolygonsClear() override;
   ErrorType get_error() override;

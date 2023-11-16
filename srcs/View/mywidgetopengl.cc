@@ -34,7 +34,7 @@ MyWidgetOPenGL::MyWidgetOPenGL(IControllerInterface *controller,
       label_name_(new QLabel(this)),
       label_vertes_(new QLabel(this)),
       label_polygons_(new QLabel(this)),
-      m_layoutH(new QHBoxLayout(this)),
+      layout_h_(new QHBoxLayout(this)),
       is_mouse_(false),
       tmp_color_({52, 84, 93}) {
   model_->Attach(qobject_cast<IWidgetOpenglObserver *>(this));
@@ -192,15 +192,21 @@ void MyWidgetOPenGL::UpdateInfoObject() {
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::MoveX(float value) { controller_->MoveDirectionX(value); }
+void MyWidgetOPenGL::MoveX(float const &value) {
+  controller_->MoveDirectionX(value);
+}
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::MoveY(float value) { controller_->MoveDirectionY(value); }
+void MyWidgetOPenGL::MoveY(float const &value) {
+  controller_->MoveDirectionY(value);
+}
 
 // -------------------------------------------------------
 
-void MyWidgetOPenGL::MoveZ(float value) { controller_->MoveDirectionZ(value); }
+void MyWidgetOPenGL::MoveZ(float const &value) {
+  controller_->MoveDirectionZ(value);
+}
 
 // -------------------------------------------------------
 
@@ -211,9 +217,9 @@ void MyWidgetOPenGL::DrawObjects(e_typeDraw const &type_draw) {
   double z = 0.0;
   auto point_color = model_->GetDataViewer().point_color;
   auto line_color = model_->GetDataViewer().line_color;
-  auto polygons = model_->Polygons();
+  const std::vector<std::vector<int>> &polygons = model_->Polygons();
+  const std::vector<Point> &points_array = model_->PointsArray();
   size_t n_polygons = polygons.size();
-  auto points_array = model_->PointsArray();
 
   for (size_t i = 1; i < n_polygons; i++) {
     glBegin(type);
@@ -235,11 +241,11 @@ void MyWidgetOPenGL::DrawObjects(e_typeDraw const &type_draw) {
 // -------------------------------------------------------
 
 void MyWidgetOPenGL::DrawInfo() {
-  m_layoutH->setAlignment(Qt::AlignTop);
-  m_layoutH->addStretch();
-  m_layoutH->addWidget(label_name_);
-  m_layoutH->addWidget(label_vertes_);
-  m_layoutH->addWidget(label_polygons_);
+  layout_h_->setAlignment(Qt::AlignTop);
+  layout_h_->addStretch();
+  layout_h_->addWidget(label_name_);
+  layout_h_->addWidget(label_vertes_);
+  layout_h_->addWidget(label_polygons_);
 }
 
 // -------------------------------------------------------
@@ -286,9 +292,9 @@ void MyWidgetOPenGL::DrawSquare() {
   double x, y, z, del = model_->GetDataViewer().perspective == 1 ? 9 : 23;
   del = model_->GetDataViewer().max_perspective / del *
         model_->GetDataViewer().point_size / 20;
-  auto polygons = model_->Polygons();
+  const std::vector<std::vector<int>> &polygons = model_->Polygons();
+  const std::vector<Point> &points_array = model_->PointsArray();
   size_t n_polygons = polygons.size();
-  auto points_array = model_->PointsArray();
 
   for (size_t i = 1; i < n_polygons; i++) {
     for (size_t j = 0; j < polygons[i].size(); j++) {

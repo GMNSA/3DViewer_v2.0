@@ -168,17 +168,20 @@ DataViewer const &FacadeModel::GetDataViewer() const {
   return model_->GetDataViewer();
 }
 
-void FacadeModel::MoveRotationSlider(MoveRotationType direction, float value) {
+void FacadeModel::MoveRotationSlider(MoveRotationType const &direction,
+                                     float const &value) {
   model_->MoveRotation(direction, value);
   NotifyWidgetOpengl();
 }
 
-void FacadeModel::MoveDirectionSlider(MoveType direction, float value) {
+void FacadeModel::MoveDirectionSlider(MoveType const &direction,
+                                      float const &value) {
   model_->MoveDirection(direction, value);
   NotifyWidgetOpengl();
 }
 
-void FacadeModel::MoveRotationMouse(MoveRotationType direction, float value) {
+void FacadeModel::MoveRotationMouse(MoveRotationType const &direction,
+                                    float const &value) {
   switch (direction) {
     case MOVE_ROTATE_X:
       model_->TurnObjectX(value);

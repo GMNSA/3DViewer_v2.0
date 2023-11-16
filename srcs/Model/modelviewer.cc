@@ -35,7 +35,7 @@ void ModelViewer::SetRotateZ(int const &rotate) {
 
 // ----------------------------------------------------------------------------
 
-void ModelViewer::SetBackgroundColor(int value_) {
+void ModelViewer::SetBackgroundColor(int const value_) {
   if (value_ == 0 || value_ == 255) {
     data_viewer_->background_color.setHsl(0, 0, 0);
   } else {
@@ -161,7 +161,8 @@ bool ModelViewer::OpenFileObject(QString const &filename) {
 
 // ----------------------------------------------------------------------------
 
-void ModelViewer::MoveRotation(MoveRotationType direction, float value) {
+void ModelViewer::MoveRotation(MoveRotationType const &direction,
+                               float const &value) {
   float tmp = 0;
   int is_error = 0;
 
@@ -192,27 +193,27 @@ void ModelViewer::MoveRotation(MoveRotationType direction, float value) {
 
 // ----------------------------------------------------------------------------
 
-void ModelViewer::MoveDirection(MoveType direction, float value) {
-  value = value * model_->get_max_size() / 99;
+void ModelViewer::MoveDirection(MoveType const &direction, float const &value) {
+  float tmp_value = value * model_->get_max_size() / 99.0;
   Point t;
   float tmp = 0;
   int isError = 0;
 
   switch (direction) {
-    case MOVE_X:
-      tmp = data_viewer_->move_before_x - value;
+    case MOVE_DIRECTION_X:
+      tmp = data_viewer_->move_before_x - tmp_value;
       t = {tmp, 0, 0};
-      data_viewer_->move_before_x = value;
+      data_viewer_->move_before_x = tmp_value;
       break;
-    case MOVE_Y:
-      tmp = data_viewer_->move_before_y - value;
+    case MOVE_DIRECTION_Y:
+      tmp = data_viewer_->move_before_y - tmp_value;
       t = {0, tmp, 0};
-      data_viewer_->move_before_y = value;
+      data_viewer_->move_before_y = tmp_value;
       break;
-    case MOVE_Z:
-      tmp = data_viewer_->move_before_z - value;
+    case MOVE_DIRECTION_Z:
+      tmp = data_viewer_->move_before_z - tmp_value;
       t = {0, 0, tmp};
-      data_viewer_->move_before_z = value;
+      data_viewer_->move_before_z = tmp_value;
       break;
     default:
       isError = 1;
@@ -294,12 +295,12 @@ void ModelViewer::DefaultConfigSimple() {
 
 // ----------------------------------------------------------------------------
 
-int ModelViewer::CountNumber(int number_) {
+int ModelViewer::CountNumber(int number) {
   int result = 0;
 
-  if (number_ > 0) {
-    while (number_ > 0) {
-      number_ /= 10;
+  if (number > 0) {
+    while (number > 0) {
+      number /= 10;
       result++;
     }
   }

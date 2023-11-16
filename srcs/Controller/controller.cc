@@ -16,36 +16,39 @@ Controller::~Controller() {
 
 // ----------------------------------------------------------------------------
 
-void Controller::MoveDirectionX(float value, MoveType direction) {
+void Controller::MoveDirectionX(float const &value, MoveType const &direction) {
   model_->MoveDirectionSlider(direction, value);
   view_->ChangeMoveSliderX(value);
 }
 
 // ----------------------------------------------------------------------------
 
-void Controller::MoveDirectionY(float value, MoveType direction) {
+void Controller::MoveDirectionY(float const &value, MoveType const &direction) {
   model_->MoveDirectionSlider(direction, value);
   view_->ChangeMoveSliderY(value);
 }
 
 // ----------------------------------------------------------------------------
 
-void Controller::MoveDirectionZ(float value, MoveType direction) {
+void Controller::MoveDirectionZ(float const &value, MoveType const &direction) {
   model_->MoveDirectionSlider(direction, value);
   view_->ChangeMoveSliderZ(value);
 }
 
-void Controller::MoveRotationX(float value, MoveRotationType direction) {
+void Controller::MoveRotationX(float const &value,
+                               MoveRotationType const &direction) {
   model_->MoveRotationSlider(direction, value);
   view_->ChangeRotateSlidersX(value);
 }
 
-void Controller::MoveRotationY(float value, MoveRotationType direction) {
+void Controller::MoveRotationY(float const &value,
+                               MoveRotationType const &direction) {
   model_->MoveRotationSlider(direction, value);
   view_->ChangeRotateSlidersY(value);
 }
 
-void Controller::MoveRotationZ(float value, MoveRotationType direction) {
+void Controller::MoveRotationZ(float const &value,
+                               MoveRotationType const &direction) {
   model_->MoveRotationSlider(direction, value);
   view_->ChangeRotateSlidersZ(value);
 }
@@ -107,9 +110,10 @@ void Controller::ChangeScale(int const &value) { model_->ChangeScale(value); }
 // ----------------------------------------------------------------------------
 
 void Controller::ChangeLineWidth(double const &value) {
+  // // TODO(probiuss): what is this where is save variable?
   GLfloat tmp_value = value / 10.0f;
+  view_->ChangeLineWidth(value);
   model_->ChangeLineWidth(tmp_value);
-  view_->ChangeLineWidth(tmp_value * 10);
 }
 
 // ----------------------------------------------------------------------------

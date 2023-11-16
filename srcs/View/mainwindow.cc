@@ -177,24 +177,27 @@ void MainWindow::CloseApp() {
 
 void MainWindow::ConnectsMoves() {
   connect(ui->hSlider_moveX, &QSlider::valueChanged, this,
-          [&](int value) { controller_->MoveDirectionX(value); });
+          [&](int const value) { controller_->MoveDirectionX(value); });
 
   connect(ui->hSlider_moveY, &QSlider::valueChanged, this,
-          [&](int value) { controller_->MoveDirectionY(value); });
+          [&](int const value) { controller_->MoveDirectionY(value); });
 
   connect(ui->hSlider_moveZ, &QSlider::valueChanged, this,
-          [&](int value) { controller_->MoveDirectionZ(value); });
+          [&](int const value) { controller_->MoveDirectionZ(value); });
 
   /* *****  ***** */
 
-  connect(ui->lineEdit_moveX, &QLineEdit::textEdited, this,
-          [&](QString value) { controller_->MoveDirectionX(value.toInt()); });
+  connect(
+      ui->lineEdit_moveX, &QLineEdit::textEdited, this,
+      [&](QString const value) { controller_->MoveDirectionX(value.toInt()); });
 
-  connect(ui->lineEdit_moveY, &QLineEdit::textEdited, this,
-          [&](QString value) { controller_->MoveDirectionY(value.toInt()); });
+  connect(
+      ui->lineEdit_moveY, &QLineEdit::textEdited, this,
+      [&](QString const value) { controller_->MoveDirectionY(value.toInt()); });
 
-  connect(ui->lineEdit_moveZ, &QLineEdit::textEdited, this,
-          [&](QString value) { controller_->MoveDirectionZ(value.toInt()); });
+  connect(
+      ui->lineEdit_moveZ, &QLineEdit::textEdited, this,
+      [&](QString const value) { controller_->MoveDirectionZ(value.toInt()); });
 }
 
 // -------------------------------------------------------

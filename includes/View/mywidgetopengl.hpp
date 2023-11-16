@@ -45,9 +45,9 @@ class MyWidgetOPenGL : public QOpenGLWidget,
   void TurnOnMouse();
   void TurnOffMouse();
 
-  void MoveX(float value);
-  void MoveY(float value);
-  void MoveZ(float value);
+  void MoveX(float const &value);
+  void MoveY(float const &value);
+  void MoveZ(float const &value);
 
   void Update() override;
   void UpdateInfo() override;
@@ -87,7 +87,7 @@ class MyWidgetOPenGL : public QOpenGLWidget,
   QLabel *label_vertes_;
   QLabel *label_polygons_;
   QLabel *label_gif_time_;
-  QHBoxLayout *m_layoutH;
+  QHBoxLayout *layout_h_;
 
   bool is_mouse_;
   QColor tmp_color_;

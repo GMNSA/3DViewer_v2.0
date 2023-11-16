@@ -49,9 +49,12 @@ class IFacadeModel {
 
   // -- -- -- --
 
-  virtual void MoveRotationSlider(MoveRotationType direction, float value) = 0;
-  virtual void MoveDirectionSlider(MoveType direction, float value) = 0;
-  virtual void MoveRotationMouse(MoveRotationType direction, float value) = 0;
+  virtual void MoveRotationSlider(MoveRotationType const &direction,
+                                  float const &value) = 0;
+  virtual void MoveDirectionSlider(MoveType const &direction,
+                                   float const &value) = 0;
+  virtual void MoveRotationMouse(MoveRotationType const &direction,
+                                 float const &value) = 0;
 
   virtual void PolygonsClear() = 0;
   virtual ErrorType get_error() = 0;

@@ -39,10 +39,10 @@ void Model::Parse(std::string const& filename) {
 // ----------------------------------------------------------------------------
 
 void Model::AddPoligon(char* line) {
-  vector<int> poligon;
+  std::vector<int> poligon;
   for (int i = 0; line[i]; i++) {
     if (isdigit(line[i])) {
-      poligon.push_back(stoi(line + i));
+      poligon.push_back(std::stoi(line + i));
       while (line[i + 1] != ' ' && line[i + 1]) {
         i++;
       }
@@ -58,7 +58,7 @@ void Model::AddPoint(char* line) {
   size_t count = 0;
   for (int i = 0; line[i]; i++) {
     if (isdigit(line[i]) || (line[i] == '-' && isdigit(line[i + 1]))) {
-      point[count++] = stod(line + i);
+      point[count++] = std::stod(line + i);
       while (isdigit(line[++i]) || line[i] == '.') {
       }
       if (count == 3) break;
@@ -71,17 +71,11 @@ void Model::AddPoint(char* line) {
 // ----------------------------------------------------------------------------
 
 void Model::ScaleObj(double const& scale) {
-  S21Matrix matrix_scale(4, 4);
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 4; j++) {
-      if (i == j)
-        matrix_scale(i, j) = scale;
-      else
-        matrix_scale(i, j) = 0;
-    }
+  for (size_t i = 1; i < points_array_.size(); ++i) {
+    points_array_[i].x *= scale;
+    points_array_[i].y *= scale;
+    points_array_[i].z *= scale;
   }
-  matrix_scale(3, 3) = 1;
-  AffineTransformation(matrix_scale);
 }
 
 // ----------------------------------------------------------------------------
@@ -97,7 +91,17 @@ void Model::TurnObj(double const& rotation, int const& axis) {
     }
   }
   MatrixRotation(matrix_turn, rotation, axis);
-  AffineTransformation(matrix_turn);
+  size_t size = points_array_.size();
+  for (size_t i = 1; i < size; ++i) {
+    double x = points_array_[i].x, y = points_array_[i].y,
+           z = points_array_[i].z;
+    points_array_[i].x = x * matrix_turn(0, 0) + y * matrix_turn(0, 1) +
+                         z * matrix_turn(0, 2) + matrix_turn(0, 3);
+    points_array_[i].y = x * matrix_turn(1, 0) + y * matrix_turn(1, 1) +
+                         z * matrix_turn(1, 2) + matrix_turn(1, 3);
+    points_array_[i].z = x * matrix_turn(2, 0) + y * matrix_turn(2, 1) +
+                         z * matrix_turn(2, 2) + matrix_turn(0, 3);
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -105,17 +109,17 @@ void Model::TurnObj(double const& rotation, int const& axis) {
 void Model::MatrixRotation(S21Matrix& matrix_turn, double const& rotation,
                            int const& axis) {
   double gradus = rotation * M_PI / 180;
-  if (axis == 1) {
+  if (axis == MOVE_ROTATE_Y) {
     matrix_turn(1, 1) = cos(gradus);
     matrix_turn(1, 2) = sin(gradus);
     matrix_turn(2, 1) = -sin(gradus);
     matrix_turn(2, 2) = cos(gradus);
-  } else if (axis == 2) {
+  } else if (axis == MOVE_ROTATE_X) {
     matrix_turn(0, 0) = cos(gradus);
     matrix_turn(0, 2) = -sin(gradus);
     matrix_turn(2, 0) = sin(gradus);
     matrix_turn(2, 2) = cos(gradus);
-  } else if (axis == 3) {
+  } else if (axis == MOVE_ROTATE_Z) {
     matrix_turn(0, 0) = cos(gradus);
     matrix_turn(0, 1) = sin(gradus);
     matrix_turn(1, 0) = -sin(gradus);
@@ -126,34 +130,10 @@ void Model::MatrixRotation(S21Matrix& matrix_turn, double const& rotation,
 // ----------------------------------------------------------------------------
 
 void Model::MoveObj(Point& move_point) {
-  S21Matrix matrix_move(4, 4);
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 4; j++) {
-      if (i == j)
-        matrix_move(i, j) = 1;
-      else
-        matrix_move(i, j) = 0;
-    }
-  }
-  matrix_move(0, 3) = move_point.x;
-  matrix_move(1, 3) = move_point.y;
-  matrix_move(2, 3) = move_point.z;
-  AffineTransformation(matrix_move);
-}
-
-// ----------------------------------------------------------------------------
-
-void Model::AffineTransformation(S21Matrix& matrix_affin) {
-  S21Matrix matrix_point(4, 1), matrix_result;
-  matrix_point(3, 0) = 1;
-  for (unsigned i = 1; i < points_array_.size(); i++) {
-    matrix_point(0, 0) = points_array_[i].x;
-    matrix_point(1, 0) = points_array_[i].y;
-    matrix_point(2, 0) = points_array_[i].z;
-    matrix_result = matrix_affin * matrix_point;
-    points_array_[i].x = matrix_result(0, 0);
-    points_array_[i].y = matrix_result(1, 0);
-    points_array_[i].z = matrix_result(2, 0);
+  for (size_t i = 1; i < points_array_.size(); ++i) {
+    points_array_[i].x += move_point.x;
+    points_array_[i].y += move_point.y;
+    points_array_[i].z += move_point.z;
   }
 }
 

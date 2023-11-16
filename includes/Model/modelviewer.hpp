@@ -23,7 +23,7 @@ class ModelViewer {
   void SetRotateX(int const &rotate);
   void SetRotateY(int const &rotate);
   void SetRotateZ(int const &rotate);
-  void SetBackgroundColor(int const value_);
+  void SetBackgroundColor(int const value);
   void SetPointColor(int const &value);
   void SetLinesColor(int const &value);
   void SetLineType(LineType const &type);
@@ -45,8 +45,8 @@ class ModelViewer {
 
   // -- -- -- --
 
-  void MoveRotation(MoveRotationType direction, float value);
-  void MoveDirection(MoveType direction, float value);
+  void MoveRotation(MoveRotationType const &direction, float const &value);
+  void MoveDirection(MoveType const &direction, float const &value);
 
   InfoData const &get_info_file();
 
@@ -73,14 +73,11 @@ class ModelViewer {
 
   // -- -- -- --
 
- public:  // -- origin --
-          // TODO(probiuss): need to think move to update data from public to
-          // private.
   bool UpdateData();
 
  private:
   void UpdateInfoObject();
-  int CountNumber(int number_);
+  int CountNumber(int number);
 
  private:
   Model *model_;
