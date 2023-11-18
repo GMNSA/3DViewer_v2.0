@@ -40,15 +40,25 @@ class MyWidgetOPenGL : public QOpenGLWidget,
 
   /* **** ***** **** */
 
+  /**
+   * @brief Changing the color of the file information:
+   *                Name, polygons, vectors...
+   *
+   * @param value - (int)
+   */
   void ChangeColorFileInfo(int const &value);
 
+  /**
+   * @brief Turn on the mouse
+   */
   void TurnOnMouse();
+
+  /**
+   * @brief Turn off the mouse
+   */
   void TurnOffMouse();
 
-  void MoveX(float const &value);
-  void MoveY(float const &value);
-  void MoveZ(float const &value);
-
+  // IControllerInterface interface
   void Update() override;
   void UpdateInfo() override;
 

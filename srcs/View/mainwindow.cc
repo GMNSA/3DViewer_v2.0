@@ -15,6 +15,8 @@ namespace s21 {
 
 int const MainWindow::kRotate_value_slider_ = 720;
 
+// -- -- -- --
+
 MainWindow::MainWindow(IControllerInterface *controller, IFacadeModel *model,
                        QWidget *parent)
     : QMainWindow(parent),
@@ -50,13 +52,14 @@ void MainWindow::Update() {
   ui->hSlider_colorLines->setValue(data.line_color.toHsl().hue());
   ui->hSlider_colorPoints->setValue(data.point_color.toHsl().hue());
   ui->hSlider_backgroundColor->setValue(data.background_color.toHsl().hue());
+
   if (data.point_type == PointType::POINT_CIRCLE)
     ui->radioButton_circle->setChecked(true);
   else if (data.point_type == PointType::POINT_SQUARE)
     ui->radioButton_squard->setChecked(true);
 
   ui->hSlidder_widthLine->setValue(data.line_width * 10);
-  if (!model_->GifTimerIsRun()) GifStartButton(false);
+  if (!model_->GifTimerIsRun()) BlockGifButton(false);
 }
 
 // -------------------------------------------------------
@@ -122,7 +125,7 @@ void MainWindow::BlockSlideRotate(bool const &is_block) {
   }
 }
 
-void MainWindow::GifStartButton(bool const &is_work) {
+void MainWindow::BlockGifButton(bool const &is_work) {
   ui->pb_gif->setEnabled(!is_work);
 }
 
@@ -170,8 +173,6 @@ void MainWindow::CloseApp() {
   controller_->WriteConfig();
   close();
 }
-
-// -------------------------------------------------------
 
 // -------------------------------------------------------
 

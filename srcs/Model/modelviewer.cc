@@ -194,10 +194,10 @@ void ModelViewer::MoveRotation(MoveRotationType const &direction,
 // ----------------------------------------------------------------------------
 
 void ModelViewer::MoveDirection(MoveType const &direction, float const &value) {
-  float tmp_value = value * model_->get_max_size() / 99.0;
+  float tmp_value = value * model_->get_max_size();
   Point t;
   float tmp = 0;
-  int isError = 0;
+  bool is_error = false;
 
   switch (direction) {
     case MOVE_DIRECTION_X:
@@ -216,11 +216,11 @@ void ModelViewer::MoveDirection(MoveType const &direction, float const &value) {
       data_viewer_->move_before_z = tmp_value;
       break;
     default:
-      isError = 1;
+      is_error = true;
       break;
   }
 
-  if (!isError) model_->MoveObj(t);
+  if (!is_error) model_->MoveObj(t);
 }
 
 // ----------------------------------------------------------------------------

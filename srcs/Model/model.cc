@@ -6,7 +6,8 @@
 
 namespace s21 {
 
-Model::Model(std::string const& file) : file_(file) {
+Model::Model(std::string const& file)
+    : degrees_in_circle_(180), row_(4), col_(4), file_(file) {
   if (!file.empty()) Parse();
 }
 
@@ -81,9 +82,9 @@ void Model::ScaleObj(double const& scale) {
 // ----------------------------------------------------------------------------
 
 void Model::TurnObj(double const& rotation, int const& axis) {
-  S21Matrix matrix_turn(4, 4);
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 4; j++) {
+  S21Matrix matrix_turn(row_, col_);
+  for (size_t i = 0; i < row_; i++) {
+    for (size_t j = 0; j < col_; j++) {
       if (i == j)
         matrix_turn(i, j) = 1;
       else
@@ -108,7 +109,7 @@ void Model::TurnObj(double const& rotation, int const& axis) {
 
 void Model::MatrixRotation(S21Matrix& matrix_turn, double const& rotation,
                            int const& axis) {
-  double gradus = rotation * M_PI / 180;
+  double gradus = rotation * M_PI / degrees_in_circle_;
   if (axis == MOVE_ROTATE_Y) {
     matrix_turn(1, 1) = cos(gradus);
     matrix_turn(1, 2) = sin(gradus);

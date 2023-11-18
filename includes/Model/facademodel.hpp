@@ -56,7 +56,7 @@ class FacadeModel : public IFacadeModel {
                          float const &value) override;
 
   void PolygonsClear() override;
-  ErrorType get_error() override;
+  ErrorType GetError() override;
 
   std::vector<Point> const &PointsArray() override;
   std::vector<std::vector<int>> const &Polygons() override;

@@ -22,17 +22,75 @@ class MainWindow : public QMainWindow, virtual public IMainWindowObserver {
              QWidget *parent = nullptr);
   ~MainWindow();
 
+  /**
+   * @brief Moving the slider by Y.
+   *
+   * @param value - (int const &) how much to move.
+   */
   void ChangeMoveSliderX(int const &value);
+
+  /**
+   * @brief Moving the slider by X.
+   *
+   * @param value - (int const &) how much to move.
+   */
   void ChangeMoveSliderY(int const &value);
+
+  /**
+   * @brief Moving the slider by Z.
+   *
+   * @param value - (int const &) how much to move.
+   */
   void ChangeMoveSliderZ(int const &value);
+
+  /**
+   * @brief Rotate the slider by Y.
+   *
+   * @param value - (int const &) how much to rotate.
+   */
   void ChangeRotateSlidersY(int const &value);
+
+  /**
+   * @brief Rotate the slider by Z.
+   *
+   * @param value - (int const &) how much to rotate.
+   */
   void ChangeRotateSlidersZ(int const &value);
+
+  /**
+   * @brief Rotate the slider by X.
+   *
+   * @param value - (int const &) how much to rotate.
+   */
   void ChangeRotateSlidersX(int const &value);
+
+  /**
+   * @brief Changing the line width.
+   *
+   * @param width -> (double cost &) How much to change by (width).
+   */
   void ChangeLineWidth(double const &width);
+
+  /**
+   * @brief Changing the point size.
+   *
+   * @param value
+   */
   void ChangePointSize(int const &value);
 
+  /**
+   * @brief Locking slider by rotation.
+   *
+   * @param is_block - (bool) if true is unlock else block.
+   */
   void BlockSlideRotate(bool const &is_block);
-  void GifStartButton(bool const &is_work);
+
+  /**
+   * @brief Blocking the gif button.
+   *
+   * @param is_work - (bool) if true is unlock else block.
+   */
+  void BlockGifButton(bool const &is_work);
 
   void OpenFileDialog();
 

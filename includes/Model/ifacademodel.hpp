@@ -57,7 +57,7 @@ class IFacadeModel {
                                  float const &value) = 0;
 
   virtual void PolygonsClear() = 0;
-  virtual ErrorType get_error() = 0;
+  virtual ErrorType GetError() = 0;
 
   virtual std::vector<Point> const &PointsArray() = 0;
   virtual std::vector<std::vector<int>> const &Polygons() = 0;

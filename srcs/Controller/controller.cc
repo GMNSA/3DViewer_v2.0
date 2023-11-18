@@ -110,10 +110,8 @@ void Controller::ChangeScale(int const &value) { model_->ChangeScale(value); }
 // ----------------------------------------------------------------------------
 
 void Controller::ChangeLineWidth(double const &value) {
-  // // TODO(probiuss): what is this where is save variable?
-  GLfloat tmp_value = value / 10.0f;
   view_->ChangeLineWidth(value);
-  model_->ChangeLineWidth(tmp_value);
+  model_->ChangeLineWidth(value);
 }
 
 // ----------------------------------------------------------------------------
@@ -157,7 +155,7 @@ void Controller::ScreenshotBMP(QWidget *widget) {
 
 void Controller::Gif(QWidget *widget) {
   model_->Gif(widget);
-  view_->GifStartButton(true);
+  view_->BlockGifButton(true);
 }
 
 // ----------------------------------------------------------------------------
