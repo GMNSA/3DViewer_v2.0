@@ -1,3 +1,4 @@
+
 #ifndef INCLUDES_MODEL_FACADEMODEL_HPP_
 #define INCLUDES_MODEL_FACADEMODEL_HPP_
 
@@ -19,13 +20,48 @@ class FacadeModel : public IFacadeModel {
 
   // -- -- -- --
 
+  /**
+   * @brief Attaching an observer.
+   *
+   * @param observer - (IWidgetOpenglObserver) observer.
+   */
   void Attach(IWidgetOpenglObserver *observer) override;
+
+  /**
+   * @brief Detach the observer.
+   *
+   * @param observer - (IWidgetOpenglObserver) observer.
+   */
   void Detach(IWidgetOpenglObserver *observer) override;
+
+  /**
+   * @brief Method for notifying observers about changes
+   *             in the "Model" information.
+                 Iterates through the list of observers and calls
+                 their UpdateInfo() method.
+                 :INTERFACE: IWidgetOpenglObserver
+   */
   void NotifyWidgetOpengl() override;
+
+  /**
+   * @brief Method for notifying observers about changes
+   *             in the "Model" information.
+                 Iterates through the list of observers and calls
+                 their Update() method.
+                 :INTERFACE: IWidgetOpenglObserver
+   */
   void NotifyWidgetOpenglInfo() override;
 
   void Attach(IMainWindowObserver *observer) override;
   void Detach(IMainWindowObserver *observer) override;
+
+  /**
+   * @brief Method for notifying observers about changes
+   *             in the "Model" information.
+                 Iterates through the list of observers and calls
+                 their Update() method.
+                 :INTERFACE: IWidgetOpenglObserver
+   */
   void NotifyMainWindow() override;
 
   // -- -------------------------------------------- --
@@ -56,9 +92,21 @@ class FacadeModel : public IFacadeModel {
                          float const &value) override;
 
   void PolygonsClear() override;
-  ErrorType get_error() override;
+  ErrorType GetError() override;
 
+  /**
+   * @brief An arary of vertices.
+   *         Point: x y z
+   *
+   * @return - const &vector<Point>
+   */
   std::vector<Point> const &PointsArray() override;
+
+  /**
+   * @brief A two-dminsional array of polygons.
+   *
+   * @return const vector<vector<int>>
+   */
   std::vector<std::vector<int>> const &Polygons() override;
 
   // -- -- -- --
@@ -67,9 +115,32 @@ class FacadeModel : public IFacadeModel {
 
   // -- -- -- --
 
+  /**
+   * @brief Take a screnshot in format "JPEG"
+   *
+   * @param widget - (widget) screen capture.
+   */
   void ScreenshotJPEG(QWidget *widget) override;
+
+  /**
+   * @brief Take a screnshot in format "BMP"
+   *
+   * @param widget - (widget) screen capture.
+   */
   void ScreenshotBMP(QWidget *widget) override;
+
+  /**
+   * @brief Mkae a gif.
+   *
+   * @param widget - (widget) screen capture.
+   */
   void Gif(QWidget *widget) override;
+
+  /**
+   * @brief Starting the gif timer.
+   *
+   * @return - bool
+   */
   bool GifTimerIsRun() override;
 
   // -- -- -- --

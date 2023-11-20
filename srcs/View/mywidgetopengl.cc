@@ -83,11 +83,10 @@ void MyWidgetOPenGL::paintGL() {
                  model_->GetDataViewer().background_color.blueF(), 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-  if (!initialized_ || !model_->GetDataViewer().is_valid) {
-    return;
-  }
+  if (!initialized_ || !model_->GetDataViewer().is_valid) return;
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
   if (model_->GetDataViewer().is_valid) {
     glEnable(GL_BLEND);
     glEnable(GL_MULTISAMPLE);
@@ -97,14 +96,14 @@ void MyWidgetOPenGL::paintGL() {
       glEnable(GL_LINE_STIPPLE);
       glLineStipple(3, 255);
     }
-    glMatrixMode(GL_MODELVIEW);
 
+    glMatrixMode(GL_MODELVIEW);
     UpdatePerspective();
     DrawObjects(e_typeDraw::TYPE_LINES);
 
-    if (model_->GetDataViewer().line_type == LineType::LINE_STIPPLE) {
+    if (model_->GetDataViewer().line_type == LineType::LINE_STIPPLE)
       glDisable(GL_LINE_STIPPLE);
-    }
+
     if (model_->GetDataViewer().point_type == PointType::POINT_CIRCLE) {
       glEnable(GL_POINT_SMOOTH);
       glPointSize(model_->GetDataViewer().point_size);
@@ -188,24 +187,6 @@ void MyWidgetOPenGL::UpdateInfoObject() {
   label_name_->setText(info.label_name);
   label_vertes_->setText(info.label_vertex);
   label_polygons_->setText(info.label_polygons);
-}
-
-// -------------------------------------------------------
-
-void MyWidgetOPenGL::MoveX(float const &value) {
-  controller_->MoveDirectionX(value);
-}
-
-// -------------------------------------------------------
-
-void MyWidgetOPenGL::MoveY(float const &value) {
-  controller_->MoveDirectionY(value);
-}
-
-// -------------------------------------------------------
-
-void MyWidgetOPenGL::MoveZ(float const &value) {
-  controller_->MoveDirectionZ(value);
 }
 
 // -------------------------------------------------------

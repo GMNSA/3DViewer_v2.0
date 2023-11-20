@@ -93,7 +93,7 @@ void FacadeModel::OpenFile(QString const &filename) {
 }
 
 void FacadeModel::ChangeLineWidth(double const &value) {
-  model_->SetLineWidth(value);
+  model_->SetLineWidth(value / 10.0f);
   NotifyWidgetOpengl();
 }
 
@@ -176,7 +176,7 @@ void FacadeModel::MoveRotationSlider(MoveRotationType const &direction,
 
 void FacadeModel::MoveDirectionSlider(MoveType const &direction,
                                       float const &value) {
-  model_->MoveDirection(direction, value);
+  model_->MoveDirection(direction, value / 99.0);
   NotifyWidgetOpengl();
 }
 
@@ -199,7 +199,7 @@ void FacadeModel::MoveRotationMouse(MoveRotationType const &direction,
 
 void FacadeModel::PolygonsClear() { model_->PolygonsClear(); }
 
-ErrorType FacadeModel::get_error() { return {}; }
+ErrorType FacadeModel::GetError() { return model_->Error(); }
 
 std::vector<Point> const &FacadeModel::PointsArray() {
   return model_->PointsArray();
