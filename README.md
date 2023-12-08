@@ -19,3 +19,5 @@ The program customizing the type of projection (parallel and central).
 The program choosing the background color.
 
 The programma saving the captured (rendered) images as bmp and jpeg files. (640-480)
+
+![GIF Example](assert/for_readme.gif)
